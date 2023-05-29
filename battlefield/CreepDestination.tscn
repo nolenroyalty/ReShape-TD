@@ -15,9 +15,12 @@ color = Color( 0.556863, 0.227451, 0.278431, 1 )
 
 [node name="Bounds" type="Area2D" parent="." index="1"]
 collision_layer = 16
-collision_mask = 0
+collision_mask = 2
 input_pickable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bounds" index="0"]
 position = Vector2( 192, 16 )
 shape = SubResource( 1 )
+
+[connection signal="area_entered" from="Bounds" to="." method="_on_Bounds_area_entered"]
+[connection signal="body_entered" from="Bounds" to="." method="_on_Bounds_body_entered"]

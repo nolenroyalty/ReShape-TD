@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 signal blocked
 signal died
+signal reached_destination
 
 enum S { SPAWNED, MOVING, BLOCKED, AT_DESTINATION, DYING }
 
@@ -23,8 +24,8 @@ func damage(amount):
 func determine_new_path():
 	var my_position = U.snap_to_grid(position)
 	var points = U.GRID.compute_path(my_position, destination)
-	if points[0] == my_position:
-		points.pop_front()
+	if points and points[0] == my_position:
+		points.remove(0)
 	
 	var new_path = []
 	for point in points:
@@ -47,7 +48,7 @@ func become_blocked():
 func update_rotation(target):
 	# We default to facing DOWN, which is 90 degrees.
 	# If we get back 0 degrees, we want to rotate -90 degrees
-	rotation_degrees = rad2deg(position.angle_to_point(target)) - 90
+	rotation_degrees = rad2deg(position.angle_to_point(target)) + 90
 
 
 func handle_move():
@@ -77,6 +78,19 @@ func begin_dying():
 	emit_signal("died")
 	call_deferred("queue_free")
 
+var just_reached = false
+func handle_reached_destination():
+	# Eventually we'll want to stick around for a second and play an animation here
+	if just_reached:
+		return
+	just_reached = true
+
+	emit_signal("reached_destination")
+	call_deferred("queue_free")
+
+func notify_reached_destination():
+	state = S.AT_DESTINATION
+
 func _physics_process(_delta):
 	match state:
 		S.SPAWNED:
@@ -86,7 +100,7 @@ func _physics_process(_delta):
 		S.BLOCKED:
 			pass
 		S.AT_DESTINATION:
-			pass
+			handle_reached_destination()
 		S.DYING:
 			begin_dying()
 			call_deferred("queue_free")
@@ -100,3 +114,6 @@ func handle_points_changed(_points):
 		S.BLOCKED:
 			update_current_path()
 			state = S.MOVING
+
+func init(dest):
+	destination = dest

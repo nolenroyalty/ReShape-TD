@@ -16,10 +16,14 @@ func pathable_points():
 func get_random_point():
 	var x = rng.randi_range(0, WIDTH - 1)
 	var y = rng.randi_range(0, HEIGHT - 1)
-	return U.v(x, y) * C.CELL_SIZE
+	return U.v(x, y) * C.CELL_SIZE + U.snap_to_grid(position)
 
 func _ready():
 	# Not sure if this is inherited otherwise
 	add_to_group("pathable")
 	rng = RandomNumberGenerator.new()
 	rng.randomize()
+
+func _on_Bounds_area_entered(area:Area2D):
+	print("Creep entered! %s <- %s" % [self, area.get_parent()])
+	area.get_parent().notify_reached_destination()

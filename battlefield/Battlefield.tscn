@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://battlefield/Battlefield.gd" type="Script" id=1]
 [ext_resource path="res://battlefield/SpawnTop.tscn" type="PackedScene" id=2]
@@ -9,6 +9,8 @@
 [ext_resource path="res://battlefield/BuildingIndicator.tscn" type="PackedScene" id=7]
 [ext_resource path="res://battlefield/BattlefieldBounds.gd" type="Script" id=8]
 [ext_resource path="res://battlefield/PathingGrid.tscn" type="PackedScene" id=9]
+[ext_resource path="res://battlefield/DestRight.gd" type="Script" id=10]
+[ext_resource path="res://battlefield/DestBot.gd" type="Script" id=11]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 288, 224 )
@@ -27,9 +29,11 @@ position = Vector2( 32, 32 )
 
 [node name="DestRight" parent="." instance=ExtResource( 5 )]
 position = Vector2( 544, 160 )
+script = ExtResource( 10 )
 
 [node name="DestBot" parent="." instance=ExtResource( 6 )]
 position = Vector2( 224, 416 )
+script = ExtResource( 11 )
 
 [node name="BuildingIndicator" parent="." instance=ExtResource( 7 )]
 position = Vector2( 64, 64 )

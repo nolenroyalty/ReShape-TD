@@ -23,6 +23,7 @@ func init(points):
 func compute_path(start, end):
 	# It might be nice to add some memoization here, partially for efficiency (maybe) but also
 	# so that everyone takes the same path when it's ambiguous.
+	print("%s -> %s" % [start, end])
 	return astar.get_point_path(_id_of_point(start), _id_of_point(end))
 
 func disable_points(points):
