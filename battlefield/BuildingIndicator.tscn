@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://battlefield/sprites/building-indicator.png" type="Texture" id=1]
+[ext_resource path="res://battlefield/BuildingIndicator.gd" type="Script" id=2]
+
+[node name="BuildingIndicator" type="Node2D"]
+modulate = Color( 1, 1, 1, 0.490196 )
+script = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="."]
+modulate = Color( 0.247059, 0.376471, 0.313726, 1 )
+texture = ExtResource( 1 )
+centered = false

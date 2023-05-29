@@ -8,9 +8,11 @@ const HEIGHT = 24
 # with any entities. Not sure yet.
 
 signal mouse_buildable_grid_position(pos)
+signal mouse_left_buildable_grid()
 
 onready var bounds = $Bounds
 var mouse_present = false
+var last_mouse_pos = null
 
 func overlay_lines():
 	pass
@@ -27,6 +29,8 @@ func mouse_entered():
 
 func mouse_exited():
 	mouse_present = false
+	last_mouse_pos = null
+	emit_signal("mouse_left_buildable_grid")
 
 func emit_mouse_coordinates():
 	# If we're at 16, 16 and the mouse is at 32, 32, the mouse's position relative to our
@@ -34,9 +38,18 @@ func emit_mouse_coordinates():
 	# Maybe there's just a way to get this directly? I don't know.
 
 	# Also I'm a little worried that it's expensive to check this on every frame. Oh well.
-	var relative_mouse_pos = global_position - U.mouse_position()
+	var relative_mouse_pos = U.mouse_position() - global_position
 	var mouse_grid_pos = U.snap_to_grid(relative_mouse_pos)
-	emit_signal("mouse_buildable_grid_position", mouse_grid_pos)
+
+	# We can't build a tower that starts in the last row or column, so bump the mouse over.
+	if mouse_grid_pos.x == (WIDTH - 1) * C.CELL_SIZE:
+		mouse_grid_pos.x -= C.CELL_SIZE
+	if mouse_grid_pos.y == (HEIGHT - 1) * C.CELL_SIZE:
+		mouse_grid_pos.y -= C.CELL_SIZE
+
+	if last_mouse_pos == null or last_mouse_pos != mouse_grid_pos:
+		last_mouse_pos = mouse_grid_pos
+		emit_signal("mouse_buildable_grid_position", mouse_grid_pos)
 
 func _process(_delta):
 	if mouse_present:
