@@ -1,0 +1,47 @@
+extends Node2D
+
+const WIDTH = 32
+const HEIGHT = 24
+
+# Maybe this should keep track of whether we can build a tower at a given position? But it's possible
+# that it's easier to do that by just checking a potential tower's position and seeing if it collides
+# with any entities. Not sure yet.
+
+signal mouse_buildable_grid_position(pos)
+
+onready var bounds = $Bounds
+var mouse_present = false
+
+func overlay_lines():
+	pass
+
+func pathable_points():
+	var points = []
+	for x in range(WIDTH):
+		for y in range(HEIGHT):
+			points.append(U.v(x, y) * C.CELL_SIZE)
+	return points
+
+func mouse_entered():
+	mouse_present = true
+
+func mouse_exited():
+	mouse_present = false
+
+func emit_mouse_coordinates():
+	# If we're at 16, 16 and the mouse is at 32, 32, the mouse's position relative to our
+	# position is 16, 16
+	# Maybe there's just a way to get this directly? I don't know.
+
+	# Also I'm a little worried that it's expensive to check this on every frame. Oh well.
+	var relative_mouse_pos = global_position - U.mouse_position()
+	var mouse_grid_pos = U.snap_to_grid(relative_mouse_pos)
+	emit_signal("mouse_buildable_grid_position", mouse_grid_pos)
+
+func _process(_delta):
+	if mouse_present:
+		emit_mouse_coordinates()
+
+func _ready():
+	var _ignore = bounds.connect("mouse_entered", self, "mouse_entered")
+	_ignore = bounds.connect("mouse_exited", self, "mouse_exited")

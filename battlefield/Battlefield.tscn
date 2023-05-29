@@ -1,3 +1,26 @@
-[gd_scene format=2]
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://battlefield/Battlefield.gd" type="Script" id=1]
+[ext_resource path="res://battlefield/SpawnTop.tscn" type="PackedScene" id=2]
+[ext_resource path="res://battlefield/BuildableGrid.tscn" type="PackedScene" id=3]
+[ext_resource path="res://battlefield/SpawnLeft.tscn" type="PackedScene" id=4]
+[ext_resource path="res://battlefield/DestRight.tscn" type="PackedScene" id=5]
+[ext_resource path="res://battlefield/DestBot.tscn" type="PackedScene" id=6]
 
 [node name="Battlefield" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="SpawnLeft" parent="." instance=ExtResource( 4 )]
+position = Vector2( 0, 160 )
+
+[node name="SpawnTop" parent="." instance=ExtResource( 2 )]
+position = Vector2( 224, 0 )
+
+[node name="BuildableGrid" parent="." instance=ExtResource( 3 )]
+position = Vector2( 32, 32 )
+
+[node name="DestRight" parent="." instance=ExtResource( 5 )]
+position = Vector2( 544, 160 )
+
+[node name="DestBot" parent="." instance=ExtResource( 6 )]
+position = Vector2( 224, 416 )
