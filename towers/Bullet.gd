@@ -21,7 +21,7 @@ func init(shape, target_, initial_direction):
 	state = S.MOVING_TO_TARGET
 
 	match my_shape:
-		C.SHAPE.CROSS: $Sprite.texture = cross_bulletcre
+		C.SHAPE.CROSS: $Sprite.texture = cross_bullet
 		C.SHAPE.CRESCENT: $Sprite.texture = crescent_bullet
 		C.SHAPE.DIAMOND: $Sprite.texture = diamond_bullet
 

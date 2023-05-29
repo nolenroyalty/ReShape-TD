@@ -1,5 +1,7 @@
 extends Node
 
+var GRID
+
 func v (x, y): return Vector2(x, y)
 
 func center(pos):

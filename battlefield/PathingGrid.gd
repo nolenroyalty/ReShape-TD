@@ -3,6 +3,7 @@ extends Node2D
 var astar : AStar2D
 
 func init(points):
+	astar = AStar2D.new()
 	# it's a point set. heh heh he.
 	var point_setta = {}
 	
@@ -43,8 +44,8 @@ func enable_points(points):
 			astar.set_point_disabled(id, false)
 
 func _id_of_point(v):
-	assert(v.x % C.CELL_SIZE == 0, "Pathable point must be a multiple of cell size: %s" % [v])
-	assert(v.y % C.CELL_SIZE == 0, "Pathable point must be a multiple of cell size: %s" % [v])
+	assert(int(v.x) % C.CELL_SIZE == 0, "Pathable point must be a multiple of cell size: %s" % [v])
+	assert(int(v.y) % C.CELL_SIZE == 0, "Pathable point must be a multiple of cell size: %s" % [v])
 
 	var x = int(v.x / C.CELL_SIZE)
 	var y = int(v.y / C.CELL_SIZE)
