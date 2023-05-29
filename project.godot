@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "CreepArea",
 "language": "GDScript",
 "path": "res://battlefield/CreepArea.gd"
+}, {
+"base": "Node2D",
+"class": "TowerBase",
+"language": "GDScript",
+"path": "res://towers/Tower.gd"
 } ]
 _global_script_class_icons={
-"CreepArea": ""
+"CreepArea": "",
+"TowerBase": ""
 }
 
 [application]
@@ -67,6 +73,10 @@ texture={
 2d_physics/layer_3="mouseable"
 2d_physics/layer_4="ui"
 2d_physics/layer_5="creep_destination"
+2d_physics/layer_6="building_indicator"
+2d_physics/layer_7="building_inhibitor"
+2d_physics/layer_8="attack"
+2d_physics/layer_9="battlefield"
 
 [mono]
 

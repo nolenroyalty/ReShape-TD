@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://battlefield/Battlefield.gd" type="Script" id=1]
 [ext_resource path="res://battlefield/SpawnTop.tscn" type="PackedScene" id=2]
@@ -7,6 +7,10 @@
 [ext_resource path="res://battlefield/DestRight.tscn" type="PackedScene" id=5]
 [ext_resource path="res://battlefield/DestBot.tscn" type="PackedScene" id=6]
 [ext_resource path="res://battlefield/BuildingIndicator.tscn" type="PackedScene" id=7]
+[ext_resource path="res://battlefield/BattlefieldBounds.gd" type="Script" id=8]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 288, 224 )
 
 [node name="Battlefield" type="Node2D"]
 script = ExtResource( 1 )
@@ -28,3 +32,15 @@ position = Vector2( 224, 416 )
 
 [node name="BuildingIndicator" parent="." instance=ExtResource( 7 )]
 position = Vector2( 64, 64 )
+
+[node name="BattlefieldBounds" type="Area2D" parent="."]
+collision_layer = 256
+collision_mask = 128
+monitorable = false
+script = ExtResource( 8 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BattlefieldBounds"]
+position = Vector2( 288, 224 )
+shape = SubResource( 1 )
+
+[connection signal="body_exited" from="BattlefieldBounds" to="BattlefieldBounds" method="_on_BattlefieldBounds_body_exited"]

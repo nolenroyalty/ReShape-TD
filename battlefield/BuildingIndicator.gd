@@ -1,15 +1,37 @@
 extends Node2D
 
-func hidden():
+onready var bounds := $Bounds
+
+var intersecting_areas = {}
+
+var should_hide = true
+
+func begin_hiding():
+	should_hide = true
 	$Sprite.visible = false
 
-func can_build():
-	$Sprite.visible = true
-	$Sprite.modulate = C.DARK_GREEN
+func begin_showing():
+	should_hide = false
+	visible()
 
-func cannot_build():
+func visible():
 	$Sprite.visible = true
-	$Sprite.modulate = C.C.RED
+	if unblocked(): $Sprite.modulate = C.DARK_GREEN
+	else: $Sprite.modulate = C.C.RED
+
+func area_entered(area):
+	intersecting_areas[area] = true
+
+func area_exited(area):
+	if not intersecting_areas.erase(area):
+		print("area exited cursor but we weren't tracking it? %s parent %s" % [area, area.get_parent()])
+
+func unblocked():
+	return intersecting_areas.empty()
+
+func _process(_delta):
+	if should_hide == false:
+		visible()
 
 func _ready():
-	hidden()
+	begin_hiding()

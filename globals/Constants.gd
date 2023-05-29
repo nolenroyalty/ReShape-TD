@@ -1,5 +1,7 @@
 extends Node
 
+enum SHAPE { CROSS, CRESCENT, DIAMOND }
+
 const CELL_SIZE = 16
 
 const LIGHT_BLUE = Color("#5e8b9b")

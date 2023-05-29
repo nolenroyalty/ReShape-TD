@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://towers/Tower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://towers/sprites/crosstower.png" type="Texture" id=2]
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends TowerBase
+
+"
+
+[sub_resource type="CircleShape2D" id=1]
+resource_local_to_scene = true
+radius = 64.0
+
+[node name="CrossTower" instance=ExtResource( 1 )]
+script = SubResource( 2 )
+
+[node name="Building" parent="." index="0"]
+texture = ExtResource( 2 )
+
+[node name="CollisionShape2D" parent="ShootingRange" index="0"]
+shape = SubResource( 1 )
