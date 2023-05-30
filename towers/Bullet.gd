@@ -46,7 +46,7 @@ func _physics_process(delta):
 		S.NO_TARGET:
 			pass
 		S.MOVING_TO_TARGET:
-			if is_instance_valid(target):
+			if target != null and is_instance_valid(target):
 				direction = position.direction_to(target.position)
 			else:
 				state = S.MOVING_IN_LAST_DIRECTION

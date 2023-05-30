@@ -94,6 +94,9 @@ func handle_event__playing(event):
 func handle_keypresses__playing(_delta):
 	if Input.is_action_just_pressed("DEBUG_SPAWN"):
 		spawn_creep()
+	if Input.is_action_just_pressed("DEBUG_REFRESH_RANGE"):
+		for child in get_tree().get_nodes_in_group("tower"):
+			child.refresh_range()
 	if Input.is_action_just_pressed("select_tower_1"):
 		selected_shape = C.SHAPE.CROSS
 	if Input.is_action_just_pressed("select_tower_2"):

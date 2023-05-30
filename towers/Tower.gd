@@ -68,14 +68,28 @@ func shooting_off_cooldown():
 
 func try_to_shoot():
 	if target != null and shooting_off_cooldown():
-		var bullet = Bullet.instance()
-		var initial_position = my_center()
-		var initial_direction = initial_position.direction_to(target.position)
-		initial_position += initial_direction * C.CELL_SIZE
-		bullet.position = initial_position
-		bullet.init(my_shape, target, initial_direction)
-		get_parent().add_child(bullet)
-		shot_timer.start(WAIT_TIME)
+		var projectile_count = Upgrades.tower(my_shape).PROJECTILE_COUNT
+		var angle_offset = 0
+
+		for _i in range(projectile_count):
+			angle_offset = -angle_offset
+
+			var bullet = Bullet.instance()
+			var initial_position = my_center()
+			var initial_direction = initial_position.direction_to(target.position)
+			initial_direction = initial_direction.rotated(deg2rad(angle_offset))
+			initial_position += initial_direction * C.CELL_SIZE
+			bullet.position = initial_position
+			var t = target if angle_offset == 0 else null
+			bullet.init(my_shape, t, initial_direction)
+			get_parent().add_child(bullet)
+
+			angle_offset += 30.0
+
+		shot_timer.start(Upgrades.tower(my_shape).ATTACK_SPEED)
+
+func refresh_range():
+	$ShootingRange/CollisionShape2D.shape.radius = Upgrades.tower(my_shape).RANGE_RADIUS
 
 func _physics_process(_delta):
 	try_to_shoot()
