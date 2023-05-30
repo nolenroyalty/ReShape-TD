@@ -7,7 +7,6 @@ var intersecting_areas = {}
 var should_hide = true
 
 func begin_hiding():
-	print("hiding?")
 	should_hide = true
 	$Sprite.visible = false
 
@@ -21,7 +20,6 @@ func visible():
 	else: $Sprite.modulate = C.RED
 
 func area_entered(area):
-	print("area entered %s %s" % [area, area.get_parent()])
 	intersecting_areas[area] = true
 
 func area_exited(area):
