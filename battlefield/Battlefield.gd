@@ -5,17 +5,11 @@ onready var buildable = $BuildableGrid
 onready var grid = $PathingGrid
 
 var Creep = preload("res://creeps/CreepGeneric.tscn")
+var Tower = preload("res://towers/Tower.tscn")
 
 var current_build_location = null
 var rng : RandomNumberGenerator = RandomNumberGenerator.new()
-
-# func can_currently_build(pos):
-# 	var relevant_positions = []
-# 	for dx in [0, C.CELL_SIZE]:
-# 		for dy in [0, C.CELL_SIZE]:
-# 			relevant_positions.append(pos + U.v(dx, dy))
-	
-# 	return true
+var selected_shape = C.SHAPE.CRESCENT
 
 func move_building_indicator(pos):
 	current_build_location = pos + buildable.position
@@ -26,17 +20,47 @@ func hide_building_indicator():
 	current_build_location = null
 	indicator.begin_hiding()
 
+func notify_creeps_of_pathing_change():
+	get_tree().call_group("creep", "update_current_path")
+
+func have_the_money_to_place_tower():
+	return true
+
+func disable_pathing_for_tower(pos):
+	var points = []
+	for dx in [0, C.CELL_SIZE]:
+		for dy in [0, C.CELL_SIZE]:
+			points.append(pos + U.v(dx, dy))
+	
+	grid.disable_points(points)
+
+func actually_build_tower(location):
+	var tower = Tower.instance()
+	tower.init(selected_shape)
+	tower.position = current_build_location
+	disable_pathing_for_tower(location)
+	add_child(tower)
+	
+func try_to_build_tower(_event):
+	if not indicator.unblocked():
+		return
+	
+	# Maybe double-check that we can build here, I don't know
+	if not have_the_money_to_place_tower():
+		return
+
+	actually_build_tower(current_build_location)
+	notify_creeps_of_pathing_change()
+	hide_building_indicator()
+
 func init_pathing_grid():
 	var all_points = []
 	for child in get_tree().get_nodes_in_group("pathable"):
 		var offset = U.snap_to_grid(child.position)
 		assert(offset == child.position, "CHILD NOT ON GRID: %s" % [child])
 		
-		var pp = len(child.pathable_points()) < 50
-		if pp: print(child)
 		for point in child.pathable_points():
 			point += offset
-			if pp: print(point)
 			all_points.append(point)
 	
 	grid.init(all_points)
@@ -58,6 +82,11 @@ func spawn_creep():
 	creep.position = U.center(start)
 	creep.init(end)
 	add_child(creep)
+
+func _input(event):
+	if event is InputEventMouseButton:
+		if current_build_location != null and event.pressed and event.button_index == BUTTON_LEFT:
+			try_to_build_tower(event)
 
 func _process(_delta):
 	if Input.is_action_just_pressed("DEBUG_SPAWN"):

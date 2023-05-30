@@ -1,0 +1,11 @@
+[gd_scene format=2]
+
+[node name="NavigationTarget" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = -6.0
+margin_top = -6.0
+margin_right = 6.0
+margin_bottom = 6.0
+mouse_filter = 2
+color = Color( 0.698039, 0.294118, 0.862745, 0.419608 )

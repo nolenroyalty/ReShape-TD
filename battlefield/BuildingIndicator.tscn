@@ -4,10 +4,11 @@
 [ext_resource path="res://battlefield/BuildingIndicator.gd" type="Script" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 16, 16 )
+extents = Vector2( 14, 14 )
 
 [node name="BuildingIndicator" type="Node2D"]
 modulate = Color( 1, 1, 1, 0.490196 )
+z_index = 1
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]

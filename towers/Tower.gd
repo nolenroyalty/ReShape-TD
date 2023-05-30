@@ -5,6 +5,8 @@ class_name TowerBase
 onready var shooting_range = $ShootingRange
 onready var shot_timer = $ShotTimer
 
+var WAIT_TIME = 1.0
+
 var crescent_tower = preload("res://towers/sprites/crescenttower.png")
 var diamond_tower = preload("res://towers/sprites/diamondtower.png")
 var cross_tower = preload("res://towers/sprites/crosstower.png")
@@ -30,14 +32,14 @@ func target_closest_creep():
 	for area in shooting_range.get_overlapping_areas():
 		var creep = area.get_parent()
 
-		if creep.is_in_group("creep") and creep.is_alive():
+		if creep.is_in_group("creep") and creep.is_alive() and is_instance_valid(creep):
 			var d = creep.position.distance_to(center_position)
 			if distance == null or d < distance:
 				distance = d
 				closest = creep
 		
-		if closest != null:
-			acquire_target(closest)
+	if closest != null:
+		acquire_target(closest)
 
 func handle_creep_entered_range(area):
 	var creep = area.get_parent()
@@ -50,7 +52,9 @@ func handle_creep_left_range(area):
 	var creep = area.get_parent()
 	if creep.is_in_group("creep") and creep.is_alive():
 		everything_in_range.erase(creep)
+		
 		if target == creep:
+			target.disconnect("died", self, "handle_target_died")
 			target = null
 			target_closest_creep()
 
@@ -69,9 +73,9 @@ func try_to_shoot():
 		var initial_direction = initial_position.direction_to(target.position)
 		initial_position += initial_direction * C.CELL_SIZE
 		bullet.position = initial_position
-		bullet.init(my_shape, target)
+		bullet.init(my_shape, target, initial_direction)
 		get_parent().add_child(bullet)
-		shot_timer.start()
+		shot_timer.start(WAIT_TIME)
 
 func _physics_process(_delta):
 	try_to_shoot()

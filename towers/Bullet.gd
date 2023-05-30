@@ -32,7 +32,8 @@ func hit_something(area):
 		creep.damage(DAMAGE)
 
 func exited_battlefield():
-	state = S.FADING
+	if state != S.HIT_SOMETHING:
+		state = S.FADING
 
 func move_in_direction(delta):
 	if direction == null:
@@ -54,6 +55,8 @@ func _physics_process(delta):
 		S.MOVING_IN_LAST_DIRECTION:
 			move_in_direction(delta)
 		S.HIT_SOMETHING:
+			clear_target_and_free()
+		S.FADING:
 			clear_target_and_free()
 
 func clear_target_and_free():

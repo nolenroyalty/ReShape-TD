@@ -4,6 +4,8 @@ signal blocked
 signal died
 signal reached_destination
 
+var NavigationTarget = preload("res://creeps/NavigationTarget.tscn")
+
 enum S { SPAWNED, MOVING, BLOCKED, AT_DESTINATION, DYING }
 
 var HEALTH = 50
@@ -12,6 +14,8 @@ var SPEED = 50
 var state = S.SPAWNED
 var current_path : Array
 var destination : Vector2
+var navigation_targets = []
+var display_navigation_targets = true
 
 func is_alive():
 	return state != S.DYING
@@ -38,6 +42,18 @@ func update_current_path():
 
 	if current_path and len(new_path) > 1 and new_path[1] == current_path[0]:
 		new_path.pop_front()
+	
+	if display_navigation_targets:
+		for target in navigation_targets:
+			target.queue_free()
+		
+		navigation_targets = []
+		for point in new_path:
+			var target = NavigationTarget.instance()
+			target.position = point
+			get_parent().add_child(target)
+			navigation_targets.append(target)
+
 	current_path = new_path
 
 func become_blocked():
@@ -50,7 +66,6 @@ func update_rotation(target):
 	# If we get back 0 degrees, we want to rotate -90 degrees
 	rotation_degrees = rad2deg(position.angle_to_point(target)) + 90
 
-
 func handle_move():
 	if not current_path:
 		update_current_path()
@@ -60,6 +75,9 @@ func handle_move():
 	
 	if position.distance_to(current_path[0]) <= 1:
 		current_path.pop_front()
+		if navigation_targets:
+			navigation_targets[0].queue_free()
+			navigation_targets.pop_front()
 	
 	if current_path.size() == 0:
 		state = S.AT_DESTINATION
@@ -67,13 +85,17 @@ func handle_move():
 	
 	var direction = (current_path[0] - position).normalized()
 	update_rotation(current_path[0])
-	var _collision = move_and_slide(direction * SPEED)
+	var _remaining_velocity = move_and_slide(direction * SPEED)
 
 var began_to_die = false
 
 func begin_dying():
 	if began_to_die:
 		return
+
+	for target in navigation_targets:
+		target.queue_free()
+
 	began_to_die = true
 	emit_signal("died")
 	call_deferred("queue_free")
@@ -85,6 +107,9 @@ func handle_reached_destination():
 		return
 	just_reached = true
 
+	for target in navigation_targets:
+		target.queue_free()
+		
 	emit_signal("reached_destination")
 	call_deferred("queue_free")
 
