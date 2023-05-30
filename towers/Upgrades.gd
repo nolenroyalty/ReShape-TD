@@ -11,6 +11,8 @@ class Tower extends Node:
 class Bullet extends Node:
 	var SPLIT = 0
 	var PIERCE = 0
+	var VELOCITY = 300
+	var DAMAGE = 10
 
 var shapes = [ C.SHAPE.CROSS, C.SHAPE.CRESCENT, C.SHAPE.DIAMOND ]	
 var state = {}

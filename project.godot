@@ -27,7 +27,7 @@ _global_script_class_icons={
 [application]
 
 config/name="ReShape TD"
-run/main_scene="res://battlefield/Battlefield.tscn"
+run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
 [autoload]
