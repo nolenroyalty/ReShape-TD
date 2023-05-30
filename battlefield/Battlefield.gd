@@ -7,9 +7,12 @@ onready var grid = $PathingGrid
 var Creep = preload("res://creeps/CreepGeneric.tscn")
 var Tower = preload("res://towers/Tower.tscn")
 
+enum S { PLAYING, IN_MENU }
+
 var current_build_location = null
 var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var selected_shape = C.SHAPE.CRESCENT
+var state = S.PLAYING
 
 func move_building_indicator(pos):
 	current_build_location = pos + buildable.position
@@ -83,14 +86,31 @@ func spawn_creep():
 	creep.init(end)
 	add_child(creep)
 
-func _input(event):
+func handle_event__playing(event):
 	if event is InputEventMouseButton:
 		if current_build_location != null and event.pressed and event.button_index == BUTTON_LEFT:
 			try_to_build_tower(event)
 
-func _process(_delta):
+func handle_keypresses__playing(_delta):
 	if Input.is_action_just_pressed("DEBUG_SPAWN"):
 		spawn_creep()
+	if Input.is_action_just_pressed("select_tower_1"):
+		selected_shape = C.SHAPE.CROSS
+	if Input.is_action_just_pressed("select_tower_2"):
+		selected_shape = C.SHAPE.CRESCENT
+	if Input.is_action_just_pressed("select_tower_3"):
+		selected_shape = C.SHAPE.DIAMOND
+
+func _input(event):
+	match state:
+		S.PLAYING: handle_event__playing(event)
+		S.IN_MENU: pass
+	
+
+func _process(delta):
+	match state:
+		S.PLAYING: handle_keypresses__playing(delta)
+		S.IN_MENU: pass
 
 func _ready():
 	buildable.connect("mouse_buildable_grid_position", self, "move_building_indicator")
