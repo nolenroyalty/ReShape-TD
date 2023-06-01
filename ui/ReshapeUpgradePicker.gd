@@ -22,7 +22,6 @@ func render():
 
 	for upgrade in upgrades:
 		var button = Button.new()
-		print("%s %s" % [upgrade, Upgrades.title(upgrade)])
 		button.text = Upgrades.title(upgrade)
 		button.connect("pressed", self, "handle_button_pressed", [upgrade])
 		cont.add_child(button)

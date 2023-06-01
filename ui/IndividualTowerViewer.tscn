@@ -14,11 +14,11 @@ Attacks per Second: 1
 Damage: 10
 Range: 64"
 
-[node name="UpgradeButton" type="Button" parent="."]
+[node name="LevelUpButton" type="Button" parent="."]
 margin_top = 96.0
 margin_right = 128.0
 margin_bottom = 116.0
-text = "Upgrade Tower"
+text = "Level Up Tower"
 
 [node name="SellButton" type="Button" parent="."]
 margin_top = 128.0

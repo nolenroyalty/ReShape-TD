@@ -28,6 +28,7 @@ func clear_individual_selection():
 	if individual_selection != null:
 		if individual_selection.is_in_group("tower"):
 			individual_selection.hide_range()
+			individual_selection.disconnect("sold", self, "clear_individual_selection")
 		
 		if individual_selection.is_in_group("creep"):
 			# Do something
@@ -39,6 +40,7 @@ func show_individual_tower(tower):
 	clear_individual_selection()
 	individual_selection = tower
 	individual_viewer.show_tower(tower)
+	tower.connect("sold", self, "clear_individual_selection")
 	tower.display_range()
 
 func set_shape(shape):
@@ -64,7 +66,3 @@ func _ready():
 	upgrade_selector.connect("reshape", self, "show_reshape_upgrade_picker")
 	upgrade_selector.connect("selected", self, "set_shape")
 	battlefield.connect("selected_tower", self, "show_individual_tower")
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass

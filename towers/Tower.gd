@@ -3,6 +3,8 @@ extends Node2D
 class_name TowerBase
 
 signal selected
+signal sold
+signal leveled_up
 
 var TowerRange = preload("res://towers/TowerRange.tscn")
 
@@ -116,6 +118,8 @@ func try_to_shoot():
 
 func refresh_range():
 	$ShootingRange/CollisionShape2D.shape.radius = my_stats.RANGE_RADIUS
+	if tower_range != null:
+		tower_range.update()
 
 func _physics_process(_delta):
 	try_to_shoot()
@@ -123,6 +127,12 @@ func _physics_process(_delta):
 func level_up():
 	my_stats.level_up()
 	refresh_range()
+	emit_signal("leveled_up")
+
+func sell():
+	hide_range()
+	queue_free()
+	emit_signal("sold")
 
 func pressed():
 	# This automatically triggers from the mouseup event that fires when we
