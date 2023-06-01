@@ -45,12 +45,13 @@ gdscript/warnings/integer_division=false
 window/size/width=800
 window/size/test_width=1600
 window/size/test_height=1200
-window/stretch/mode="2d"
+window/stretch/mode="viewport"
 window/stretch/aspect="keep"
 
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+theme/custom_font="res://fonts/new_dynamicfont.tres"
 
 [importer_defaults]
 

@@ -2,6 +2,10 @@ extends Node2D
 
 class_name TowerBase
 
+signal selected
+
+var TowerRange = preload("res://towers/TowerRange.tscn")
+
 onready var shooting_range = $ShootingRange
 onready var shot_timer = $ShotTimer
 
@@ -15,6 +19,8 @@ var Bullet = preload("res://towers/Bullet.tscn")
 var target
 var everything_in_range = {}
 var my_shape = null
+var my_stats = null
+var tower_range = null
 
 func acquire_target(target_):
 	target = target_
@@ -23,6 +29,22 @@ func acquire_target(target_):
 func my_center():
 	# towers are 2 x 2
 	return position + Vector2(C.CELL_SIZE, C.CELL_SIZE)
+
+func hide_range():
+	if tower_range != null:
+		tower_range.queue_free()
+		tower_range = null
+
+func display_range():
+	if tower_range != null:
+		tower_range.queue_free()
+		tower_range = null
+	
+	var tr = TowerRange.instance()
+	tr.tower = self
+	tr.position = Vector2(C.CELL_SIZE, C.CELL_SIZE)
+	add_child(tr)
+	tower_range = tr
 
 func target_closest_creep():
 	var distance = null
@@ -67,42 +89,59 @@ func shooting_off_cooldown():
 	return shot_timer.is_stopped()
 
 func try_to_shoot():
-	if target != null and shooting_off_cooldown():
-		var projectile_count = Upgrades.tower(my_shape).PROJECTILE_COUNT
+	if target != null and is_instance_valid(target) and target.is_alive() and shooting_off_cooldown():
+		var projectile_count = Upgrades.projectiles(my_shape)
 		var angle_offset = 0
+		var initial_position = my_center()
+		var initial_direction = initial_position.direction_to(target.position)
 
 		for _i in range(projectile_count):
 			angle_offset = -angle_offset
 
 			var bullet = Bullet.instance()
-			var initial_position = my_center()
-			var initial_direction = initial_position.direction_to(target.position)
-			initial_direction = initial_direction.rotated(deg2rad(angle_offset))
-			initial_position += initial_direction * C.CELL_SIZE
-			bullet.position = initial_position
+
+			var direction = initial_direction.rotated(deg2rad(angle_offset))
+			bullet.position = initial_position + direction * C.CELL_SIZE
 			var t = target if angle_offset == 0 else null
-			bullet.init(my_shape, t, initial_direction)
+			bullet.init(my_shape, my_stats, t, direction)
 			get_parent().add_child(bullet)
 
-			angle_offset += 30.0
-
-		shot_timer.start(Upgrades.tower(my_shape).ATTACK_SPEED)
+			if angle_offset < 0:
+				angle_offset -= 30.0
+			else:
+				angle_offset += 30.0
+			
+		shot_timer.start(my_stats.ATTACK_SPEED)
 
 func refresh_range():
-	$ShootingRange/CollisionShape2D.shape.radius = Upgrades.tower(my_shape).RANGE_RADIUS
+	$ShootingRange/CollisionShape2D.shape.radius = my_stats.RANGE_RADIUS
 
 func _physics_process(_delta):
 	try_to_shoot()
 
+func pressed():
+	# This automatically triggers from the mouseup event that fires when we
+	# _build_ a tower. I can't think of a way to prevent this that doesn't
+	# seem fragile - I don't want to risk that you can't select a tower at all!
+	# It seems ~fine that towers are selected by default when you build them
+	# so we can ignore this for now.
+	emit_signal("selected")
+
 func init(shape):
 	my_shape = shape
+	my_stats = Upgrades.IndividualTower.new()
+
+	var texture = null
 
 	match shape:
-		C.SHAPE.CROSS: $Building.texture = cross_tower
-		C.SHAPE.DIAMOND: $Building.texture = diamond_tower
-		C.SHAPE.CRESCENT: $Building.texture = crescent_tower
+		C.SHAPE.CROSS: texture = cross_tower
+		C.SHAPE.DIAMOND: texture = diamond_tower
+		C.SHAPE.CRESCENT: texture = crescent_tower
+
+	$Building.texture_normal = texture
 
 func _ready():
 	assert(my_shape != null, "Shape must be provided prior to adding to scene %s" % [self])
 	shooting_range.connect("area_entered", self, "handle_creep_entered_range")
 	shooting_range.connect("area_exited", self, "handle_creep_left_range")
+	var _ignore = $Building.connect("pressed", self, "pressed")

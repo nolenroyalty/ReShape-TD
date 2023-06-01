@@ -1,5 +1,8 @@
 extends Node2D
 
+signal selected_creep(creep)
+signal selected_tower(tower)
+
 onready var indicator = $BuildingIndicator
 onready var buildable = $BuildableGrid
 onready var grid = $PathingGrid
@@ -13,6 +16,7 @@ var current_build_location = null
 var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var selected_shape = C.SHAPE.CRESCENT
 var state = S.PLAYING
+var selected_creep_or_tower = null
 
 func move_building_indicator(pos):
 	current_build_location = pos + buildable.position
@@ -37,11 +41,15 @@ func disable_pathing_for_tower(pos):
 	
 	grid.disable_points(points)
 
+func tower_selected(tower):
+	emit_signal("selected_tower", tower)
+
 func actually_build_tower(location):
 	var tower = Tower.instance()
 	tower.init(selected_shape)
 	tower.position = current_build_location
 	disable_pathing_for_tower(location)
+	tower.connect("selected", self, "tower_selected", [tower])
 	add_child(tower)
 	
 func try_to_build_tower(_event):
@@ -104,12 +112,20 @@ func handle_keypresses__playing(_delta):
 	if Input.is_action_just_pressed("select_tower_3"):
 		selected_shape = C.SHAPE.DIAMOND
 
+func get_towers():
+	return get_tree().get_nodes_in_group("tower")
+
+func set_in_menu():
+	state = S.IN_MENU
+
+func set_playing():
+	state = S.PLAYING
+
 func _input(event):
 	match state:
 		S.PLAYING: handle_event__playing(event)
 		S.IN_MENU: pass
 	
-
 func _process(delta):
 	match state:
 		S.PLAYING: handle_keypresses__playing(delta)

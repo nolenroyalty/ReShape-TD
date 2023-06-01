@@ -16,7 +16,42 @@ var current_path : Array
 var destination : Vector2
 var navigation_targets = []
 var display_navigation_targets = true
+var chilled = false
+var stunned = false
+var poisoned = false
 
+func determine_speed():
+	var base = SPEED
+	if chilled:
+		base *= 0.5
+	if stunned:
+		base = 0
+	return base
+
+func apply_chilled():
+	chilled = true
+	$ChillTimer.start()
+
+func _on_chilltimer_timeout():
+	chilled = false
+
+func apply_stun():
+	stunned = true
+	$StunTimer.start()
+
+func _on_stuntimer_timeout():
+	stunned = false
+
+func apply_poison(amount):
+	poisoned = true
+	$IsPoisonedTimer.start(1.5)
+	for _i in range(3):
+		yield(get_tree().create_timer(1.0), "timeout")
+		damage(amount)
+
+func _on_ispoisonedtimer_timeout():
+	poisoned = false
+	
 func is_alive():
 	return state != S.DYING
 
@@ -85,7 +120,7 @@ func handle_move():
 	
 	var direction = (current_path[0] - position).normalized()
 	update_rotation(current_path[0])
-	var _remaining_velocity = move_and_slide(direction * SPEED)
+	var _remaining_velocity = move_and_slide(direction * determine_speed())
 
 var began_to_die = false
 
@@ -109,7 +144,7 @@ func handle_reached_destination():
 
 	for target in navigation_targets:
 		target.queue_free()
-		
+
 	emit_signal("reached_destination")
 	call_deferred("queue_free")
 
@@ -142,3 +177,4 @@ func handle_points_changed(_points):
 
 func init(dest):
 	destination = dest
+

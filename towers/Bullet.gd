@@ -7,15 +7,14 @@ var diamond_bullet = preload("res://towers/sprites/diamondbullet.png")
 var cross_bullet = preload("res://towers/sprites/crossbullet.png")
 
 var my_shape = null
+var my_stats = null
 var target = null
 var direction = null
 var state = S.NO_TARGET
 
-func upgrades():
-	return Upgrades.bullet(my_shape)
-
-func init(shape, target_, initial_direction):
+func init(shape, stats, target_, initial_direction):
 	my_shape = shape
+	my_stats = stats
 	target = target_
 	direction = initial_direction
 	state = S.MOVING_TO_TARGET
@@ -25,12 +24,15 @@ func init(shape, target_, initial_direction):
 		C.SHAPE.CRESCENT: $Sprite.texture = crescent_bullet
 		C.SHAPE.DIAMOND: $Sprite.texture = diamond_bullet
 
+func my_damage():
+	return my_stats.DAMAGE * Upgrades.damage_mult(my_shape)
+
 func hit_something(area):
 	var creep = area.get_parent()
 	if creep.is_in_group("creep"):
 		state = S.HIT_SOMETHING
-		creep.damage(upgrades().DAMAGE)
-
+		creep.damage(my_damage())
+		
 func exited_battlefield():
 	if state != S.HIT_SOMETHING:
 		state = S.FADING
@@ -39,7 +41,7 @@ func move_in_direction(delta):
 	if direction == null:
 		print("BUG: move_in_direction called with null direction %s" % [self])
 		clear_target_and_free()
-	var velocity = upgrades().VELOCITY
+	var velocity = my_stats.PROJECTILE_SPEED
 	var _ignore = move_and_collide(direction * velocity * delta)
 
 func _physics_process(delta):

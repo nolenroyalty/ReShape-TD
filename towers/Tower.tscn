@@ -12,8 +12,8 @@ radius = 64.0
 [node name="Tower" type="Node2D" groups=["tower"]]
 script = ExtResource( 1 )
 
-[node name="Building" type="Sprite" parent="."]
-position = Vector2( 16, 16 )
+[node name="Building" type="TextureButton" parent="."]
+mouse_filter = 1
 
 [node name="Bounds" type="Area2D" parent="."]
 collision_layer = 65

@@ -2,6 +2,15 @@ extends Node
 
 enum SHAPE { CROSS, CRESCENT, DIAMOND }
 
+func shape_name(shape):
+	match shape:
+		SHAPE.CROSS:
+			return "cross"
+		SHAPE.CRESCENT:
+			return "crescent"
+		SHAPE.DIAMOND:
+			return "diamond"
+
 const CELL_SIZE = 16
 
 const LIGHT_BLUE = Color("#5e8b9b")
