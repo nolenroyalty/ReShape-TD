@@ -1,6 +1,7 @@
 extends Node2D
 
 signal reshape(shape)
+signal selected(shape)
 
 onready var cross = $CrossButton
 onready var crescent = $CrescentButton
@@ -18,9 +19,13 @@ func update_selected_text():
 		C.SHAPE.CRESCENT: selected.text = "%s Crescent" % t
 		C.SHAPE.DIAMOND: selected.text = "%s Diamond" % t
 
-func update_selection(kind):
+func set_shape(kind):
 	current = kind
 	update_selected_text()
+
+func handle_pressed(kind):
+	set_shape(kind)
+	emit_signal("selected", kind)
 
 func handle_reshape():
 	if current != null:
@@ -28,7 +33,7 @@ func handle_reshape():
 		emit_signal("reshape", current)
 
 func _ready():
-	cross.connect("pressed", self, "update_selection", [C.SHAPE.CROSS])
-	crescent.connect("pressed", self, "update_selection", [C.SHAPE.CRESCENT])
-	diamond.connect("pressed", self, "update_selection", [C.SHAPE.DIAMOND])
+	cross.connect("pressed", self, "handle_pressed", [C.SHAPE.CROSS])
+	crescent.connect("pressed", self, "handle_pressed", [C.SHAPE.CRESCENT])
+	diamond.connect("pressed", self, "handle_pressed", [C.SHAPE.DIAMOND])
 	reshape_button.connect("pressed", self, "handle_reshape")

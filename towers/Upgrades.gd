@@ -83,11 +83,21 @@ func description(t):
 		T.POISONS: return "Poisons enemies, dealing damage over time"
 
 class IndividualTower extends Node:
+	var LEVEL = 1
 	var RANGE_RADIUS = 64
 	var ATTACK_SPEED = 1.0
 	var PROJECTILE_COUNT = 1
 	var DAMAGE = 10
 	var PROJECTILE_SPEED = 225
+
+	func level_up():
+		LEVEL += 1
+		RANGE_RADIUS += 16
+		ATTACK_SPEED -= 0.1 * ATTACK_SPEED
+		DAMAGE *= 2
+	
+	func attacks_per_second():
+		return 1.0 / ATTACK_SPEED
 
 var shapes = [ C.SHAPE.CROSS, C.SHAPE.CRESCENT, C.SHAPE.DIAMOND ]	
 var state = {}

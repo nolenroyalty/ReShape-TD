@@ -91,12 +91,18 @@ func shooting_off_cooldown():
 func try_to_shoot():
 	if target != null and is_instance_valid(target) and target.is_alive() and shooting_off_cooldown():
 		var projectile_count = Upgrades.projectiles(my_shape)
-		var angle_offset = 0
 		var initial_position = my_center()
 		var initial_direction = initial_position.direction_to(target.position)
 
-		for _i in range(projectile_count):
-			angle_offset = -angle_offset
+		for i in range(projectile_count):
+			var angle_offset
+			
+			if i == 0:
+				angle_offset = 0.0
+			elif i % 2 == 0:
+				angle_offset = i * 15.0
+			else:
+				angle_offset = i * -15.0
 
 			var bullet = Bullet.instance()
 
@@ -105,11 +111,6 @@ func try_to_shoot():
 			var t = target if angle_offset == 0 else null
 			bullet.init(my_shape, my_stats, t, direction)
 			get_parent().add_child(bullet)
-
-			if angle_offset < 0:
-				angle_offset -= 30.0
-			else:
-				angle_offset += 30.0
 			
 		shot_timer.start(my_stats.ATTACK_SPEED)
 
@@ -118,6 +119,10 @@ func refresh_range():
 
 func _physics_process(_delta):
 	try_to_shoot()
+
+func level_up():
+	my_stats.level_up()
+	refresh_range()
 
 func pressed():
 	# This automatically triggers from the mouseup event that fires when we

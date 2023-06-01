@@ -14,7 +14,7 @@ enum S { PLAYING, IN_MENU }
 
 var current_build_location = null
 var rng : RandomNumberGenerator = RandomNumberGenerator.new()
-var selected_shape = C.SHAPE.CRESCENT
+var selected_shape = null
 var state = S.PLAYING
 var selected_creep_or_tower = null
 
@@ -105,12 +105,6 @@ func handle_keypresses__playing(_delta):
 	if Input.is_action_just_pressed("DEBUG_REFRESH_RANGE"):
 		for child in get_tree().get_nodes_in_group("tower"):
 			child.refresh_range()
-	if Input.is_action_just_pressed("select_tower_1"):
-		selected_shape = C.SHAPE.CROSS
-	if Input.is_action_just_pressed("select_tower_2"):
-		selected_shape = C.SHAPE.CRESCENT
-	if Input.is_action_just_pressed("select_tower_3"):
-		selected_shape = C.SHAPE.DIAMOND
 
 func get_towers():
 	return get_tree().get_nodes_in_group("tower")
@@ -120,6 +114,10 @@ func set_in_menu():
 
 func set_playing():
 	state = S.PLAYING
+
+func set_shape(shape):
+	selected_shape = shape
+	# indicator.set_shape(shape)
 
 func _input(event):
 	match state:
