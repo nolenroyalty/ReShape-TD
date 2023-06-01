@@ -16,13 +16,17 @@ func hide_reshape_upgrade_picker(picker):
 	battlefield.set_playing()
 	get_tree().paused = false
 
+func handle_upgrade_purchased(picker):
+	hide_reshape_upgrade_picker(picker)
+	upgrade_selector.update_upgrades_text()
+
 func show_reshape_upgrade_picker(shape):
 	get_tree().paused = true
 	var picker = ReshapeUpgradePicker.instance()
 	picker.init(shape)
 	battlefield.set_in_menu()
 	add_child(picker)
-	picker.connect("upgrade_purchased", self, "hide_reshape_upgrade_picker", [picker])
+	picker.connect("upgrade_purchased", self, "handle_upgrade_purchased", [picker])
 
 func clear_individual_selection():
 	if individual_selection != null:

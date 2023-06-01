@@ -8,20 +8,36 @@ onready var crescent = $CrescentButton
 onready var diamond = $DiamondButton
 onready var selected = $SelectedLabel
 onready var reshape_button = $ReshapeButton
+onready var upgrades_label = $UpgradesLabel
 
 var current = null
 
-func update_selected_text():
-	var t = "Selected: "
-	match current:
-		null: selected.text = "%s None" % t
-		C.SHAPE.CROSS: selected.text = "%s Cross" % t
-		C.SHAPE.CRESCENT: selected.text = "%s Crescent" % t
-		C.SHAPE.DIAMOND: selected.text = "%s Diamond" % t
+func button_(shape):
+	match shape:
+		C.SHAPE.CROSS: return cross
+		C.SHAPE.CRESCENT: return crescent
+		C.SHAPE.DIAMOND: return diamond
+
+func update_selected():
+	for shape in C.shapes:
+		var b = button_(shape)
+		if shape == current:
+			b.modulate.a = 1.0
+		else:
+			b.modulate.a = 0.5
+
+func update_upgrades_text():
+	var active_upgrades = Upgrades.active_upgrades(current)
+	var l = []
+	for u in active_upgrades:
+		l.append(Upgrades.title(u))
+		
+	upgrades_label.text = "\n".join(l)
 
 func set_shape(kind):
 	current = kind
-	update_selected_text()
+	update_selected()
+	update_upgrades_text()
 
 func handle_pressed(kind):
 	set_shape(kind)

@@ -60,7 +60,7 @@ func title(t):
 		T.PIERCES: return "Piercing"
 		T.CHAINS: return "Chaining"
 		T.LESSER_MULTIPROJ: return "Multishotting"
-		T.GREATER_MULTIPROJ: return "Extra Multishotting"
+		T.GREATER_MULTIPROJ: return "MegaMultishotting"
 		T.SHOCKWAVE: return "Shockwaving"
 		T.BONUS_GOLD: return "Avaricious"
 		T.GIANT_PROJ: return "Giant"
@@ -102,10 +102,13 @@ class IndividualTower extends Node:
 var shapes = [ C.SHAPE.CROSS, C.SHAPE.CRESCENT, C.SHAPE.DIAMOND ]	
 var state = {}
 
+func active_upgrades(shape):
+	return state[shape].upgrades
+
 func possible_upgrades(shape):
 	var possible = []
 	for t in T:
-		if not (t in state[shape].upgrades):
+		if not (T[t] in active_upgrades(shape)):
 			possible.append(T[t])
 	return possible
 

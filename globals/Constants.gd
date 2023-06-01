@@ -2,6 +2,8 @@ extends Node
 
 enum SHAPE { CROSS, CRESCENT, DIAMOND }
 
+var shapes = [ SHAPE.CROSS, SHAPE.CRESCENT, SHAPE.DIAMOND ]
+
 func shape_name(shape):
 	match shape:
 		SHAPE.CROSS:
