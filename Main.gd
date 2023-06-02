@@ -28,14 +28,19 @@ func show_reshape_upgrade_picker(shape):
 	add_child(picker)
 	picker.connect("upgrade_purchased", self, "handle_upgrade_purchased", [picker])
 
-func clear_individual_selection():
+func clear_individual_selection(only_if_this_one=null):
 	if individual_selection != null:
+		
+		if only_if_this_one != null and only_if_this_one != individual_selection:
+			return
+
 		if individual_selection.is_in_group("tower"):
 			individual_selection.hide_range()
 			individual_selection.disconnect("sold", self, "clear_individual_selection")
 		
 		if individual_selection.is_in_group("creep"):
-			# Do something
+			individual_selection.disconnect("freed_for_whatever_reason", self, "clear_individual_selection")
+			# Do something ?
 			pass
 	
 		individual_selection = null
@@ -44,8 +49,14 @@ func show_individual_tower(tower):
 	clear_individual_selection()
 	individual_selection = tower
 	individual_viewer.show_tower(tower)
-	tower.connect("sold", self, "clear_individual_selection")
+	tower.connect("sold", self, "clear_individual_selection", [tower])
 	tower.display_range()
+
+func show_individual_creep(creep):
+	clear_individual_selection()
+	individual_selection = creep
+	individual_viewer.show_creep(creep)
+	creep.connect("freed_for_whatever_reason", self, "clear_individual_selection", [creep])
 
 func set_shape(shape):
 	upgrade_selector.set_shape(shape)
@@ -70,3 +81,4 @@ func _ready():
 	upgrade_selector.connect("reshape", self, "show_reshape_upgrade_picker")
 	upgrade_selector.connect("selected", self, "set_shape")
 	battlefield.connect("selected_tower", self, "show_individual_tower")
+	battlefield.connect("selected_creep", self, "show_individual_creep")

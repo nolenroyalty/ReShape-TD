@@ -44,6 +44,9 @@ func disable_pathing_for_tower(pos):
 func tower_selected(tower):
 	emit_signal("selected_tower", tower)
 
+func creep_selected(creep):
+	emit_signal("selected_creep", creep)
+
 func actually_build_tower(location):
 	var tower = Tower.instance()
 	tower.init(selected_shape)
@@ -75,6 +78,13 @@ func init_pathing_grid():
 			all_points.append(point)
 	
 	grid.init(all_points)
+
+func init_creep(start, end):
+	var creep = Creep.instance()
+	creep.position = start
+	creep.init(end)
+	creep.connect("selected", self, "creep_selected", [creep])
+	add_child(creep)
 	
 func spawn_creep():
 	var i = rng.randi_range(0, 1)
@@ -89,10 +99,7 @@ func spawn_creep():
 		start = $SpawnLeft.get_random_point()
 		end = $DestRight.get_random_point()
 	
-	var creep = Creep.instance()
-	creep.position = U.center(start)
-	creep.init(end)
-	add_child(creep)
+	init_creep(start, end)
 
 func handle_event__playing(event):
 	if event is InputEventMouseButton:

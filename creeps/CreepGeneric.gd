@@ -1,15 +1,22 @@
 extends KinematicBody2D
 
 signal blocked
+signal selected
 signal died
 signal reached_destination
+signal freed_for_whatever_reason
+signal state_changed
 
 var NavigationTarget = preload("res://creeps/NavigationTarget.tscn")
 
 enum S { SPAWNED, MOVING, BLOCKED, AT_DESTINATION, DYING }
 
+var KIND = "Normal"
+var LEVEL = 1
 var HEALTH = 50
 var SPEED = 50
+
+onready var spriteButton = $SpriteButton
 
 var state = S.SPAWNED
 var current_path : Array
@@ -19,6 +26,16 @@ var display_navigation_targets = true
 var chilled = false
 var stunned = false
 var poisoned = false
+
+func get_status_effects():
+	var effects = []
+	if chilled:
+		effects.append("Chilled")
+	if stunned:
+		effects.append("Stunned")
+	if poisoned:
+		effects.append("Poisoned")
+	return effects
 
 func determine_speed():
 	var base = SPEED
@@ -30,26 +47,32 @@ func determine_speed():
 
 func apply_chilled():
 	chilled = true
+	emit_signal("state_changed")
 	$ChillTimer.start()
 
 func _on_chilltimer_timeout():
+	emit_signal("state_changed")
 	chilled = false
 
 func apply_stun():
 	stunned = true
+	emit_signal("state_changed")
 	$StunTimer.start()
 
 func _on_stuntimer_timeout():
+	emit_signal("state_changed")
 	stunned = false
 
 func apply_poison(amount):
 	poisoned = true
+	emit_signal("state_changed")
 	$IsPoisonedTimer.start(1.5)
 	for _i in range(3):
-		yield(get_tree().create_timer(1.0), "timeout")
+		yield(get_tree().create_timer(0.5), "timeout")
 		damage(amount)
 
 func _on_ispoisonedtimer_timeout():
+	emit_signal("state_changed")
 	poisoned = false
 	
 func is_alive():
@@ -57,6 +80,7 @@ func is_alive():
 
 func damage(amount):
 	HEALTH -= amount
+	emit_signal("state_changed")
 	if HEALTH <= 0:
 		state = S.DYING
 
@@ -133,6 +157,7 @@ func begin_dying():
 
 	began_to_die = true
 	emit_signal("died")
+	emit_signal("freed_for_whatever_reason")
 	call_deferred("queue_free")
 
 var just_reached = false
@@ -146,6 +171,7 @@ func handle_reached_destination():
 		target.queue_free()
 
 	emit_signal("reached_destination")
+	emit_signal("freed_for_whatever_reason")
 	call_deferred("queue_free")
 
 func notify_reached_destination():
@@ -178,3 +204,8 @@ func handle_points_changed(_points):
 func init(dest):
 	destination = dest
 
+func selected():
+	emit_signal("selected")
+
+func _ready():
+	spriteButton.connect("pressed", self, "selected")

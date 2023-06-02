@@ -6,7 +6,6 @@ signal selected(shape)
 onready var cross = $CrossButton
 onready var crescent = $CrescentButton
 onready var diamond = $DiamondButton
-onready var selected = $SelectedLabel
 onready var reshape_button = $ReshapeButton
 onready var upgrades_label = $UpgradesLabel
 
