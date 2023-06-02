@@ -8,7 +8,7 @@ enum T {
 	CHAINS,
 	LESSER_MULTIPROJ,
 	GREATER_MULTIPROJ,
-	SHOCKWAVE,
+	STUNNING,
 	BONUS_GOLD,
 	GIANT_PROJ,
 	RETURNS,
@@ -23,7 +23,7 @@ class Stats extends Node:
 	var PIERCES = 0
 	var CHAINS = 0
 	var PROJECTILES = 1
-	var SHOCKWAVE = false
+	var STUNS = false
 	var BONUS_GOLD = 0
 	var PROJECTILE_SIZE_MULT = 1
 	var RETURNS = false
@@ -43,7 +43,7 @@ func _apply(t, stats):
 		T.GREATER_MULTIPROJ:
 			stats.PROJECTILES = 5
 			stats.DAMAGE_MULT = 0.6
-		T.SHOCKWAVE: stats.SHOCKWAVE = true
+		T.STUNNING: stats.SHOCKWAVE = true
 		T.BONUS_GOLD: stats.BONUS_GOLD = 0.25
 		T.GIANT_PROJ: stats.PROJECTILE_SIZE_MULT = 3
 		T.RETURNS: stats.RETURNS = true
@@ -61,7 +61,7 @@ func title(t):
 		T.CHAINS: return "Chaining"
 		T.LESSER_MULTIPROJ: return "Multishotting"
 		T.GREATER_MULTIPROJ: return "MegaMultishotting"
-		T.SHOCKWAVE: return "Shockwaving"
+		T.STUNNING: return "Stunning"
 		T.BONUS_GOLD: return "Avaricious"
 		T.GIANT_PROJ: return "Giant"
 		T.RETURNS: return "Returning"
@@ -76,7 +76,7 @@ func description(t):
 		T.CHAINS: return "Chains to nearby enemies"
 		T.LESSER_MULTIPROJ: return "Shoots 3 projectiles but does less damage"
 		T.GREATER_MULTIPROJ: return "Shoots 5 projectiles but does much less damage"
-		T.SHOCKWAVE: return "Creates a shockwave that may stun enemies"
+		T.STUNNING: return "Has a chance to stun enemies on hit"
 		T.BONUS_GOLD: return "Gives 25% more gold for kills"
 		T.GIANT_PROJ: return "Shoots much larger projectiles"
 		T.RETURNS: return "Returns to the tower after hitting an enemy"
@@ -102,14 +102,17 @@ class IndividualTower extends Node:
 var shapes = [ C.SHAPE.CROSS, C.SHAPE.CRESCENT, C.SHAPE.DIAMOND ]	
 var state = {}
 
+func all_upgrades():
+	return T.values()
+
 func active_upgrades(shape):
 	return state[shape].upgrades
 
 func possible_upgrades(shape):
 	var possible = []
-	for t in T:
-		if not (T[t] in active_upgrades(shape)):
-			possible.append(T[t])
+	for t in all_upgrades():
+		if not (t in active_upgrades(shape)):
+			possible.append(t)
 	return possible
 
 func upgrade(shape, t):
@@ -120,6 +123,15 @@ func projectiles(t):
 
 func damage_mult(t):
 	return state[t].DAMAGE_MULT
+
+func has_chill(t):
+	return state[t].CHILLS
+
+func has_poison(t):
+	return state[t].POISONS
+
+func has_stun(t):
+	return state[t].STUNS
 
 func _ready():
 	for shape in shapes:

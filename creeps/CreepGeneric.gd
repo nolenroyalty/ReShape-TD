@@ -15,6 +15,7 @@ var KIND = "Normal"
 var LEVEL = 1
 var HEALTH = 50
 var SPEED = 50
+var STUN_CHANCE = 10
 
 onready var spriteButton = $SpriteButton
 
@@ -69,7 +70,7 @@ func apply_poison(amount):
 	$IsPoisonedTimer.start(1.5)
 	for _i in range(3):
 		yield(get_tree().create_timer(0.5), "timeout")
-		damage(amount)
+		damage(amount / 3.0)
 
 func _on_ispoisonedtimer_timeout():
 	emit_signal("state_changed")

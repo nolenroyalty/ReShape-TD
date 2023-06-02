@@ -27,10 +27,22 @@ func init(shape, stats, target_, initial_direction):
 func my_damage():
 	return my_stats.DAMAGE * Upgrades.damage_mult(my_shape)
 
+func apply_status_effects(creep):
+	if Upgrades.has_chill(my_shape):
+		creep.apply_chilled()
+	if Upgrades.has_poison(my_shape):
+		creep.apply_poison(my_damage() / 2.0)
+	if Upgrades.has_stun(my_shape):
+		var rng = RandomNumberGenerator.new()
+		rng.randomize()
+		if rng.randi_range(1, 100) < creep.STUN_CHANCE:
+			creep.apply_stun()
+
 func hit_something(area):
 	var creep = area.get_parent()
 	if creep.is_in_group("creep"):
 		state = S.HIT_SOMETHING
+		apply_status_effects(creep)
 		creep.damage(my_damage())
 		
 func exited_battlefield():
