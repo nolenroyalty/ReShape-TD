@@ -6,14 +6,6 @@ var WIDTH = 0
 var HEIGHT = 0
 var rng
 
-# func horizontal_offset():
-# 	if is_horizontal(): return 0
-# 	else: return -1
-
-# func veritcal_offset():
-# 	if is_horizontal(): return -1
-# 	else: return 0
-
 func pathable_points():
 	var points = []
 	for x in range(WIDTH):
@@ -44,10 +36,10 @@ func starting_points():
 func random_starting_point():
 	var points = starting_points()
 	var choice = rng.randi_range(0, len(points) - 1)
-	return points[choice] + U.snap_to_grid(position)
+	return points[choice]
 
 func get_center_point():
-	return U.v(WIDTH / 2, HEIGHT / 2) * C.CELL_SIZE + U.snap_to_grid(position)
+	return U.v(WIDTH / 2, HEIGHT / 2) * C.CELL_SIZE
 
 func _ready():
 	# Not sure if this is inherited otherwise

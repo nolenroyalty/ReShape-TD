@@ -23,7 +23,7 @@ var state = S.SPAWNED
 var current_path : Array
 var destination : Vector2
 var navigation_targets = []
-var display_navigation_targets = true
+var display_navigation_targets = false
 var chilled = false
 var stunned = false
 var poisoned = false
@@ -131,12 +131,16 @@ func update_rotation(target):
 	# If we get back 0 degrees, we want to rotate -90 degrezzes
 	rotation_degrees = rad2deg(position.angle_to_point(target)) + 90
 
-func handle_collides(my_remainder):
+func handle_collides(planned_move, my_remainder):
 	for i in get_slide_count():
 		var them = get_slide_collision(i)
-		print("%s collided with: %s" % [self, them.collider.name])
-		#if my_remainder > them.remainder:
-			#them.collider.handle_move(them.remainder)
+		if them != null and them.collider.is_in_group("creep") and is_instance_valid(them.collider):
+			print("%s collided with: %s" % [self, them.collider.name])
+			if my_remainder > them.remainder:
+				var amount_moved = planned_move - my_remainder
+				var t = -(amount_moved / 8)
+				handle_move(t)
+				# them.collider.handle_move(them.remainder)
 
 func handle_move(forced_move=null):
 	if not current_path:
@@ -160,8 +164,10 @@ func handle_move(forced_move=null):
 	else:
 		var direction = (current_path[0] - position).normalized()
 		update_rotation(current_path[0])
-		var remaining_velocity = move_and_slide(direction * determine_speed())
-		handle_collides(remaining_velocity)
+		var planned_move = direction * determine_speed()
+		var _remaining_velocity = move_and_slide(planned_move)
+
+		# handle_collides(planned_move, remaining_velocity)
 
 var began_to_die = false
 

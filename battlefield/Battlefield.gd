@@ -97,18 +97,16 @@ func init_creep(start, end):
 	creep.connect("selected", self, "creep_selected", [creep])
 	add_child(creep)
 	
-func spawn_creep():
-	var i = rng.randi_range(0, 1)
-	var vertical = i == 0
+func spawn_creep(vertical):
 	var start
 	var end
 	
 	if vertical:
-		start = $SpawnTop.random_starting_point()
-		end = $DestBot.get_center_point()
+		start = $SpawnTop.random_starting_point() + U.snap_to_grid($SpawnTop.position)
+		end = $DestBot.get_center_point() + U.snap_to_grid($DestBot.position)
 	else:
-		start = $SpawnLeft.random_starting_point()
-		end = $DestRight.get_center_point()
+		start = $SpawnLeft.random_starting_point() + $SpawnLeft.position
+		end = $DestRight.get_center_point() + $DestRight.position
 	
 	init_creep(start, end)
 
@@ -117,9 +115,26 @@ func handle_event__playing(event):
 		if current_build_location != null and event.pressed and event.button_index == BUTTON_LEFT:
 			try_to_build_tower(event)
 
+func spawn_waves():
+	for se in [[$SpawnTop, $DestBot], [$SpawnLeft, $DestRight]]:
+		var start = se[0]
+		var end = se[1]
+		var points = start.starting_points()
+		for _i in range(len(points) / 2):
+			var remove = rng.randi_range(0, len(points) - 1)
+			points.remove(remove)
+		
+		for point in points:
+			point = point + start.position
+			init_creep(point, end.get_center_point() + end.position)
+
 func handle_keypresses__playing(_delta):
-	if Input.is_action_just_pressed("DEBUG_SPAWN"):
-		spawn_creep()
+	if Input.is_action_just_pressed("DEBUG_SPAWN_SINGLE_CREEP__HORIZONTAL"):
+		spawn_creep(false)
+	if Input.is_action_just_pressed("DEBUG_SPAWN_SINGLE_CREEP__VERTICAL"):
+		spawn_creep(true)
+	if Input.is_action_just_pressed("DEBUG_SPAWN_WAVES"):
+		spawn_waves()
 	if Input.is_action_just_pressed("DEBUG_REFRESH_RANGE"):
 		for child in get_tree().get_nodes_in_group("tower"):
 			child.refresh_range()
