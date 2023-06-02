@@ -25,14 +25,14 @@ position = Vector2( 0, 160 )
 position = Vector2( 224, 0 )
 
 [node name="BuildableGrid" parent="." instance=ExtResource( 3 )]
-position = Vector2( 32, 32 )
+position = Vector2( 48, 48 )
 
 [node name="DestRight" parent="." instance=ExtResource( 5 )]
-position = Vector2( 544, 160 )
+position = Vector2( 560, 160 )
 script = ExtResource( 10 )
 
 [node name="DestBot" parent="." instance=ExtResource( 6 )]
-position = Vector2( 224, 416 )
+position = Vector2( 224, 432 )
 script = ExtResource( 11 )
 
 [node name="BattlefieldBounds" type="Area2D" parent="."]
@@ -40,17 +40,18 @@ collision_layer = 256
 collision_mask = 128
 monitorable = false
 script = ExtResource( 8 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BattlefieldBounds"]
+visible = false
+position = Vector2( 288, 224 )
+shape = SubResource( 1 )
 __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BattlefieldBounds"]
-position = Vector2( 288, 224 )
-shape = SubResource( 1 )
-
 [node name="PathingGrid" parent="." instance=ExtResource( 9 )]
 
 [node name="BuildingIndicator" parent="." instance=ExtResource( 7 )]
-position = Vector2( 64, 64 )
+position = Vector2( 0, 16 )
 
 [connection signal="body_exited" from="BattlefieldBounds" to="BattlefieldBounds" method="_on_BattlefieldBounds_body_exited"]

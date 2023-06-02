@@ -2,4 +2,4 @@ extends CreepArea
 
 func _ready():
 	WIDTH = 6
-	HEIGHT = 2 
+	HEIGHT = 3 

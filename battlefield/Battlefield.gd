@@ -33,13 +33,19 @@ func notify_creeps_of_pathing_change():
 func have_the_money_to_place_tower():
 	return true
 
-func disable_pathing_for_tower(pos):
+func relevant_points_for_tower(pos):
 	var points = []
 	for dx in [0, C.CELL_SIZE]:
 		for dy in [0, C.CELL_SIZE]:
 			points.append(pos + U.v(dx, dy))
 	
-	grid.disable_points(points)
+	return points
+
+func disable_pathing_for_tower(pos):
+	grid.disable_points(relevant_points_for_tower(pos))
+
+func enable_pathing_for_tower(pos):
+	grid.enable_points(relevant_points_for_tower(pos))
 
 func tower_selected(tower):
 	emit_signal("selected_tower", tower)
@@ -47,12 +53,17 @@ func tower_selected(tower):
 func creep_selected(creep):
 	emit_signal("selected_creep", creep)
 
+func handle_tower_sold(tower):
+	enable_pathing_for_tower(tower.position)
+	notify_creeps_of_pathing_change()
+
 func actually_build_tower(location):
 	var tower = Tower.instance()
 	tower.init(selected_shape)
 	tower.position = current_build_location
 	disable_pathing_for_tower(location)
 	tower.connect("selected", self, "tower_selected", [tower])
+	tower.connect("sold", self, "handle_tower_sold", [tower])
 	add_child(tower)
 	
 func try_to_build_tower(_event):
@@ -81,7 +92,7 @@ func init_pathing_grid():
 
 func init_creep(start, end):
 	var creep = Creep.instance()
-	creep.position = start
+	creep.position = U.center(start)
 	creep.init(end)
 	creep.connect("selected", self, "creep_selected", [creep])
 	add_child(creep)
@@ -93,11 +104,11 @@ func spawn_creep():
 	var end
 	
 	if vertical:
-		start = $SpawnTop.get_random_point()
-		end = $DestBot.get_random_point()
+		start = $SpawnTop.random_starting_point()
+		end = $DestBot.get_center_point()
 	else:
-		start = $SpawnLeft.get_random_point()
-		end = $DestRight.get_random_point()
+		start = $SpawnLeft.random_starting_point()
+		end = $DestRight.get_center_point()
 	
 	init_creep(start, end)
 

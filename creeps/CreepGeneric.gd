@@ -115,6 +115,11 @@ func update_current_path():
 			navigation_targets.append(target)
 
 	current_path = new_path
+	maybe_unblock()
+
+func maybe_unblock():
+	if state == S.BLOCKED and current_path:
+		state = S.MOVING
 
 func become_blocked():
 	state = S.BLOCKED
@@ -123,10 +128,17 @@ func become_blocked():
 
 func update_rotation(target):
 	# We default to facing DOWN, which is 90 degrees.
-	# If we get back 0 degrees, we want to rotate -90 degrees
+	# If we get back 0 degrees, we want to rotate -90 degrezzes
 	rotation_degrees = rad2deg(position.angle_to_point(target)) + 90
 
-func handle_move():
+func handle_collides(my_remainder):
+	for i in get_slide_count():
+		var them = get_slide_collision(i)
+		print("%s collided with: %s" % [self, them.collider.name])
+		#if my_remainder > them.remainder:
+			#them.collider.handle_move(them.remainder)
+
+func handle_move(forced_move=null):
 	if not current_path:
 		update_current_path()
 		if not current_path:
@@ -143,9 +155,13 @@ func handle_move():
 		state = S.AT_DESTINATION
 		return
 	
-	var direction = (current_path[0] - position).normalized()
-	update_rotation(current_path[0])
-	var _remaining_velocity = move_and_slide(direction * determine_speed())
+	if forced_move:
+		var _ignore = move_and_slide(forced_move * determine_speed())
+	else:
+		var direction = (current_path[0] - position).normalized()
+		update_rotation(current_path[0])
+		var remaining_velocity = move_and_slide(direction * determine_speed())
+		handle_collides(remaining_velocity)
 
 var began_to_die = false
 

@@ -87,7 +87,7 @@ class IndividualTower extends Node:
 	var RANGE_RADIUS = 64
 	var ATTACK_SPEED = 1.0
 	var PROJECTILE_COUNT = 1
-	var DAMAGE = 10
+	var DAMAGE = 1
 	var PROJECTILE_SPEED = 225
 
 	func level_up():

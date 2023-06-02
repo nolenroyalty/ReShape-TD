@@ -9,6 +9,7 @@
 script = ExtResource( 3 )
 
 [node name="Battlefield" parent="." instance=ExtResource( 1 )]
+position = Vector2( -16, -16 )
 __meta__ = {
 "_edit_lock_": true
 }
