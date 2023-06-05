@@ -1,6 +1,9 @@
 extends KinematicBody2D
 
-enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, HIT_SOMETHING, FADING } 
+enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, EXPLODING, HIT_SOMETHING, FADING } 
+
+const EXPLOSION_SPEED = 0.35
+const EXPLOSION_SIZE = 5.0
 
 var crescent_bullet = preload("res://towers/sprites/crescentbullet.png")
 var diamond_bullet = preload("res://towers/sprites/diamondbullet.png")
@@ -14,6 +17,8 @@ var state = S.NO_TARGET
 var returns = false
 var pierces = 0
 var chains = 0
+var explodes = false
+var explosion_scale_left = 4.0
 var already_hit = {}
 
 func init(shape, stats, target_, initial_direction):
@@ -25,6 +30,7 @@ func init(shape, stats, target_, initial_direction):
 	returns = Upgrades.has_return(my_shape)
 	pierces = Upgrades.pierces(my_shape)
 	chains = Upgrades.chains(my_shape)
+	explodes = Upgrades.explodes(my_shape)
 	$ChainRange/CollisionShape2D.shape.radius = my_stats.RANGE_RADIUS
 
 	match my_shape:
@@ -52,9 +58,23 @@ func can_chain():
 	var closest = U.get_closest_creep(center, $ChainRange, already_hit)
 	return closest
 
+
+func explode():
+	var t = Tween.new()
+	var start_scale = $Sprite.scale
+	var final_scale = start_scale * EXPLOSION_SIZE
+	t.interpolate_property($Sprite, "scale", null, final_scale, EXPLOSION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	var current_radius = $Hitbox/Shape.shape.radius
+	var final_radius = current_radius * EXPLOSION_SIZE
+	t.interpolate_property($Hitbox/Shape, "shape:radius", null, final_radius, EXPLOSION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	add_child(t)
+	t.start()
+	yield(t, "tween_all_completed")
+	state = S.FADING
+
 func hit_something(area):
 	var creep = area.get_parent()
-	if creep.is_in_group("creep"):
+	if creep.is_in_group("creep") and not (creep in already_hit):
 		apply_status_effects(creep)
 		creep.damage(my_damage())
 		already_hit[creep] = true
@@ -66,6 +86,14 @@ func hit_something(area):
 		elif pierces > 0:
 			pierces -= 1
 			state = S.MOVING_IN_LAST_DIRECTION
+		elif explodes:
+			explodes = false
+			explode()
+			chains = 0
+			pierces = 0
+			state = S.EXPLODING
+		elif state == S.EXPLODING:
+			pass
 		else:
 			state = S.HIT_SOMETHING
 		
@@ -85,6 +113,8 @@ func move_in_direction(delta):
 	var velocity = my_stats.PROJECTILE_SPEED
 	var _ignore = move_and_collide(direction * velocity * delta)
 
+	
+
 func _physics_process(delta):
 	match state:
 		S.NO_TARGET:
@@ -100,6 +130,8 @@ func _physics_process(delta):
 			move_in_direction(delta)
 		S.HIT_SOMETHING:
 			clear_target_and_free()
+		S.EXPLODING:
+			pass
 		S.FADING:
 			clear_target_and_free()
 

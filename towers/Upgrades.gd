@@ -64,7 +64,7 @@ func _apply(t, stats):
 # PROJECTILE_SIZE_MULT = true
 # RETURNS = true
 # POISONS = true
-# DAMAGE_MULT = 1.0
+# DAMAGE_MULT = true
 
 func title(t):
 	match t:
@@ -155,6 +155,9 @@ func has_stun(t):
 
 func has_return(t):
 	return state[t].RETURNS
+
+func explodes(t):
+	return state[t].EXPLODES
 
 func _ready():
 	for shape in shapes:
