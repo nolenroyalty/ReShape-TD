@@ -35,6 +35,7 @@ config/icon="res://icon.png"
 C="*res://globals/Constants.gd"
 U="*res://globals/Utilities.gd"
 Upgrades="*res://towers/Upgrades.gd"
+State="*res://globals/State.tscn"
 
 [debug]
 

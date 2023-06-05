@@ -5,10 +5,6 @@ enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, EXPLODING, HIT_S
 const EXPLOSION_SPEED = 0.35
 const EXPLOSION_SIZE = 5.0
 
-var crescent_bullet = preload("res://towers/sprites/crescentbullet.png")
-var diamond_bullet = preload("res://towers/sprites/diamondbullet.png")
-var cross_bullet = preload("res://towers/sprites/crossbullet.png")
-
 var my_shape = null
 var my_stats = null
 var target = null
@@ -34,6 +30,7 @@ func init(shape, stats, target_, initial_direction):
 	var size_mult = Upgrades.projectile_size_mult(my_shape)
 	$ChainRange/CollisionShape2D.shape.radius = (my_stats.RANGE_RADIUS / 2) * size_mult
 	$Sprite.scale *= size_mult
+	$Hitbox/Shape.shape.radius *= size_mult
 
 	match my_shape:
 		C.SHAPE.CROSS: 

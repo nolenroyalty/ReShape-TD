@@ -16,6 +16,7 @@ var LEVEL = 1
 var HEALTH = 50
 var SPEED = 50
 var STUN_CHANCE = 10
+var is_boss = false
 
 onready var spriteButton = $SpriteButton
 
@@ -27,6 +28,11 @@ var display_navigation_targets = false
 var chilled = false
 var stunned = false
 var poisoned = false
+
+func gold_value():
+	var base = 10
+	if is_boss: base = 50
+	return base * LEVEL
 
 func get_status_effects():
 	var effects = []
@@ -177,6 +183,7 @@ func begin_dying():
 
 	for target in navigation_targets:
 		target.queue_free()
+	State.add_gold(gold_value())
 
 	began_to_die = true
 	emit_signal("died")
@@ -189,6 +196,7 @@ func handle_reached_destination():
 	if just_reached:
 		return
 	just_reached = true
+	State.lose_life()
 
 	for target in navigation_targets:
 		target.queue_free()
