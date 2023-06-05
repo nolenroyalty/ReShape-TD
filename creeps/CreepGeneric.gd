@@ -77,7 +77,7 @@ func _on_ispoisonedtimer_timeout():
 	poisoned = false
 	
 func is_alive():
-	return state != S.DYING
+	return state != S.DYING and state != S.AT_DESTINATION
 
 func damage(amount):
 	HEALTH -= amount

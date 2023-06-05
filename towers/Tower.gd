@@ -18,7 +18,7 @@ var diamond_tower = preload("res://towers/sprites/diamondtower.png")
 var cross_tower = preload("res://towers/sprites/crosstower.png")
 var Bullet = preload("res://towers/Bullet.tscn")
 
-var target
+var target = null
 var everything_in_range = {}
 var my_shape = null
 var my_stats = null
@@ -26,7 +26,10 @@ var tower_range = null
 
 func acquire_target(target_):
 	target = target_
-	target.connect("died", self, "handle_target_died", [target])
+	target.connect("freed_for_whatever_reason", self, "handle_target_died", [target])
+
+func valid_target(target_):
+	return target_ != null and is_instance_valid(target_) and target_.is_in_group("creep") and target_.is_alive()
 
 func my_center():
 	# towers are 2 x 2
@@ -55,9 +58,9 @@ func target_closest_creep():
 
 func handle_creep_entered_range(area):
 	var creep = area.get_parent()
-	if creep.is_in_group("creep") and creep.is_alive():
+	if valid_target(creep):
 		everything_in_range[creep] = area
-		if target == null:
+		if not valid_target(target):
 			acquire_target(creep)
 
 func handle_creep_left_range(area):
@@ -66,7 +69,7 @@ func handle_creep_left_range(area):
 		everything_in_range.erase(creep)
 		
 		if target == creep:
-			target.disconnect("died", self, "handle_target_died")
+			target.disconnect("freed_for_whatever_reason", self, "handle_target_died")
 			target = null
 			target_closest_creep()
 
@@ -79,7 +82,7 @@ func shooting_off_cooldown():
 	return shot_timer.is_stopped()
 
 func try_to_shoot():
-	if target != null and is_instance_valid(target) and target.is_alive() and shooting_off_cooldown():
+	if valid_target(target) and shooting_off_cooldown():
 		var projectile_count = Upgrades.projectiles(my_shape)
 		var initial_position = my_center()
 		var initial_direction = initial_position.direction_to(target.position)
