@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, EXPLODING, HIT_SOMETHING, FADING } 
+enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, EXPLODING, HIT_SOMETHING, BEGIN_FADING, FADING } 
 
 const EXPLOSION_SPEED = 0.35
 const EXPLOSION_SIZE = 5.0
@@ -72,9 +72,12 @@ func explode():
 	add_child(t)
 	t.start()
 	yield(t, "tween_all_completed")
-	state = S.FADING
+	state = S.BEGIN_FADING
 
 func hit_something(area):
+	if state == S.FADING:
+		return
+
 	var creep = area.get_parent()
 	if creep.is_in_group("creep") and not (creep in already_hit):
 		apply_status_effects(creep)
@@ -97,16 +100,16 @@ func hit_something(area):
 		elif state == S.EXPLODING:
 			pass
 		else:
-			state = S.HIT_SOMETHING
+			state = S.BEGIN_FADING
 		
 func exited_battlefield():
-	if state != S.HIT_SOMETHING:
+	if state != S.BEGIN_FADING and state != S.FADING:
 		if returns:
 			returns = false
 			state = S.MOVING_IN_LAST_DIRECTION
 			direction = direction * -1
 		else:	
-			state = S.FADING
+			state = S.BEGIN_FADING
 
 func move_in_direction(delta):
 	if direction == null:
@@ -115,7 +118,17 @@ func move_in_direction(delta):
 	var velocity = my_stats.PROJECTILE_SPEED
 	var _ignore = move_and_collide(direction * velocity * delta)
 
-	
+func begin_fading():
+	var t = Tween.new()
+	t.interpolate_property($Sprite, "modulate:a", 1.0, 0.0, 0.1, Tween.TRANS_QUAD, Tween.EASE_IN)
+	var scale = $Sprite.scale
+	t.interpolate_property($Sprite, "scale", scale, scale / 4.0, 0.1, Tween.TRANS_QUAD, Tween.EASE_IN)
+	add_child(t)
+	t.start()
+	target = null
+	state = S.FADING
+	yield(t, "tween_all_completed")
+	call_deferred("queue_free")
 
 func _physics_process(delta):
 	match state:
@@ -130,12 +143,14 @@ func _physics_process(delta):
 			move_in_direction(delta)
 		S.MOVING_IN_LAST_DIRECTION:
 			move_in_direction(delta)
-		S.HIT_SOMETHING:
-			clear_target_and_free()
+		# S.HIT_SOMETHING:
+		# 	clear_target_and_free()
 		S.EXPLODING:
 			pass
+		S.BEGIN_FADING:
+			begin_fading()
 		S.FADING:
-			clear_target_and_free()
+			pass
 
 func clear_target_and_free():
 	target = null

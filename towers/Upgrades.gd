@@ -52,20 +52,6 @@ func _apply(t, stats):
 	stats.upgrades.append(t)
 	return stats
 
-# IMPLEMENTED:
-# CHILLS = true
-# EXPLODES = true
-# BURNING_GROUND = false
-# PIERCES = true
-# CHAINS = true
-# PROJECTILES = true
-# STUNS = true
-# BONUS_GOLD = false
-# PROJECTILE_SIZE_MULT = true
-# RETURNS = true
-# POISONS = true
-# DAMAGE_MULT = true
-
 func title(t):
 	match t:
 		T.CHILLS: return "Chilling"
