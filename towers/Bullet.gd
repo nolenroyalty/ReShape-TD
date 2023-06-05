@@ -31,12 +31,17 @@ func init(shape, stats, target_, initial_direction):
 	pierces = Upgrades.pierces(my_shape)
 	chains = Upgrades.chains(my_shape)
 	explodes = Upgrades.explodes(my_shape)
-	$ChainRange/CollisionShape2D.shape.radius = my_stats.RANGE_RADIUS
+	var size_mult = Upgrades.projectile_size_mult(my_shape)
+	$ChainRange/CollisionShape2D.shape.radius = (my_stats.RANGE_RADIUS / 2) * size_mult
+	$Sprite.scale *= size_mult
 
 	match my_shape:
-		C.SHAPE.CROSS: $Sprite.texture = cross_bullet
-		C.SHAPE.CRESCENT: $Sprite.texture = crescent_bullet
-		C.SHAPE.DIAMOND: $Sprite.texture = diamond_bullet
+		C.SHAPE.CROSS: 
+			$Sprite.modulate = C.YELLOW
+		C.SHAPE.CRESCENT:
+			$Sprite.modulate = C.LIGHT_GREEN
+		C.SHAPE.DIAMOND:
+			$Sprite.modulate = C.LIGHT_BLUE
 
 func my_damage():
 	return my_stats.DAMAGE * Upgrades.damage_mult(my_shape)

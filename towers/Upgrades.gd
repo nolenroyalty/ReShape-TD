@@ -3,7 +3,7 @@ extends Node2D
 enum T {
 	CHILLS,
 	EXPLODES,
-	BURNING_GROUND,
+	# BURNING_GROUND,
 	PIERCES,
 	CHAINS,
 	LESSER_MULTIPROJ,
@@ -19,7 +19,7 @@ class Stats extends Node:
 	var upgrades = []
 	var CHILLS = false
 	var EXPLODES = false
-	var BURNING_GROUND = false
+# 	var BURNING_GROUND = false
 	var PIERCES = 0
 	var CHAINS = 0
 	var PROJECTILES = 1
@@ -34,18 +34,18 @@ func _apply(t, stats):
 	match t:
 		T.CHILLS: stats.CHILLS = true
 		T.EXPLODES: stats.EXPLODES = true
-		T.BURNING_GROUND: stats.BURNING_GROUND = true
+	# 	T.BURNING_GROUND: stats.BURNING_GROUND = true
 		T.PIERCES: stats.PIERCES = 2
 		T.CHAINS: stats.CHAINS = 2
 		T.LESSER_MULTIPROJ: 
 			stats.PROJECTILES = 3
-			stats.DAMAGE_MULT = 0.8
+			stats.DAMAGE_MULT = 0.75
 		T.GREATER_MULTIPROJ:
 			stats.PROJECTILES = 5
-			stats.DAMAGE_MULT = 0.6
+			stats.DAMAGE_MULT = 0.5
 		T.STUNNING: stats.STUNS = true
 		T.BONUS_GOLD: stats.BONUS_GOLD = 0.25
-		T.GIANT_PROJ: stats.PROJECTILE_SIZE_MULT = 3
+		T.GIANT_PROJ: stats.PROJECTILE_SIZE_MULT = 2.5
 		T.RETURNS: stats.RETURNS = true
 		T.POISONS: stats.POISONS = true
 	
@@ -54,7 +54,7 @@ func _apply(t, stats):
 
 # IMPLEMENTED:
 # CHILLS = true
-# EXPLODES = false
+# EXPLODES = true
 # BURNING_GROUND = false
 # PIERCES = true
 # CHAINS = true
@@ -70,7 +70,7 @@ func title(t):
 	match t:
 		T.CHILLS: return "Chilling"
 		T.EXPLODES: return "Explosive"
-		T.BURNING_GROUND: return "Burning"
+	#	T.BURNING_GROUND: return "Burning"
 		T.PIERCES: return "Piercing"
 		T.CHAINS: return "Chaining"
 		T.LESSER_MULTIPROJ: return "Multishotting"
@@ -85,7 +85,7 @@ func description(t):
 	match t:
 		T.CHILLS: return "Slows enemies"
 		T.EXPLODES: return "Explodes on impact"
-		T.BURNING_GROUND: return "Leaves burning ground that deals damage over time"
+	#	T.BURNING_GROUND: return "Leaves burning ground that deals damage over time"
 		T.PIERCES: return "Pierces enemies"
 		T.CHAINS: return "Chains to nearby enemies"
 		T.LESSER_MULTIPROJ: return "Shoots 3 projectiles but does less damage"
@@ -158,6 +158,9 @@ func has_return(t):
 
 func explodes(t):
 	return state[t].EXPLODES
+
+func projectile_size_mult(t):
+	return state[t].PROJECTILE_SIZE_MULT
 
 func _ready():
 	for shape in shapes:
