@@ -8,6 +8,7 @@ onready var crescent = $CrescentButton
 onready var diamond = $DiamondButton
 onready var reshape_button = $ReshapeButton
 onready var upgrades_label = $UpgradesLabel
+onready var base_cost = $BasecostLabel
 
 var current = null
 
@@ -25,6 +26,15 @@ func update_selected():
 		else:
 			b.modulate.a = 0.5
 
+func update_base_cost_text():
+	if current == null: return
+	var tower_cost = Upgrades.tower_cost(current)
+	base_cost.text = "Base cost: %d gold" % [tower_cost]
+
+func handle_reshaped(shape, _upgrade):
+	if current != null and shape == current:
+		update_base_cost_text()
+	
 func update_upgrades_text():
 	var active_upgrades = Upgrades.active_upgrades(current)
 	var l = []
@@ -52,3 +62,4 @@ func _ready():
 	crescent.connect("pressed", self, "handle_pressed", [C.SHAPE.CRESCENT])
 	diamond.connect("pressed", self, "handle_pressed", [C.SHAPE.DIAMOND])
 	reshape_button.connect("pressed", self, "handle_reshape")
+	var _ignore = Upgrades.connect("reshaped", self, "handle_reshaped")

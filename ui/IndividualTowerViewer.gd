@@ -2,7 +2,8 @@ extends Node2D
 
 signal tower_sold()
 
-onready var label = $Label
+onready var header = $Header
+onready var values = $HBoxContainer/Values
 onready var level_up_button = $LevelUpButton
 onready var sell_button = $SellButton
 var tower = null
@@ -13,12 +14,12 @@ func init(tower_):
 func set_text_for_tower():
 	var stats = tower.my_stats
 	var name = C.shape_name(tower.my_shape).capitalize()
-	var header = "Level %s %s Tower\n" % [stats.LEVEL, name]
-	var aps = "Attacks per second: %.1f" % stats.attacks_per_second()
-	var damage = "Damage: %s" % stats.DAMAGE
-	var range_ = "Range: %s" % stats.RANGE_RADIUS
+	header.text = "%s Tower (level %s)\n" % [name, stats.LEVEL]
+	values.text = "%.1f\n%s\n%s" % [ stats.attacks_per_second(), stats.DAMAGE, stats.RANGE_RADIUS]
 
-	$Label.text = "%s\n%s\n%s\n%s" % [header, aps, damage, range_]
+	sell_button.text = "Sell (%s gold)" % tower.sell_value
+	var upgrade_cost = Upgrades.upgrade_cost(tower.my_shape, tower.my_stats)
+	level_up_button.text = "Level up (%s gold)" % upgrade_cost
 
 func we_have_enough_gold_for_upgrade():
 	return true

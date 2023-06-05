@@ -34,9 +34,9 @@ margin_bottom = 32.0
 texture_normal = ExtResource( 3 )
 
 [node name="ReshapeButton" type="Button" parent="."]
-margin_top = 48.0
+margin_top = 57.0
 margin_right = 128.0
-margin_bottom = 68.0
+margin_bottom = 77.0
 custom_fonts/font = ExtResource( 5 )
 text = "Reshape"
 
@@ -44,4 +44,12 @@ text = "Reshape"
 margin_top = 80.0
 margin_right = 128.0
 margin_bottom = 208.0
+align = 1
 autowrap = true
+
+[node name="BasecostLabel" type="Label" parent="."]
+margin_top = 40.0
+margin_right = 128.0
+margin_bottom = 54.0
+text = "Base cost: 10 gold"
+align = 1

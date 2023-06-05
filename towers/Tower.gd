@@ -23,6 +23,7 @@ var everything_in_range = {}
 var my_shape = null
 var my_stats = null
 var tower_range = null
+var sell_value = null
 
 func acquire_target(target_):
 	target = target_
@@ -116,13 +117,18 @@ func _physics_process(_delta):
 	try_to_shoot()
 
 func level_up():
-	my_stats.level_up()
-	refresh_range()
-	emit_signal("leveled_up")
-
+	var cost = Upgrades.upgrade_cost(my_shape, my_stats)
+	if State.try_to_buy(cost):
+		my_stats.level_up()
+		sell_value *= C.UPGRADE_COST_MULT
+		sell_value = int(sell_value)
+		refresh_range()
+		emit_signal("leveled_up")
+		
 func sell():
 	hide_range()
 	queue_free()
+	State.add_gold(sell_value)
 	emit_signal("sold")
 
 func pressed():
@@ -136,6 +142,7 @@ func pressed():
 func init(shape):
 	my_shape = shape
 	my_stats = Upgrades.IndividualTower.new()
+	sell_value = Upgrades.tower_cost(my_shape) / 2
 
 	var texture = null
 

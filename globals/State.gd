@@ -8,7 +8,7 @@ var gold = 200
 var lives = 20
 
 func add_gold(amount):
-	gold += amount
+	gold += int(amount)
 	emit_signal("gold_updated", gold)
 
 func can_buy(amount):
@@ -16,7 +16,7 @@ func can_buy(amount):
 
 func try_to_buy(amount):
 	if can_buy(amount):
-		gold -= amount
+		gold -= int(amount)
 		emit_signal("gold_updated", gold)
 		return true
 	return false

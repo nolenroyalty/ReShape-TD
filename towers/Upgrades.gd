@@ -1,5 +1,7 @@
 extends Node2D
 
+signal reshaped(shape, upgrade)
+
 enum T {
 	CHILLS,
 	EXPLODES,
@@ -29,6 +31,10 @@ class Stats extends Node:
 	var RETURNS = false
 	var POISONS = false
 	var DAMAGE_MULT = 1.0
+
+	func build_cost():
+		var mult = pow(2, len(upgrades))
+		return mult * C.BASE_TOWER_COST
 
 func _apply(t, stats):
 	match t:
@@ -96,6 +102,9 @@ class IndividualTower extends Node:
 		ATTACK_SPEED -= 0.1 * ATTACK_SPEED
 		DAMAGE *= 2
 	
+	func upgrade_mult():
+		return pow(C.UPGRADE_COST_MULT, LEVEL)
+	
 	func attacks_per_second():
 		return 1.0 / ATTACK_SPEED
 
@@ -115,8 +124,17 @@ func possible_upgrades(shape):
 			possible.append(t)
 	return possible
 
+func tower_cost(shape):
+	return int(state[shape].build_cost())
+
+func upgrade_cost(shape, stats):
+	var base = tower_cost(shape)
+	var mult = stats.upgrade_mult()
+	return int(base * mult)
+
 func upgrade(shape, t):
 	state[shape] = _apply(t, state[shape])
+	emit_signal("reshaped", shape, t)
 
 func projectiles(t):
 	return state[t].PROJECTILES
@@ -144,6 +162,9 @@ func has_return(t):
 
 func explodes(t):
 	return state[t].EXPLODES
+
+func bonus_gold(t):
+	return state[t].BONUS_GOLD
 
 func projectile_size_mult(t):
 	return state[t].PROJECTILE_SIZE_MULT

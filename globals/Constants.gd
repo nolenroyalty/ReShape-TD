@@ -4,6 +4,9 @@ enum SHAPE { CROSS, CRESCENT, DIAMOND }
 
 var shapes = [ SHAPE.CROSS, SHAPE.CRESCENT, SHAPE.DIAMOND ]
 
+const BASE_TOWER_COST = 10
+const UPGRADE_COST_MULT = 2.5
+
 func shape_name(shape):
 	match shape:
 		SHAPE.CROSS:

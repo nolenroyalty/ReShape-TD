@@ -76,7 +76,7 @@ func apply_poison(amount):
 	$IsPoisonedTimer.start(1.5)
 	for _i in range(3):
 		yield(get_tree().create_timer(0.5), "timeout")
-		damage(amount / 3.0)
+		damage(amount / 3.0, 0)
 
 func _on_ispoisonedtimer_timeout():
 	emit_signal("state_changed")
@@ -85,11 +85,12 @@ func _on_ispoisonedtimer_timeout():
 func is_alive():
 	return state != S.DYING and state != S.AT_DESTINATION
 
-func damage(amount):
+func damage(amount, bonus_gold):
 	HEALTH -= amount
 	emit_signal("state_changed")
 	if HEALTH <= 0:
 		state = S.DYING
+		State.add_gold(gold_value() * (1 + bonus_gold))
 
 func determine_new_path():
 	var my_position = U.snap_to_grid(position)
@@ -183,7 +184,6 @@ func begin_dying():
 
 	for target in navigation_targets:
 		target.queue_free()
-	State.add_gold(gold_value())
 
 	began_to_die = true
 	emit_signal("died")

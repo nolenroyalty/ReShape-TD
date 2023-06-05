@@ -81,7 +81,8 @@ func hit_something(area):
 	var creep = area.get_parent()
 	if creep.is_in_group("creep") and not (creep in already_hit):
 		apply_status_effects(creep)
-		creep.damage(my_damage())
+		var bonus_gold = Upgrades.bonus_gold(my_shape)
+		creep.damage(my_damage(), bonus_gold)
 		already_hit[creep] = true
 		var chain_target = can_chain()
 		if chain_target:
