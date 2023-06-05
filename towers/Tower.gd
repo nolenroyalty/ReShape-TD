@@ -49,19 +49,7 @@ func display_range():
 	tower_range = tr
 
 func target_closest_creep():
-	var distance = null
-	var closest = null
-	var center_position = my_center()
-
-	for area in shooting_range.get_overlapping_areas():
-		var creep = area.get_parent()
-
-		if creep.is_in_group("creep") and creep.is_alive() and is_instance_valid(creep):
-			var d = creep.position.distance_to(center_position)
-			if distance == null or d < distance:
-				distance = d
-				closest = creep
-		
+	var closest = U.get_closest_creep(my_center(), shooting_range)
 	if closest != null:
 		acquire_target(closest)
 

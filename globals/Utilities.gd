@@ -14,3 +14,21 @@ func snap_to_grid(pos):
 
 func mouse_position():
 	return get_viewport().get_mouse_position()
+
+func get_closest_creep(center, radius, ignore_if_present=null):
+	var distance = null
+	var closest = null
+	if ignore_if_present == null:
+		ignore_if_present = {}
+
+	for area in radius.get_overlapping_areas():
+		var creep = area.get_parent()
+		if creep.is_in_group("creep") and creep.is_alive() and is_instance_valid(creep):
+			if creep in ignore_if_present:
+				continue
+			var d = center.distance_to(creep.position)
+			if distance == null or d < distance:
+				distance = d
+				closest = creep
+	
+	return closest

@@ -57,7 +57,7 @@ func _apply(t, stats):
 # EXPLODES = false
 # BURNING_GROUND = false
 # PIERCES = true
-# CHAINS = false
+# CHAINS = true
 # PROJECTILES = true
 # STUNS = true
 # BONUS_GOLD = false
@@ -137,6 +137,9 @@ func projectiles(t):
 
 func pierces(t):
 	return state[t].PIERCES
+
+func chains(t):
+	return state[t].CHAINS
 
 func damage_mult(t):
 	return state[t].DAMAGE_MULT

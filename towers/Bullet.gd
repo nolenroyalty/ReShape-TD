@@ -13,6 +13,8 @@ var direction = null
 var state = S.NO_TARGET
 var returns = false
 var pierces = 0
+var chains = 0
+var already_hit = {}
 
 func init(shape, stats, target_, initial_direction):
 	my_shape = shape
@@ -22,6 +24,8 @@ func init(shape, stats, target_, initial_direction):
 	state = S.MOVING_TO_TARGET
 	returns = Upgrades.has_return(my_shape)
 	pierces = Upgrades.pierces(my_shape)
+	chains = Upgrades.chains(my_shape)
+	$ChainRange/CollisionShape2D.shape.radius = my_stats.RANGE_RADIUS
 
 	match my_shape:
 		C.SHAPE.CROSS: $Sprite.texture = cross_bullet
@@ -42,12 +46,24 @@ func apply_status_effects(creep):
 		if rng.randi_range(1, 100) < creep.STUN_CHANCE:
 			creep.apply_stun()
 
+func can_chain():
+	if chains <= 0: return false
+	var center = U.center(U.snap_to_grid(position))
+	var closest = U.get_closest_creep(center, $ChainRange, already_hit)
+	return closest
+
 func hit_something(area):
 	var creep = area.get_parent()
 	if creep.is_in_group("creep"):
 		apply_status_effects(creep)
 		creep.damage(my_damage())
-		if pierces > 0:
+		already_hit[creep] = true
+		var chain_target = can_chain()
+		if chain_target:
+			chains -= 1
+			state = S.MOVING_TO_TARGET
+			target = chain_target
+		elif pierces > 0:
 			pierces -= 1
 			state = S.MOVING_IN_LAST_DIRECTION
 		else:
