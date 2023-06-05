@@ -82,3 +82,4 @@ func _ready():
 	upgrade_selector.connect("selected", self, "set_shape")
 	battlefield.connect("selected_tower", self, "show_individual_tower")
 	battlefield.connect("selected_creep", self, "show_individual_creep")
+	VisualServer.set_default_clear_color(C.BLACK)

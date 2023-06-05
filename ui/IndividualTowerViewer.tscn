@@ -16,12 +16,13 @@ Range: 64"
 
 [node name="LevelUpButton" type="Button" parent="."]
 margin_top = 96.0
-margin_right = 128.0
+margin_right = 60.0
 margin_bottom = 116.0
-text = "Level Up Tower"
+text = "Level Up"
 
 [node name="SellButton" type="Button" parent="."]
-margin_top = 128.0
+margin_left = 80.0
+margin_top = 96.0
 margin_right = 128.0
-margin_bottom = 148.0
-text = "Sell Tower"
+margin_bottom = 116.0
+text = "Sell"

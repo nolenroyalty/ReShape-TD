@@ -43,7 +43,7 @@ func _apply(t, stats):
 		T.GREATER_MULTIPROJ:
 			stats.PROJECTILES = 5
 			stats.DAMAGE_MULT = 0.6
-		T.STUNNING: stats.SHOCKWAVE = true
+		T.STUNNING: stats.STUNS = true
 		T.BONUS_GOLD: stats.BONUS_GOLD = 0.25
 		T.GIANT_PROJ: stats.PROJECTILE_SIZE_MULT = 3
 		T.RETURNS: stats.RETURNS = true
@@ -51,6 +51,20 @@ func _apply(t, stats):
 	
 	stats.upgrades.append(t)
 	return stats
+
+# IMPLEMENTED:
+# CHILLS = true
+# EXPLODES = false
+# BURNING_GROUND = false
+# PIERCES = true
+# CHAINS = false
+# PROJECTILES = true
+# STUNS = true
+# BONUS_GOLD = false
+# PROJECTILE_SIZE_MULT = true
+# RETURNS = true
+# POISONS = true
+# DAMAGE_MULT = 1.0
 
 func title(t):
 	match t:
@@ -121,6 +135,9 @@ func upgrade(shape, t):
 func projectiles(t):
 	return state[t].PROJECTILES
 
+func pierces(t):
+	return state[t].PIERCES
+
 func damage_mult(t):
 	return state[t].DAMAGE_MULT
 
@@ -132,6 +149,9 @@ func has_poison(t):
 
 func has_stun(t):
 	return state[t].STUNS
+
+func has_return(t):
+	return state[t].RETURNS
 
 func _ready():
 	for shape in shapes:

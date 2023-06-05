@@ -42,8 +42,8 @@ gdscript/warnings/integer_division=false
 
 [display]
 
-window/size/width=800
-window/size/test_width=1600
+window/size/width=700
+window/size/test_width=1400
 window/size/test_height=1200
 window/stretch/mode="viewport"
 window/stretch/aspect="keep"

@@ -15,7 +15,7 @@ __meta__ = {
 }
 
 [node name="ReshapeUpgradeSelector" parent="." instance=ExtResource( 2 )]
-position = Vector2( 624, 32 )
+position = Vector2( 560, 288 )
 
 [node name="IndividualViewer" parent="." instance=ExtResource( 4 )]
-position = Vector2( 624, 256 )
+position = Vector2( 560, 32 )

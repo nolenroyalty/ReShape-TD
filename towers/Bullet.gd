@@ -11,6 +11,8 @@ var my_stats = null
 var target = null
 var direction = null
 var state = S.NO_TARGET
+var returns = false
+var pierces = 0
 
 func init(shape, stats, target_, initial_direction):
 	my_shape = shape
@@ -18,6 +20,8 @@ func init(shape, stats, target_, initial_direction):
 	target = target_
 	direction = initial_direction
 	state = S.MOVING_TO_TARGET
+	returns = Upgrades.has_return(my_shape)
+	pierces = Upgrades.pierces(my_shape)
 
 	match my_shape:
 		C.SHAPE.CROSS: $Sprite.texture = cross_bullet
@@ -41,13 +45,22 @@ func apply_status_effects(creep):
 func hit_something(area):
 	var creep = area.get_parent()
 	if creep.is_in_group("creep"):
-		state = S.HIT_SOMETHING
 		apply_status_effects(creep)
 		creep.damage(my_damage())
+		if pierces > 0:
+			pierces -= 1
+			state = S.MOVING_IN_LAST_DIRECTION
+		else:
+			state = S.HIT_SOMETHING
 		
 func exited_battlefield():
 	if state != S.HIT_SOMETHING:
-		state = S.FADING
+		if returns:
+			returns = false
+			state = S.MOVING_IN_LAST_DIRECTION
+			direction = direction * -1
+		else:	
+			state = S.FADING
 
 func move_in_direction(delta):
 	if direction == null:
