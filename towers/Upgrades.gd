@@ -35,6 +35,10 @@ class Stats extends Node:
 	func build_cost():
 		var mult = pow(2, len(upgrades))
 		return mult * C.BASE_TOWER_COST
+	
+	func reshape_cost():
+		var mult = pow(2, len(upgrades))
+		return mult * 75
 
 func _apply(t, stats):
 	match t:
@@ -126,6 +130,9 @@ func possible_upgrades(shape):
 
 func tower_cost(shape):
 	return int(state[shape].build_cost())
+
+func reshape_cost(shape):
+	return int(state[shape].reshape_cost())
 
 func upgrade_cost(shape, stats):
 	var base = tower_cost(shape)

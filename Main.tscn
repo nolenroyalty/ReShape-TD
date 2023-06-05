@@ -17,10 +17,10 @@ __meta__ = {
 }
 
 [node name="ReshapeUpgradeSelector" parent="." instance=ExtResource( 2 )]
-position = Vector2( 560, 288 )
+position = Vector2( 560, 32 )
 
 [node name="IndividualViewer" parent="." instance=ExtResource( 4 )]
-position = Vector2( 560, 32 )
+position = Vector2( 560, 288 )
 
 [node name="Lives" type="Label" parent="."]
 margin_left = 352.0
