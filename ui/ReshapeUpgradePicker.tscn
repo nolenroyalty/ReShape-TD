@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://ui/ReshapeUpgradePicker.gd" type="Script" id=1]
+[ext_resource path="res://ui/Styles.tres" type="Theme" id=2]
 
 [node name="ReshapeUpgradePicker" type="CanvasLayer"]
 pause_mode = 2
@@ -15,12 +16,13 @@ margin_left = -192.0
 margin_top = -118.0
 margin_right = 192.0
 margin_bottom = 118.0
+theme = ExtResource( 2 )
 
 [node name="Example1" type="Button" parent="VBoxContainer"]
 margin_right = 384.0
-margin_bottom = 20.0
+margin_bottom = 16.0717
 
 [node name="Example2" type="Button" parent="VBoxContainer"]
-margin_top = 24.0
+margin_top = 20.0
 margin_right = 384.0
-margin_bottom = 44.0
+margin_bottom = 36.0717

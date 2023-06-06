@@ -60,6 +60,7 @@ window/stretch/aspect="keep"
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+theme/custom="res://ui/Styles.tres"
 theme/custom_font="res://fonts/new_dynamicfont.tres"
 
 [importer_defaults]

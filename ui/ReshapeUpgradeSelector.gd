@@ -3,11 +3,11 @@ extends Node2D
 signal reshape(shape)
 signal selected(shape)
 
-onready var cross = $CrossButton
-onready var crescent = $CrescentButton
-onready var diamond = $DiamondButton
-onready var reshape_button = $ReshapeButton
-onready var info_label = $InfoLabel
+onready var cross = $Control/CrossButton
+onready var crescent = $Control/CrescentButton
+onready var diamond = $Control/DiamondButton
+onready var reshape_button = $Control/ReshapeButton
+onready var info_label = $Control/InfoLabel
 
 var current = null
 

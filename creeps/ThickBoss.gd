@@ -5,4 +5,5 @@ func init(level, dest):
 	BASE_HEALTH = 100
 	SPEED = 28
 	is_boss = true
+	STATUS_REDUCTION = 0.5
 	.init(level, dest)

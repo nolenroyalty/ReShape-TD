@@ -18,7 +18,7 @@ var BASE_HEALTH = 50
 var SPEED = 48
 var STUN_CHANCE = 10
 var RESIST_CHANCE = 0.0
-var STATUS_REDUCTION = 0.0
+var STATUS_REDUCTION = 1.0
 var is_boss = false
 var level = 1
 
@@ -56,18 +56,18 @@ func get_status_effects():
 func determine_speed():
 	var base = SPEED
 	if chilled:
-		var penalty = 0.5 * (1.0 - STATUS_REDUCTION)
-		base *= penalty
+		var penalty = 0.5
+		base -= (base * penalty * STATUS_REDUCTION)
 	if stunned:
 		base = 0
 	return base
 
-func resisted_status_effect(hit_chance=100):
-	var roll = rng.randi_range(1, 100) * (1.0 - RESIST_CHANCE)
-	return hit_chance > roll
+func status_effect_hit(hit_chance=100):
+	var roll = rng.randi_range(1, 100)
+	return (hit_chance * (1.0 - RESIST_CHANCE)) > roll
 	
 func maybe_apply_chilled():
-	if not resisted_status_effect(100):
+	if status_effect_hit(100):
 		chilled = true
 		emit_signal("state_changed")
 		var duration = 1.0
@@ -78,8 +78,7 @@ func _on_chilltimer_timeout():
 	chilled = false
 
 func maybe_apply_stun(stun_chance):
-	var bonus_resist = 100 - stun_chance
-	if not resisted_status_effect(bonus_resist):
+	if status_effect_hit(stun_chance):
 		stunned = true
 		emit_signal("state_changed")
 		var duration = 1.0 * STATUS_REDUCTION
@@ -90,7 +89,7 @@ func _on_stuntimer_timeout():
 	stunned = false
 
 func maybe_apply_poison(amount, bonus_gold):
-	if not resisted_status_effect(100):
+	if status_effect_hit(100):
 		poisoned = true
 		emit_signal("state_changed")
 		$IsPoisonedTimer.start(1.5)
