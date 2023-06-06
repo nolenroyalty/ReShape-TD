@@ -45,14 +45,13 @@ func my_damage():
 
 func apply_status_effects(creep):
 	if Upgrades.has_chill(my_shape):
-		creep.apply_chilled()
+		creep.maybe_apply_chilled()
 	if Upgrades.has_poison(my_shape):
-		creep.apply_poison(my_damage() / 2.0)
+		var bonus_gold = Upgrades.bonus_gold(my_shape)
+		creep.maybe_apply_poison(my_damage() / 2.0, bonus_gold)
 	if Upgrades.has_stun(my_shape):
-		var rng = RandomNumberGenerator.new()
-		rng.randomize()
-		if rng.randi_range(1, 100) < creep.STUN_CHANCE:
-			creep.apply_stun()
+		var stun_chance = 10
+		creep.maybe_apply_stun(stun_chance)
 
 func can_chain():
 	if chains <= 0: return false

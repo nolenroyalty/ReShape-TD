@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+class_name Creep
+
 signal blocked
 signal selected
 signal died
@@ -12,11 +14,13 @@ var NavigationTarget = preload("res://creeps/NavigationTarget.tscn")
 enum S { SPAWNED, MOVING, BLOCKED, AT_DESTINATION, DYING }
 
 var KIND = "Normal"
-var LEVEL = 1
-var HEALTH = 50
-var SPEED = 50
+var BASE_HEALTH = 50
+var SPEED = 48
 var STUN_CHANCE = 10
+var RESIST_CHANCE = 0.0
+var STATUS_REDUCTION = 0.0
 var is_boss = false
+var level = 1
 
 onready var spriteButton = $SpriteButton
 
@@ -28,11 +32,16 @@ var display_navigation_targets = false
 var chilled = false
 var stunned = false
 var poisoned = false
+var health = 0
+var rng
 
+# Maybe we want gold to scale with level? Not sure.
 func gold_value():
-	var base = 10
-	if is_boss: base = 50
-	return base * LEVEL
+	if is_boss: return 50
+	else: return 10
+	# var base = 10
+	# if is_boss: base = 50
+	# return base * LEVEL
 
 func get_status_effects():
 	var effects = []
@@ -47,36 +56,48 @@ func get_status_effects():
 func determine_speed():
 	var base = SPEED
 	if chilled:
-		base *= 0.5
+		var penalty = 0.5 * (1.0 - STATUS_REDUCTION)
+		base *= penalty
 	if stunned:
 		base = 0
 	return base
 
-func apply_chilled():
-	chilled = true
-	emit_signal("state_changed")
-	$ChillTimer.start()
+func resisted_status_effect(hit_chance=100):
+	var roll = rng.randi_range(1, 100) * (1.0 - RESIST_CHANCE)
+	return hit_chance > roll
+	
+func maybe_apply_chilled():
+	if not resisted_status_effect(100):
+		chilled = true
+		emit_signal("state_changed")
+		var duration = 1.0
+		$ChillTimer.start(duration)
 
 func _on_chilltimer_timeout():
 	emit_signal("state_changed")
 	chilled = false
 
-func apply_stun():
-	stunned = true
-	emit_signal("state_changed")
-	$StunTimer.start()
+func maybe_apply_stun(stun_chance):
+	var bonus_resist = 100 - stun_chance
+	if not resisted_status_effect(bonus_resist):
+		stunned = true
+		emit_signal("state_changed")
+		var duration = 1.0 * STATUS_REDUCTION
+		$StunTimer.start(duration)
 
 func _on_stuntimer_timeout():
 	emit_signal("state_changed")
 	stunned = false
 
-func apply_poison(amount):
-	poisoned = true
-	emit_signal("state_changed")
-	$IsPoisonedTimer.start(1.5)
-	for _i in range(3):
-		yield(get_tree().create_timer(0.5), "timeout")
-		damage(amount / 3.0, 0)
+func maybe_apply_poison(amount, bonus_gold):
+	if not resisted_status_effect(100):
+		poisoned = true
+		emit_signal("state_changed")
+		$IsPoisonedTimer.start(1.5)
+		for _i in range(3):
+			var d = (amount / 3.0) * STATUS_REDUCTION
+			yield(get_tree().create_timer(0.5), "timeout")
+			damage(d, bonus_gold)
 
 func _on_ispoisonedtimer_timeout():
 	emit_signal("state_changed")
@@ -86,9 +107,9 @@ func is_alive():
 	return state != S.DYING and state != S.AT_DESTINATION
 
 func damage(amount, bonus_gold):
-	HEALTH -= amount
+	health -= amount
 	emit_signal("state_changed")
-	if HEALTH <= 0:
+	if health <= 0:
 		state = S.DYING
 		State.add_gold(gold_value() * (1 + bonus_gold))
 
@@ -232,11 +253,16 @@ func handle_points_changed(_points):
 			update_current_path()
 			state = S.MOVING
 
-func init(dest):
+func init(level_, dest):
+	self.level = level_
 	destination = dest
+	health = BASE_HEALTH * level
+	if is_boss:
+		health *= 10
 
 func selected():
 	emit_signal("selected")
 
 func _ready():
 	spriteButton.connect("pressed", self, "selected")
+	rng = RandomNumberGenerator.new()

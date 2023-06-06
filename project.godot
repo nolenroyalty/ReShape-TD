@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "KinematicBody2D",
+"class": "Creep",
+"language": "GDScript",
+"path": "res://creeps/CreepGeneric.gd"
+}, {
 "base": "Node2D",
 "class": "CreepArea",
 "language": "GDScript",
@@ -20,6 +25,7 @@ _global_script_classes=[ {
 "path": "res://towers/Tower.gd"
 } ]
 _global_script_class_icons={
+"Creep": "",
 "CreepArea": "",
 "TowerBase": ""
 }
@@ -47,7 +53,8 @@ window/size/width=700
 window/size/height=500
 window/size/test_width=1400
 window/size/test_height=1000
-window/stretch/mode="viewport"
+window/dpi/allow_hidpi=true
+window/stretch/mode="2d"
 window/stretch/aspect="keep"
 
 [gui]
@@ -116,6 +123,11 @@ DEBUG_SPAWN_WAVES={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":90,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
  ]
 }
+DEBUG_SPAWN_TEST={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":88,"physical_scancode":0,"unicode":0,"echo":false,"script":null)
+ ]
+}
 
 [layer_names]
 
@@ -140,6 +152,7 @@ common/enable_pause_aware_picking=true
 [rendering]
 
 quality/driver/driver_name="GLES2"
+2d/snapping/use_gpu_pixel_snap=true
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
 environment/default_environment="res://default_env.tres"

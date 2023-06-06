@@ -8,6 +8,14 @@ onready var buildable = $BuildableGrid
 onready var grid = $PathingGrid
 
 var Creep = preload("res://creeps/CreepGeneric.tscn")
+var Normal = preload("res://creeps/CreepNormal.tscn")
+var NormalBoss = preload("res://creeps/NormalBoss.tscn")
+var Thick = preload("res://creeps/CreepThick.tscn")
+var ThickBoss = preload("res://creeps/ThickBoss.tscn")
+var Quick = preload("res://creeps/CreepQuick.tscn")
+var QuickBoss = preload("res://creeps/QuickBoss.tscn")
+var Resist = preload("res://creeps/CreepResist.tscn")
+var ResistBoss = preload("res://creeps/ResistantBoss.tscn")
 var Tower = preload("res://towers/Tower.tscn")
 
 enum S { PLAYING, IN_MENU }
@@ -90,14 +98,14 @@ func init_pathing_grid():
 	
 	grid.init(all_points)
 
-func init_creep(start, end):
-	var creep = Creep.instance()
+func init_creep(kind, level, start, end):
+	var creep = kind.instance()
 	creep.position = U.center(start)
-	creep.init(end)
+	creep.init(level, end)
 	creep.connect("selected", self, "creep_selected", [creep])
 	add_child(creep)
 	
-func spawn_creep(vertical):
+func spawn_creep(level, vertical):
 	var start
 	var end
 	
@@ -108,33 +116,43 @@ func spawn_creep(vertical):
 		start = $SpawnLeft.random_starting_point() + $SpawnLeft.position
 		end = $DestRight.get_center_point() + $DestRight.position
 	
-	init_creep(start, end)
+	init_creep(Creep, level, start, end)
 
 func handle_event__playing(event):
 	if event is InputEventMouseButton:
 		if current_build_location != null and event.pressed and event.button_index == BUTTON_LEFT:
 			try_to_build_tower(event)
 
-func spawn_waves():
+func spawn_waves(kind, level, just_this_many=null):
 	for se in [[$SpawnTop, $DestBot], [$SpawnLeft, $DestRight]]:
 		var start = se[0]
 		var end = se[1]
 		var points = start.starting_points()
-		for _i in range(len(points) / 2):
+		var num_to_remove = 0
+		if just_this_many == null:
+			num_to_remove = len(points) / 2
+		else:
+			num_to_remove = len(points) - just_this_many
+		
+		for _i in num_to_remove:
 			var remove = rng.randi_range(0, len(points) - 1)
 			points.remove(remove)
 		
+		# TODO SOON: add jitter in terms of time and position
 		for point in points:
 			point = point + start.position
-			init_creep(point, end.get_center_point() + end.position)
+			init_creep(kind, level, point, end.get_center_point() + end.position)
 
 func handle_keypresses__playing(_delta):
 	if Input.is_action_just_pressed("DEBUG_SPAWN_SINGLE_CREEP__HORIZONTAL"):
-		spawn_creep(false)
+		spawn_creep(1, false)
 	if Input.is_action_just_pressed("DEBUG_SPAWN_SINGLE_CREEP__VERTICAL"):
-		spawn_creep(true)
+		spawn_creep(1, true)
 	if Input.is_action_just_pressed("DEBUG_SPAWN_WAVES"):
-		spawn_waves()
+		spawn_waves(Normal, 1)
+	if Input.is_action_just_pressed("DEBUG_SPAWN_TEST"):
+		spawn_waves(NormalBoss, 2, 1)
+		# spawn_waves(Thick, 2)
 	if Input.is_action_just_pressed("DEBUG_REFRESH_RANGE"):
 		for child in get_tree().get_nodes_in_group("tower"):
 			child.refresh_range()
