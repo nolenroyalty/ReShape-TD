@@ -50,4 +50,8 @@ __meta__ = {
 [node name="BuildingIndicator" parent="." instance=ExtResource( 7 )]
 position = Vector2( 0, 16 )
 
+[node name="SpawnTimer" type="Timer" parent="."]
+wait_time = 0.3
+one_shot = true
+
 [connection signal="body_exited" from="BattlefieldBounds" to="BattlefieldBounds" method="_on_BattlefieldBounds_body_exited"]

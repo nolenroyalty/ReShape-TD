@@ -5,6 +5,7 @@ class_name CreepArea
 var WIDTH = 0
 var HEIGHT = 0
 var rng
+var starting_points = []
 
 func pathable_points():
 	var points = []
@@ -16,27 +17,37 @@ func pathable_points():
 func is_horizontal():
 	return WIDTH > HEIGHT
 
-func starting_points():
-	var points = []
-	var width
-	var height
-
+func init_starting_points():
 	if is_horizontal():
-		width = WIDTH
-		height = HEIGHT - 1
+		for x in range(WIDTH):
+			starting_points.append(U.v(x, 0) * C.CELL_SIZE)
 	else:
-		width = WIDTH - 1
-		height = HEIGHT
+		for y in range(HEIGHT):
+			starting_points.append(U.v(0, y) * C.CELL_SIZE)
+	
 
-	for x in range(width):
-		for y in range(height):
-			points.append(U.v(x, y) * C.CELL_SIZE)
-	return points
+# func starting_points():
+# 	var points = []
+# 	var width
+# 	var height
+
+# 	if is_horizontal():
+# 		for x in range(width):
+# 			points.append(U.v(x, 0) * C.CELL_SIZE)
+# 		width = WIDTH
+# 		height = HEIGHT - 1
+# 	else:
+# 		width = WIDTH - 1
+# 		height = HEIGHT
+
+# 	for x in range(width):
+# 		for y in range(height):
+# 			points.append(U.v(x, y) * C.CELL_SIZE)
+# 	return points
 	
 func random_starting_point():
-	var points = starting_points()
-	var choice = rng.randi_range(0, len(points) - 1)
-	return points[choice]
+	var choice = rng.randi_range(0, len(starting_points) - 1)
+	return starting_points[choice]
 
 func get_center_point():
 	return U.v(WIDTH / 2, HEIGHT / 2) * C.CELL_SIZE

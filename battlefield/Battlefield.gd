@@ -6,6 +6,7 @@ signal selected_tower(tower)
 onready var indicator = $BuildingIndicator
 onready var buildable = $BuildableGrid
 onready var grid = $PathingGrid
+onready var spawn_timer = $SpawnTimer
 
 var Creep = preload("res://creeps/CreepGeneric.tscn")
 var Normal = preload("res://creeps/CreepNormal.tscn")
@@ -25,6 +26,7 @@ var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var selected_shape = null
 var state = S.PLAYING
 var selected_creep_or_tower = null
+var spawn_queue = []
 
 func move_building_indicator(pos):
 	current_build_location = pos + buildable.position
@@ -98,60 +100,64 @@ func init_pathing_grid():
 	
 	grid.init(all_points)
 
-func init_creep(kind, level, start, end):
-	var creep = kind.instance()
-	creep.position = U.center(start)
-	creep.init(level, end)
-	creep.connect("selected", self, "creep_selected", [creep])
+func add_creep_soon(creep):
+	var wait_time = rng.randf() * 0.2
+	yield(get_tree().create_timer(wait_time), "timeout")
 	add_child(creep)
-	
-func spawn_creep(level, vertical):
-	var start
-	var end
-	
-	if vertical:
-		start = $SpawnTop.random_starting_point() + U.snap_to_grid($SpawnTop.position)
-		end = $DestBot.get_center_point() + U.snap_to_grid($DestBot.position)
-	else:
-		start = $SpawnLeft.random_starting_point() + $SpawnLeft.position
-		end = $DestRight.get_center_point() + $DestRight.position
-	
-	init_creep(Creep, level, start, end)
+
+func spawn(vertical):
+	if vertical: return $SpawnLeft
+	else: return $SpawnTop
+
+func dest(vertical):
+	if vertical: return $DestRight
+	else: return $DestBot
+
+var last_vertical = null
+var last_horizontal = null
+func pop_from_spawn_queue():
+	spawn_timer.start()
+	var creep_info = spawn_queue.pop_front()
+	var CreepKind = creep_info[0]
+	var level = creep_info[1]
+	for vertical in [ true, false]:
+		var start_area = spawn(vertical)
+		var end_area = dest(vertical)
+
+		var points = start_area.starting_points
+		var idx = rng.randi_range(0, len(points) - 1)
+		if vertical:
+			if idx == last_vertical: 
+				idx += 1
+			last_vertical = idx
+		else:
+			if idx == last_horizontal:
+				idx += 1
+			last_horizontal = idx
+		
+		var start = points[idx % len(points)] + U.snap_to_grid(start_area.position)
+		var end = end_area.get_center_point() + U.snap_to_grid(end_area.position)
+		var creep = CreepKind.instance()
+		creep.position = U.center(start)
+		creep.init(level, end)
+		creep.connect("selected", self, "creep_selected", [creep])
+		add_creep_soon(creep)
 
 func handle_event__playing(event):
 	if event is InputEventMouseButton:
 		if current_build_location != null and event.pressed and event.button_index == BUTTON_LEFT:
 			try_to_build_tower(event)
 
-func spawn_waves(kind, level, just_this_many=null):
-	for se in [[$SpawnTop, $DestBot], [$SpawnLeft, $DestRight]]:
-		var start = se[0]
-		var end = se[1]
-		var points = start.starting_points()
-		var num_to_remove = 0
-		if just_this_many == null:
-			num_to_remove = len(points) / 2
-		else:
-			num_to_remove = len(points) - just_this_many
-		
-		for _i in num_to_remove:
-			var remove = rng.randi_range(0, len(points) - 1)
-			points.remove(remove)
-		
-		# TODO SOON: add jitter in terms of time and position
-		for point in points:
-			point = point + start.position
-			init_creep(kind, level, point, end.get_center_point() + end.position)
+func add_to_spawn_queue(creep, count, level):
+	for _i in range(count):
+		spawn_queue.append([creep, level])
 
 func handle_keypresses__playing(_delta):
-	if Input.is_action_just_pressed("DEBUG_SPAWN_SINGLE_CREEP__HORIZONTAL"):
-		spawn_creep(1, false)
-	if Input.is_action_just_pressed("DEBUG_SPAWN_SINGLE_CREEP__VERTICAL"):
-		spawn_creep(1, true)
 	if Input.is_action_just_pressed("DEBUG_SPAWN_WAVES"):
-		spawn_waves(Normal, 1)
+		add_to_spawn_queue(QuickBoss, 1, 2)
 	if Input.is_action_just_pressed("DEBUG_SPAWN_TEST"):
-		spawn_waves(NormalBoss, 2, 1)
+		add_to_spawn_queue(Normal, 5, 1)
+		# spawn_waves(NormalBoss, 2, 1)
 		# spawn_waves(Thick, 2)
 	if Input.is_action_just_pressed("DEBUG_REFRESH_RANGE"):
 		for child in get_tree().get_nodes_in_group("tower"):
@@ -168,8 +174,7 @@ func set_playing():
 
 func set_shape(shape):
 	selected_shape = shape
-	# indicator.set_shape(shape)
-
+	
 func _input(event):
 	match state:
 		S.PLAYING: handle_event__playing(event)
@@ -177,12 +182,20 @@ func _input(event):
 	
 func _process(delta):
 	match state:
-		S.PLAYING: handle_keypresses__playing(delta)
+		S.PLAYING: 
+			handle_keypresses__playing(delta)
+			if len(spawn_queue) > 0 and spawn_timer.is_stopped():
+				pop_from_spawn_queue()
+
 		S.IN_MENU: pass
 
 func _ready():
 	buildable.connect("mouse_buildable_grid_position", self, "move_building_indicator")
 	buildable.connect("mouse_left_buildable_grid", self, "hide_building_indicator")
 	init_pathing_grid()
+	# If we put this in CreepArea then when it's called WIDTH hasn't been overridden and
+	# it doesn't work, which seems insane?? Godot is a pretty bad language.
+	$SpawnTop.init_starting_points()
+	$SpawnLeft.init_starting_points()
 	U.GRID = grid
 	rng.randomize()
