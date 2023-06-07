@@ -7,6 +7,7 @@ onready var battlefield = $Battlefield
 onready var upgrade_selector = $ReshapeUpgradeSelector
 onready var individual_viewer = $IndividualViewer
 onready var wave_display = $WaveDisplay
+onready var shade = $Shader
 
 enum S { RUNNING, IN_MENU }
 
@@ -15,8 +16,9 @@ var state = S.RUNNING
 
 func hide_reshape_upgrade_picker(picker):
 	picker.queue_free()
-	battlefield.set_playing()
 	get_tree().paused = false
+	shade.hide()
+	battlefield.set_playing()
 
 func handle_upgrade_purchased(shape, upgrade, picker):
 	var cost = Upgrades.reshape_cost(shape)
@@ -29,9 +31,11 @@ func handle_upgrade_purchased(shape, upgrade, picker):
 	# upgrade_selector.update_upgrades_text()
 
 func show_reshape_upgrade_picker(shape):
+	shade.show()
 	get_tree().paused = true
-	var picker = ReshapeUpgradePicker.instance()
 	battlefield.set_in_menu()
+
+	var picker = ReshapeUpgradePicker.instance()
 	add_child(picker)
 	picker.set_shape(shape)
 	picker.connect("chosen", self, "handle_upgrade_purchased", [picker])
