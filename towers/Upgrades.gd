@@ -98,7 +98,7 @@ func description(t):
 		T.BONUS_GOLD: return "Tower earns 25% more gold for kills"
 		T.GIANT_PROJ: return "Projectiles are much larger"
 		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
-		T.POISONS: return "Projectiles deal 50% of the tower's damage over time"
+		T.POISONS: return "Projectiles deal 50%x of the tower's damage over time"
 
 class IndividualTower extends Node:
 	var LEVEL = 1
