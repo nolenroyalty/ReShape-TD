@@ -11,7 +11,7 @@ signal state_changed
 
 var NavigationTarget = preload("res://creeps/NavigationTarget.tscn")
 
-enum S { SPAWNED, MOVING, BLOCKED, AT_DESTINATION, DYING }
+enum S { SPAWNED, MOVING, BLOCKED, IN_GOAL_AREA, AT_DESTINATION, DYING }
 
 var KIND = "Normal"
 var BASE_HEALTH = 50
@@ -219,6 +219,15 @@ func score_amount():
 	if is_boss: return 50
 	else: return 10
 
+func fade_and_free(time):
+	print("fading?")
+	var tween = Tween.new()
+	tween.interpolate_property(self, "modulate:a", 1.0, 0.0, time, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
+	add_child(tween)
+	tween.start()
+	yield(tween, "tween_completed")
+	call_deferred("queue_free")
+
 var began_to_die = false
 func begin_dying():
 	if began_to_die:
@@ -231,10 +240,12 @@ func begin_dying():
 	State.add_score(score_amount())
 	emit_signal("died")
 	emit_signal("freed_for_whatever_reason")
-	call_deferred("queue_free")
+	$Hurtbox/CollisionShape2D.disabled = true
+	$CollisionShape2D.disabled = true
+	fade_and_free(0.2)
 
 var just_reached = false
-func handle_reached_destination():
+func handle_reached_goal():
 	# Eventually we'll want to stick around for a second and play an animation here
 	if just_reached:
 		return
@@ -246,10 +257,10 @@ func handle_reached_destination():
 
 	emit_signal("reached_destination")
 	emit_signal("freed_for_whatever_reason")
-	call_deferred("queue_free")
+	fade_and_free(0.5)
 
 func notify_reached_destination():
-	state = S.AT_DESTINATION
+	state = S.IN_GOAL_AREA
 
 func _physics_process(_delta):
 	match state:
@@ -259,11 +270,13 @@ func _physics_process(_delta):
 			handle_move()
 		S.BLOCKED:
 			pass
+		S.IN_GOAL_AREA:
+			handle_reached_goal()
+			handle_move()
 		S.AT_DESTINATION:
-			handle_reached_destination()
+			handle_reached_goal()
 		S.DYING:
 			begin_dying()
-			call_deferred("queue_free")
 
 func handle_points_changed(_points):
 	match state:
