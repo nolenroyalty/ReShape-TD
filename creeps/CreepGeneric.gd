@@ -215,8 +215,11 @@ func handle_move(forced_move=null):
 
 		# handle_collides(planned_move, remaining_velocity)
 
-var began_to_die = false
+func score_amount():
+	if is_boss: return 50
+	else: return 10
 
+var began_to_die = false
 func begin_dying():
 	if began_to_die:
 		return
@@ -225,6 +228,7 @@ func begin_dying():
 		target.queue_free()
 
 	began_to_die = true
+	State.add_score(score_amount())
 	emit_signal("died")
 	emit_signal("freed_for_whatever_reason")
 	call_deferred("queue_free")
