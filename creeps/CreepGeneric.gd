@@ -88,15 +88,34 @@ func _on_stuntimer_timeout():
 	emit_signal("state_changed")
 	stunned = false
 
+func tick_poison(timer, damage, bonus_gold, ticks_remaining):
+	if ticks_remaining == 0:
+		timer.call_deferred("queue_free")
+		return
+	
+	if timer.is_connected("timeout", self, "tick_poison"):
+		timer.disconnect("timeout", self, "tick_poison")
+
+	damage(damage, bonus_gold)
+	ticks_remaining -= 1
+	timer.connect("timeout", self, "tick_poison", [timer, damage, bonus_gold, ticks_remaining])
+	timer.start(0.5)
+
 func maybe_apply_poison(amount, bonus_gold):
 	if status_effect_hit(100):
 		poisoned = true
 		emit_signal("state_changed")
 		$IsPoisonedTimer.start(1.5)
-		for _i in range(3):
-			var d = (amount / 3.0) * STATUS_REDUCTION
-			yield(get_tree().create_timer(0.5), "timeout")
-			damage(d, bonus_gold)
+		var timer = Timer.new()
+		timer.one_shot = true
+		add_child(timer)
+		var d = (amount / 3.0) * STATUS_REDUCTION
+		tick_poison(timer, d, bonus_gold, 3)
+		
+		# for _i in range(3):
+		# 	var d = (amount / 3.0) * STATUS_REDUCTION
+		# 	yield(get_tree().create_timer(0.5), "timeout")
+		# 	damage(d, bonus_gold)
 
 func _on_ispoisonedtimer_timeout():
 	emit_signal("state_changed")

@@ -77,6 +77,8 @@ func handle_keypress__running(_delta):
 		set_shape(C.SHAPE.CRESCENT)
 	if Input.is_action_just_pressed("select_tower_3"):
 		set_shape(C.SHAPE.DIAMOND)
+	if State.debug and Input.is_action_just_pressed("DEBUG_GIVE_GOLD"):
+		State.add_gold(1000)
 
 func _process(delta):
 	match state:

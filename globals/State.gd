@@ -6,6 +6,7 @@ signal lives_updated(amount)
 
 var gold = 200
 var lives = 20
+var debug = true
 
 func add_gold(amount):
 	gold += int(amount)

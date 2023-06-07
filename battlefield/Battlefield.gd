@@ -40,9 +40,6 @@ func hide_building_indicator():
 func notify_creeps_of_pathing_change():
 	get_tree().call_group("creep", "update_current_path")
 
-func have_the_money_to_place_tower():
-	return true
-
 func relevant_points_for_tower(pos):
 	var points = []
 	for dx in [0, C.CELL_SIZE]:
@@ -79,9 +76,14 @@ func actually_build_tower(location):
 func try_to_build_tower(_event):
 	if not indicator.unblocked():
 		return
-	
+	if selected_shape == null:
+		return
+
 	# Maybe double-check that we can build here, I don't know
-	if not have_the_money_to_place_tower():
+	var cost = Upgrades.tower_cost(selected_shape)
+	if not State.try_to_buy(cost):
+		print("Not enough money to place tower!")
+		# play sound?
 		return
 
 	actually_build_tower(current_build_location)
@@ -174,7 +176,7 @@ func set_playing():
 
 func set_shape(shape):
 	selected_shape = shape
-	
+
 func _input(event):
 	match state:
 		S.PLAYING: handle_event__playing(event)
