@@ -25,6 +25,9 @@ func compute_path(start, end):
 	# so that everyone takes the same path when it's ambiguous.
 	return astar.get_point_path(_id_of_point(start), _id_of_point(end))
 
+func is_disabled(point):
+	return astar.is_point_disabled(_id_of_point(point))
+
 func disable_points(points):
 	print("Disabling points: %s" % [points])
 	for point in points:

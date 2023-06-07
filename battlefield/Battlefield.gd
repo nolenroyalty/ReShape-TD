@@ -75,16 +75,29 @@ func actually_build_tower(location):
 	
 func try_to_build_tower(_event):
 	if not indicator.unblocked():
-		return
-	if selected_shape == null:
-		return
+		return false
+	
+	var creep_pos = {}
 
-	# Maybe double-check that we can build here, I don't know
+	for creep in get_tree().get_nodes_in_group("creep"):
+		if creep.position.distance_to(current_build_location) < C.CELL_SIZE * 2:
+			creep_pos[U.snap_to_grid(creep.position)] = true
+
+	for pos in relevant_points_for_tower(current_build_location):
+		if grid.is_disabled(pos):
+			return false
+		
+		if pos in creep_pos:
+			return false
+		
+	if selected_shape == null:
+		return false
+		
 	var cost = Upgrades.tower_cost(selected_shape)
 	if not State.try_to_buy(cost):
 		print("Not enough money to place tower!")
 		# play sound?
-		return
+		return false
 
 	actually_build_tower(current_build_location)
 	notify_creeps_of_pathing_change()
