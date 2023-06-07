@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://ui/WaveLine.tscn" type="PackedScene" id=1]
+[ext_resource path="res://ui/sprites/ninepatch-gold.png" type="Texture" id=2]
+[ext_resource path="res://ui/WaveDisplay.gd" type="Script" id=3]
+
+[node name="WaveDisplay" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="WaveLine" parent="." instance=ExtResource( 1 )]
+position = Vector2( 96, 0 )
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+margin_right = 80.0
+margin_bottom = 32.0
+texture = ExtResource( 2 )
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+
+[node name="WaveTimer" type="Timer" parent="."]
+
+[node name="AdvanceTween" type="Tween" parent="."]
+
+[node name="TickTween" type="Tween" parent="."]
