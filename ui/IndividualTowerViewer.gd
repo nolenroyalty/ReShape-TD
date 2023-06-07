@@ -17,9 +17,9 @@ func set_text_for_tower():
 	header.text = "%s Tower (level %s)\n" % [name, stats.LEVEL]
 	values.text = "%.1f\n%s\n%s" % [ stats.attacks_per_second(), stats.DAMAGE, stats.RANGE_RADIUS]
 
-	sell_button.text = "Sell (%s gold)" % tower.sell_value
+	sell_button.text = " Sell (%s gold) " % tower.sell_value
 	var upgrade_cost = Upgrades.upgrade_cost(tower.my_shape, tower.my_stats)
-	level_up_button.text = "Level up (%s gold)" % upgrade_cost
+	level_up_button.text = " Level up (%s gold) " % upgrade_cost
 
 func we_have_enough_gold_for_upgrade():
 	return true

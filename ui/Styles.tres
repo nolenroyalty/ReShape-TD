@@ -1,46 +1,73 @@
-[gd_resource type="Theme" load_steps=9 format=2]
+[gd_resource type="Theme" load_steps=6 format=2]
 
-[ext_resource path="res://ui/sprites/ninepatch-disabled.png" type="Texture" id=1]
-[ext_resource path="res://ui/sprites/ninepatch-grey.png" type="Texture" id=2]
-[ext_resource path="res://ui/sprites/ninepatch-both.png" type="Texture" id=3]
-[ext_resource path="res://ui/sprites/ninepatch-plain.png" type="Texture" id=4]
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color( 0.105882, 0.105882, 0.0901961, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.341176, 0.337255, 0.278431, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxTexture" id=5]
-texture = ExtResource( 1 )
-region_rect = Rect2( 0, 0, 9, 9 )
-margin_left = 1.0
-margin_right = 1.0
-margin_top = 1.0
-margin_bottom = 1.0
+[sub_resource type="StyleBoxFlat" id=11]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 1, 1, 1, 0 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxTexture" id=1]
-texture = ExtResource( 4 )
-region_rect = Rect2( 0, 0, 9, 9 )
-margin_left = 1.16533
-margin_right = 1.16533
-margin_top = 1.03585
-margin_bottom = 1.03585
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color( 1, 1, 1, 0 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.92549, 0.85098, 0.839216, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color( 0.815686, 0.784314, 0.784314, 0.490196 )
+shadow_size = 1
 
-[sub_resource type="StyleBoxTexture" id=3]
-texture = ExtResource( 2 )
-region_rect = Rect2( 0, 0, 9, 9 )
-margin_left = 1.0535
-margin_right = 1.0535
-margin_top = 1.0535
-margin_bottom = 1.31687
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 0.105882, 0.105882, 0.0901961, 1 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.92549, 0.85098, 0.839216, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
-[sub_resource type="StyleBoxTexture" id=4]
-texture = ExtResource( 3 )
-region_rect = Rect2( 1, 1, 7, 7 )
-margin_left = 1.51737
-margin_right = 1.83464
-margin_top = 2.20709
-margin_bottom = 1.96569
+[sub_resource type="StyleBoxFlat" id=12]
+bg_color = Color( 1, 1, 1, 0 )
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color( 0.92549, 0.85098, 0.839216, 1 )
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color( 0.423529, 0.411765, 0.411765, 0.490196 )
+shadow_size = 1
 
 [resource]
-Button/colors/font_color_disabled = Color( 0, 0, 0, 0.341176 )
-Button/styles/disabled = SubResource( 5 )
-Button/styles/focus = SubResource( 1 )
-Button/styles/hover = SubResource( 3 )
-Button/styles/normal = SubResource( 1 )
-Button/styles/pressed = SubResource( 4 )
+Button/colors/font_color_disabled = Color( 1, 1, 1, 0.341176 )
+Button/styles/disabled = SubResource( 8 )
+Button/styles/focus = SubResource( 11 )
+Button/styles/hover = SubResource( 9 )
+Button/styles/normal = SubResource( 7 )
+Button/styles/pressed = SubResource( 12 )

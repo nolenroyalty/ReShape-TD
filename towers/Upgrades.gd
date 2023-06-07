@@ -49,10 +49,10 @@ func _apply(t, stats):
 		T.CHAINS: stats.CHAINS = 2
 		T.LESSER_MULTIPROJ: 
 			stats.PROJECTILES = 3
-			stats.DAMAGE_MULT = 0.75
+			stats.DAMAGE_MULT = 0.7
 		T.GREATER_MULTIPROJ:
 			stats.PROJECTILES = 5
-			stats.DAMAGE_MULT = 0.5
+			stats.DAMAGE_MULT = 0.45
 		T.STUNNING: stats.STUNS = true
 		T.BONUS_GOLD: stats.BONUS_GOLD = 0.25
 		T.GIANT_PROJ: stats.PROJECTILE_SIZE_MULT = 2.5
@@ -61,6 +61,13 @@ func _apply(t, stats):
 	
 	stats.upgrades.append(t)
 	return stats
+
+func excludes(t):
+	match t:
+		T.LESSER_MULTIPROJ: return [ T.GREATER_MULTIPROJ ]
+		T.GREATER_MULTIPROJ: return [ T.LESSER_MULTIPROJ ]
+		T.PIERCES: return [ T.CHAINS ]
+		T.CHAINS: return [ T.PIERCES ]
 
 func title(t):
 	match t:
@@ -79,18 +86,18 @@ func title(t):
 
 func description(t):
 	match t:
-		T.CHILLS: return "Slows enemies"
-		T.EXPLODES: return "Explodes on impact"
+		T.CHILLS: return "Projectiles have a high chance to slow enemies"
+		T.EXPLODES: return "Projectiles explode on impact"
 	#	T.BURNING_GROUND: return "Leaves burning ground that deals damage over time"
-		T.PIERCES: return "Pierces enemies"
-		T.CHAINS: return "Chains to nearby enemies"
-		T.LESSER_MULTIPROJ: return "Shoots 3 projectiles but does less damage"
-		T.GREATER_MULTIPROJ: return "Shoots 5 projectiles but does much less damage"
-		T.STUNNING: return "Has a chance to stun enemies on hit"
-		T.BONUS_GOLD: return "Gives 25% more gold for kills"
-		T.GIANT_PROJ: return "Shoots much larger projectiles"
-		T.RETURNS: return "Returns to the tower after hitting an enemy"
-		T.POISONS: return "Poisons enemies, dealing damage over time"
+		T.PIERCES: return "Projectiles pierce up to 2 enemies"
+		T.CHAINS: return "Projectiles chain to up to 2 nearby enemies"
+		T.LESSER_MULTIPROJ: return "Shoots 3 projectiles but does 30% less damage"
+		T.GREATER_MULTIPROJ: return "Shoots 5 projectiles but does 55% less damage"
+		T.STUNNING: return "Projectiles have a low chance to stun enemies"
+		T.BONUS_GOLD: return "Tower earns 25% more gold for kills"
+		T.GIANT_PROJ: return "Projectiles are much larger"
+		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
+		T.POISONS: return "Poisons enemies, dealing 50% of the tower's damage over time"
 
 class IndividualTower extends Node:
 	var LEVEL = 1
@@ -122,10 +129,17 @@ func active_upgrades(shape):
 	return state[shape].upgrades
 
 func possible_upgrades(shape):
+	# Add exclusions
 	var possible = []
+	var excluded = {}
+	for t in active_upgrades(shape):
+		for exclude in excludes(t):
+			excluded[exclude] = true
+
 	for t in all_upgrades():
-		if not (t in active_upgrades(shape)):
+		if not (t in active_upgrades(shape)) and not (t in excluded):
 			possible.append(t)
+			
 	return possible
 
 func tower_cost(shape):

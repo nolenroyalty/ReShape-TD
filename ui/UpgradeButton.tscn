@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ui/UpgradeButton.gd" type="Script" id=1]
+
+[node name="UpgradeButton" type="Button"]
+margin_right = 128.0
+margin_bottom = 96.0
+rect_min_size = Vector2( 128, 96 )
+script = ExtResource( 1 )
+
+[node name="Label" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 2.0
+margin_right = -8.0
+margin_bottom = -2.0
+text = "Megamultishotting
+
+Shoots 5 projectiles but does 55% less damage"
+align = 1
+autowrap = true
