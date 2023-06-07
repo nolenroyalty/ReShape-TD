@@ -6,6 +6,7 @@ var ReshapeUpgradePicker = preload("res://ui/ReshapeUpgrade3Choice.tscn")
 onready var battlefield = $Battlefield
 onready var upgrade_selector = $ReshapeUpgradeSelector
 onready var individual_viewer = $IndividualViewer
+onready var wave_display = $WaveDisplay
 
 enum S { RUNNING, IN_MENU }
 
@@ -70,6 +71,8 @@ func set_shape(shape):
 	upgrade_selector.set_shape(shape)
 	battlefield.set_shape(shape)
 
+
+var started = false
 func handle_keypress__running(_delta):
 	if Input.is_action_just_pressed("select_tower_1"):
 		set_shape(C.SHAPE.CROSS)
@@ -77,6 +80,12 @@ func handle_keypress__running(_delta):
 		set_shape(C.SHAPE.CRESCENT)
 	if Input.is_action_just_pressed("select_tower_3"):
 		set_shape(C.SHAPE.DIAMOND)
+	if Input.is_action_just_pressed("send_wave"):
+		if not started:
+			wave_display.start()
+			started = true
+		else:
+			wave_display.advance_immediately()
 	if State.debug and Input.is_action_just_pressed("DEBUG_GIVE_GOLD"):
 		State.add_gold(1000)
 
@@ -84,6 +93,16 @@ func _process(delta):
 	match state:
 		S.RUNNING: handle_keypress__running(delta)
 		S.IN_MENU: pass
+	
+func handle_wave_started(number, kind, is_boss):
+	var level = (number / 5) + 1
+	battlefield.spawn_wave(kind, level, is_boss)
+
+func handle_final_wave_sent():
+	assert(true == false, "TODO: handle final wave sent")
+
+func handle_timer_updated(time):
+	pass
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -92,4 +111,8 @@ func _ready():
 	upgrade_selector.connect("selected", self, "set_shape")
 	battlefield.connect("selected_tower", self, "show_individual_tower")
 	battlefield.connect("selected_creep", self, "show_individual_creep")
+	wave_display.connect("wave_started", self, "handle_wave_started")
+	wave_display.connect("final_wave_sent", self, "handle_final_wave_sent")
+	wave_display.connect("timer_updated", self, "handle_timer_updated")
+
 	VisualServer.set_default_clear_color(C.BLACK)

@@ -21,7 +21,6 @@ func set_text(kind, number, is_boss):
 			C.CREEP_KIND.RESISTANT: label.text = prefix + "Resistant"
 
 func init(kind, number, is_boss):
-	print("init %s %d" % [self, number])
 	set_color(kind)
 	set_text(kind, number, is_boss)
 

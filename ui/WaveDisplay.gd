@@ -1,7 +1,7 @@
 extends Node2D
 
 signal final_wave_sent
-signal wave_started(kind, is_boss)
+signal wave_started(number, kind, is_boss)
 signal timer_updated(amount)
 
 const FULL_TIMER = 25
@@ -14,6 +14,7 @@ onready var wave_timer := $WaveTimer
 var timer_amount = FULL_TIMER
 var wave_number = 0
 var waves = []
+var bonus_from_wave_skipping = 0
 
 func final_offset_for_this_wave():
 	# Cards have 1 px of overlap
@@ -23,7 +24,7 @@ func release_wave(number):
 	var wave = waves[number]
 	print("Wave %s started (kind: %s)" % [number, C.creep_name(wave[0])])
 
-	emit_signal("wave_started", wave[0], wave[1])
+	emit_signal("wave_started", number, wave[0], wave[1])
 	if wave_number + 1 >= len(waves):
 		emit_signal("final_wave_sent")
 
@@ -38,6 +39,11 @@ func reset_timer():
 	emit_signal("timer_updated", timer_amount)
 
 func advance_immediately():
+	if wave_number != 0:
+		var bonus = timer_amount * 3
+		bonus_from_wave_skipping += bonus
+		State.add_score(bonus)
+	
 	if advance_tween.is_active():
 		advance_tween.stop_all()
 	
@@ -76,19 +82,46 @@ func start():
 	wave_timer.start(1)
 
 func _process(_delta):
-	if Input.is_action_just_pressed("DEBUG_START"):
+	if State.debug and Input.is_action_just_pressed("DEBUG_START"):
 		start()
-	if Input.is_action_just_pressed("DEBUG_ADVANCE"):
+	if State.debug and Input.is_action_just_pressed("DEBUG_ADVANCE"):
 		advance_immediately()
+
+var n = C.CREEP_KIND.NORMAL
+var t = C.CREEP_KIND.THICK
+var r = C.CREEP_KIND.RESISTANT
+var q = C.CREEP_KIND.QUICK
+
+var all_waves = [
+	[ n, false],
+	[ n, false],
+	[ t, false],
+	[ q, false],
+	[ r, false],
+	[ n, true],
+	[ q, false],
+	[ t, false],
+	[ r, false],
+	[ q, true],
+	[ t, false],
+	[ n, false],
+	[ n, false],
+	[ r, true],
+	[ n, true],
+	[ t, false],
+	[ q, false],
+	[ r, false],
+	[ q, true],
+	[ t, true],
+	[ r, true],
+	[ n, true],
+	[ q, true],
+	[ t, true],
+	[ r, true],
+	[ n, true],
+]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var w = [ [ C.CREEP_KIND.NORMAL, false], [ C.CREEP_KIND.THICK, true], [C.CREEP_KIND.RESISTANT, false], [C.CREEP_KIND.QUICK, false]]
-	init(w)
+	init(all_waves)
 	var _ignore = wave_timer.connect("timeout", self, "handle_tick")
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass

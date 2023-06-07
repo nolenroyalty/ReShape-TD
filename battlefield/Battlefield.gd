@@ -167,6 +167,27 @@ func add_to_spawn_queue(creep, count, level):
 	for _i in range(count):
 		spawn_queue.append([creep, level])
 
+func spawn_wave(kind, level, is_boss):
+	var count = 5
+	if is_boss: count = 1
+	var CreepClass = null
+
+	match kind:
+		C.CREEP_KIND.NORMAL:
+			if is_boss: CreepClass = NormalBoss
+			else: CreepClass = Normal
+		C.CREEP_KIND.THICK:
+			if is_boss: CreepClass = ThickBoss
+			else: CreepClass = Thick
+		C.CREEP_KIND.QUICK:
+			if is_boss: CreepClass = QuickBoss
+			else: CreepClass = Quick
+		C.CREEP_KIND.RESISTANT:
+			if is_boss: CreepClass = ResistBoss
+			else: CreepClass = Resist
+	
+	add_to_spawn_queue(CreepClass, count, level)
+
 func handle_keypresses__playing(_delta):
 	if Input.is_action_just_pressed("DEBUG_SPAWN_WAVES"):
 		add_to_spawn_queue(QuickBoss, 1, 2)
