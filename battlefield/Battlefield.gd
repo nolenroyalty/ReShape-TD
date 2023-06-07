@@ -92,7 +92,7 @@ func try_to_build_tower(_event):
 		
 	if selected_shape == null:
 		return false
-		
+
 	var cost = Upgrades.tower_cost(selected_shape)
 	if not State.try_to_buy(cost):
 		print("Not enough money to place tower!")
@@ -111,7 +111,7 @@ func init_pathing_grid():
 		
 		for point in child.pathable_points():
 			point += offset
-			all_points.append(point)
+			all_points.append(point) 
 	
 	grid.init(all_points)
 
