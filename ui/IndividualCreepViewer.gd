@@ -11,8 +11,8 @@ func init(creep_):
 func set_text_for_creep():
 	var kind = "Kind: %s" % creep.KIND
 	var level = "Level: %s" % creep.level
-	var health = "Health: %s" % creep.health
-	var speed = "Speed: %s" % creep.SPEED
+	var health = "Health: %s" % int(creep.health)
+	var speed = "Speed: %s" % int(creep.SPEED)
 	var status_effects = "\n".join(creep.get_status_effects())
 	var t = "\n".join([kind, level, health, speed, status_effects])
 	label.text = t

@@ -68,6 +68,7 @@ func excludes(t):
 		T.GREATER_MULTIPROJ: return [ T.LESSER_MULTIPROJ ]
 		T.PIERCES: return [ T.CHAINS ]
 		T.CHAINS: return [ T.PIERCES ]
+		_: return []
 
 func title(t):
 	match t:
@@ -97,7 +98,7 @@ func description(t):
 		T.BONUS_GOLD: return "Tower earns 25% more gold for kills"
 		T.GIANT_PROJ: return "Projectiles are much larger"
 		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
-		T.POISONS: return "Poisons enemies, dealing 50% of the tower's damage over time"
+		T.POISONS: return "Projectiles deal 50% of the tower's damage over time"
 
 class IndividualTower extends Node:
 	var LEVEL = 1
@@ -132,14 +133,21 @@ func possible_upgrades(shape):
 	# Add exclusions
 	var possible = []
 	var excluded = {}
+	var used = {}
 	for t in active_upgrades(shape):
 		for exclude in excludes(t):
 			excluded[exclude] = true
+	
+	for s in shapes:
+		for t in active_upgrades(s):
+			used[t] = true
 
 	for t in all_upgrades():
-		if not (t in active_upgrades(shape)) and not (t in excluded):
+		if not (t in used) and not (t in excluded):
 			possible.append(t)
-			
+		# if not (t in active_upgrades(shape)) and not (t in excluded):
+			# possible.append(t)
+
 	return possible
 
 func tower_cost(shape):

@@ -1,6 +1,7 @@
 extends Node2D
 
-var ReshapeUpgradePicker = preload("res://ui/ReshapeUpgradePicker.tscn")
+var ReshapeUpgradeAll = preload("res://ui/ReshapeUpgradeAllChoices.tscn")
+var ReshapeUpgradePicker = preload("res://ui/ReshapeUpgrade3Choice.tscn")
 
 onready var battlefield = $Battlefield
 onready var upgrade_selector = $ReshapeUpgradeSelector
@@ -16,17 +17,23 @@ func hide_reshape_upgrade_picker(picker):
 	battlefield.set_playing()
 	get_tree().paused = false
 
-func handle_upgrade_purchased(picker):
+func handle_upgrade_purchased(shape, upgrade, picker):
+	var cost = Upgrades.reshape_cost(shape)
+	if State.try_to_buy(cost):
+		Upgrades.upgrade(shape, upgrade)
+		print("Purchased upgrade %s for %s" % [Upgrades.title(upgrade), C.shape_name(shape)])
+	else:
+		print("POTENTIAL BUG: not enough gold to purchase upgrade!")
 	hide_reshape_upgrade_picker(picker)
 	# upgrade_selector.update_upgrades_text()
 
 func show_reshape_upgrade_picker(shape):
 	get_tree().paused = true
 	var picker = ReshapeUpgradePicker.instance()
-	picker.init(shape)
 	battlefield.set_in_menu()
 	add_child(picker)
-	picker.connect("upgrade_purchased", self, "handle_upgrade_purchased", [picker])
+	picker.set_shape(shape)
+	picker.connect("chosen", self, "handle_upgrade_purchased", [picker])
 	picker.connect("cancelled", self, "hide_reshape_upgrade_picker", [picker])
 
 func clear_individual_selection(only_if_this_one=null):

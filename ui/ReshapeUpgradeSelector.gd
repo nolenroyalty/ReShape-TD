@@ -36,31 +36,51 @@ func update_info_text():
 func update_reshape_button_cost():
 	if current == null: return
 	var cost = Upgrades.reshape_cost(current)
-	reshape_button.text = "Reshape (%d gold)" % [cost]
+	var remaining = Upgrades.possible_upgrades(current)
+	
+	if len(remaining) < 3:
+		reshape_button.text = "No upgrades left"
+	else:
+		reshape_button.text = "Reshape (%d gold)" % [cost]
 
 func handle_reshaped(shape, _upgrade):
 	if current != null and shape == current:
 		update_info_text()
 		update_reshape_button_cost()
+		update_disabled_state()
+
+func update_disabled_state():
+	if current ==  null:
+		return
+	var cost = Upgrades.reshape_cost(current)
+	var gold = State.gold
+	var remaining = Upgrades.possible_upgrades(current)
+	reshape_button.disabled = cost > gold or len(remaining) < 3
 
 func set_shape(kind):
 	current = kind
 	update_selected()
 	update_info_text()
 	update_reshape_button_cost()
+	update_disabled_state()
 
-func handle_pressed(kind):
+func handle_shape_pressed(kind):
 	set_shape(kind)
 	emit_signal("selected", kind)
 
 func handle_reshape_pressed():
+	if current == null: return
 	var cost = Upgrades.reshape_cost(current)
-	if current != null and State.can_buy(cost):
+	if State.can_buy(cost):
 		emit_signal("reshape", current)
 
+func gold_updated(_amount):
+	update_disabled_state()
+
 func _ready():
-	cross.connect("pressed", self, "handle_pressed", [C.SHAPE.CROSS])
-	crescent.connect("pressed", self, "handle_pressed", [C.SHAPE.CRESCENT])
-	diamond.connect("pressed", self, "handle_pressed", [C.SHAPE.DIAMOND])
+	cross.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.CROSS])
+	crescent.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.CRESCENT])
+	diamond.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.DIAMOND])
 	reshape_button.connect("pressed", self, "handle_reshape_pressed")
-	var _ignore = Upgrades.connect("reshaped", self, "handle_reshaped")
+	var _ignore = State.connect("gold_updated", self, "gold_updated")
+	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")

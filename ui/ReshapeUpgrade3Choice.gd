@@ -1,4 +1,4 @@
-extends Node2D
+extends CanvasLayer
 
 signal chosen(shape, upgrade)
 signal cancelled(shape)
@@ -8,7 +8,7 @@ onready var right = $Background/Choices/Right
 onready var center = $Background/Choices/Center
 onready var title = $Background/Title
 onready var current = $Background/CurrentUpgrades
-onready var cancel = $Background/Cancel
+# onready var cancel = $Background/Cancel
 
 func on_button_pressed(shape, upgrade):
 	print("Chose %s for %s" % [Upgrades.title(upgrade), C.shape_name(shape)])
@@ -27,7 +27,7 @@ func set_shape(shape):
 	else:
 		var l = []
 		for a in active:
-			l.append(C.title(a))
+			l.append(Upgrades.title(a))
 		current.text = "Already active upgrades: %s" % ", ".join(l)
 	
 	var rng = RandomNumberGenerator.new()
@@ -54,7 +54,8 @@ func set_shape(shape):
 	left.connect("pressed", self, "on_button_pressed", [shape, chosen[0]])
 	right.connect("pressed", self, "on_button_pressed", [shape, chosen[1]])
 	center.connect("pressed", self, "on_button_pressed", [shape, chosen[2]])
-	cancel.connect("pressed", self, "cancelled", [shape])
+	print("foo")
+	# cancel.connect("pressed", self, "cancelled", [shape])
 
-func _ready():
-	set_shape(C.SHAPE.CROSS)
+# func _ready():
+# 	set_shape(C.SHAPE.CROSS)
