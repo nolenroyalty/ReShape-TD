@@ -29,10 +29,7 @@ color = Color( 0.341176, 0.337255, 0.278431, 1 )
 [node name="EverythingForShader" type="Node2D" parent="."]
 
 [node name="Battlefield" parent="." instance=ExtResource( 1 )]
-position = Vector2( -16, -16 )
-__meta__ = {
-"_edit_lock_": true
-}
+position = Vector2( -26, -16 )
 
 [node name="ReshapeUpgradeSelector" parent="." instance=ExtResource( 2 )]
 position = Vector2( 560, 32 )
@@ -41,9 +38,9 @@ position = Vector2( 560, 32 )
 position = Vector2( 560, 288 )
 
 [node name="LivesAndGold" type="GridContainer" parent="."]
-margin_left = 384.0
+margin_left = 376.0
 margin_top = 7.0
-margin_right = 543.0
+margin_right = 535.0
 margin_bottom = 39.0
 custom_constants/hseparation = 33
 columns = 3
@@ -64,9 +61,9 @@ text = "Gold: 200"
 script = ExtResource( 6 )
 
 [node name="WaveAndScore" type="GridContainer" parent="."]
-margin_left = 78.0
+margin_left = 70.0
 margin_top = 7.0
-margin_right = 197.0
+margin_right = 189.0
 margin_bottom = 23.0
 custom_constants/hseparation = 33
 columns = 2
@@ -84,7 +81,7 @@ text = "Score: 0"
 script = ExtResource( 7 )
 
 [node name="WaveDisplay" parent="." instance=ExtResource( 8 )]
-position = Vector2( 30, 448 )
+position = Vector2( 22, 448 )
 z_index = -1
 
 [node name="Shader" type="ColorRect" parent="."]
