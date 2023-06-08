@@ -1,17 +1,114 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://ui/IndividualCreepViewer.gd" type="Script" id=1]
+[ext_resource path="res://creeps/sprites/normalboss.png" type="Texture" id=2]
 
 [node name="IndividualCreepViewer" type="Node2D"]
 script = ExtResource( 1 )
 
-[node name="Label" type="Label" parent="."]
+[node name="Title" type="Label" parent="."]
 margin_right = 128.0
-margin_bottom = 128.0
-text = "Kind: Normal
-Level: 1
-Health: 50
-Speed: 50
+margin_bottom = 14.0
+text = "Normal Creep (Boss)"
+align = 1
 
-Chilled
-"
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 64, 32 )
+texture = ExtResource( 2 )
+
+[node name="GridContainer" type="GridContainer" parent="."]
+margin_top = 48.0
+margin_right = 128.0
+margin_bottom = 144.0
+columns = 2
+
+[node name="HealthTitle" type="Label" parent="GridContainer"]
+margin_right = 91.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.662745, 0.411765, 0.376471, 1 )
+text = "Health"
+
+[node name="Health" type="Label" parent="GridContainer"]
+margin_left = 95.0
+margin_right = 128.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.662745, 0.411765, 0.376471, 1 )
+text = "5000"
+
+[node name="SpeedTitle" type="Label" parent="GridContainer"]
+margin_top = 18.0
+margin_right = 91.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.847059, 0.705882, 0.478431, 1 )
+text = "Speed"
+
+[node name="Speed" type="Label" parent="GridContainer"]
+margin_left = 95.0
+margin_top = 18.0
+margin_right = 128.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.847059, 0.705882, 0.478431, 1 )
+text = "50"
+
+[node name="ResistTitle" type="Label" parent="GridContainer"]
+margin_top = 36.0
+margin_right = 91.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
+text = "Resist Chance"
+
+[node name="Resist" type="Label" parent="GridContainer"]
+margin_left = 95.0
+margin_top = 36.0
+margin_right = 128.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
+text = "20%"
+
+[node name="StatusTitle" type="Label" parent="GridContainer"]
+margin_top = 54.0
+margin_right = 91.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
+text = "Status Reduction"
+
+[node name="StatusChance" type="Label" parent="GridContainer"]
+margin_left = 95.0
+margin_top = 54.0
+margin_right = 128.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
+text = "50%"
+
+[node name="Statuses" type="VBoxContainer" parent="GridContainer"]
+margin_top = 72.0
+margin_right = 91.0
+margin_bottom = 122.0
+
+[node name="Chilled" type="Label" parent="GridContainer/Statuses"]
+margin_right = 91.0
+margin_bottom = 14.0
+custom_colors/font_color = Color( 0.368627, 0.545098, 0.607843, 1 )
+text = "Chilled"
+
+[node name="Poisoned" type="Label" parent="GridContainer/Statuses"]
+margin_top = 18.0
+margin_right = 91.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0.419608, 0.462745, 0.211765, 1 )
+text = "Poisoned"
+
+[node name="Stunned" type="Label" parent="GridContainer/Statuses"]
+margin_top = 36.0
+margin_right = 91.0
+margin_bottom = 50.0
+custom_colors/font_color = Color( 0.52549, 0.333333, 0.231373, 1 )
+text = "Stunned"

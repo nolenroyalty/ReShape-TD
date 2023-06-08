@@ -43,8 +43,7 @@ func show_reshape_upgrade_picker(shape):
 	picker.connect("cancelled", self, "hide_reshape_upgrade_picker", [picker])
 
 func clear_individual_selection(only_if_this_one=null):
-	if individual_selection != null:
-		
+	if individual_selection != null and is_instance_valid(individual_selection):
 		if only_if_this_one != null and only_if_this_one != individual_selection:
 			return
 
