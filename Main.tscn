@@ -71,7 +71,7 @@ script = ExtResource( 7 )
 
 [node name="WaveDisplay" parent="." instance=ExtResource( 8 )]
 position = Vector2( 20, 436 )
-z_index = -1
+z_index = 1
 
 [node name="Shader" type="ColorRect" parent="."]
 visible = false
@@ -81,3 +81,4 @@ margin_bottom = 496.0
 
 [node name="FullSidebar" parent="." instance=ExtResource( 2 )]
 position = Vector2( 554, 0 )
+z_index = 2
