@@ -23,12 +23,12 @@ func set_shape(shape):
 	title.text = "Choose an upgrade for all %s towers" % name
 	var active = Upgrades.active_upgrades(shape)
 	if active.size() == 0:
-		current.text = "Already active upgrades: None"
+		current.text = "Active Upgrades: None"
 	else:
 		var l = []
 		for a in active:
 			l.append(Upgrades.title(a))
-		current.text = "Already active upgrades: %s" % ", ".join(l)
+		current.text = "Active Upgrades:\n%s" % "\n".join(l)
 	
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()

@@ -36,7 +36,7 @@ func update_info_text():
 		var l = []
 		for u in active_upgrades:
 			l.append(Upgrades.title(u))
-		upgrades_label.text = "Upgrades:\n".join(l)
+		upgrades_label.text = "Upgrades:\n" + "\n".join(l)
 
 func update_reshape_button_cost():
 	if current == null: return
