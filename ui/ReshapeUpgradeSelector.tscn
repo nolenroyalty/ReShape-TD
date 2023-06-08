@@ -46,9 +46,9 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -53.5
+margin_left = -64.0
 margin_top = -18.0
-margin_right = 53.5
+margin_right = 64.0
 theme = ExtResource( 7 )
 custom_fonts/font = ExtResource( 5 )
 
@@ -67,7 +67,7 @@ text = "Cross Tower"
 margin_top = 18.0
 margin_right = 107.0
 margin_bottom = 32.0
-custom_colors/font_color = Color( 0.419608, 0.462745, 0.211765, 1 )
+custom_colors/font_color = Color( 0.247059, 0.376471, 0.313726, 1 )
 text = "Crescent Tower"
 
 [node name="DiamondTower" type="Label" parent="Control/Labels"]
@@ -92,3 +92,5 @@ margin_bottom = 85.0
 text = "Upgrades: 
 None yet!"
 autowrap = true
+
+[node name="CostTween" type="Tween" parent="."]

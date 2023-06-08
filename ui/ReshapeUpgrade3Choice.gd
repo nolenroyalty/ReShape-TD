@@ -54,8 +54,3 @@ func set_shape(shape):
 	left.connect("pressed", self, "on_button_pressed", [shape, chosen[0]])
 	right.connect("pressed", self, "on_button_pressed", [shape, chosen[1]])
 	center.connect("pressed", self, "on_button_pressed", [shape, chosen[2]])
-	print("foo")
-	# cancel.connect("pressed", self, "cancelled", [shape])
-
-# func _ready():
-# 	set_shape(C.SHAPE.CROSS)

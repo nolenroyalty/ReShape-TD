@@ -17,15 +17,15 @@ text = "Crescent Tower Rank 2"
 align = 1
 
 [node name="CrossSprite" type="Sprite" parent="."]
-position = Vector2( 72, 36 )
+position = Vector2( 64, 36 )
 texture = ExtResource( 2 )
 
 [node name="CrescentSprite" type="Sprite" parent="."]
-position = Vector2( 72, 36 )
+position = Vector2( 64, 36 )
 texture = ExtResource( 3 )
 
 [node name="DiamondSprite" type="Sprite" parent="."]
-position = Vector2( 72, 36 )
+position = Vector2( 64, 36 )
 texture = ExtResource( 4 )
 
 [node name="Grid" type="GridContainer" parent="."]
@@ -35,94 +35,95 @@ margin_bottom = 192.0
 theme = ExtResource( 5 )
 columns = 2
 
-[node name="RankUp" type="Button" parent="Grid"]
-margin_right = 107.0
-margin_bottom = 18.0
-text = "Rank Up (123 gold)"
-
-[node name="Spacer1" type="Control" parent="Grid"]
-margin_left = 111.0
-margin_right = 111.0
-margin_bottom = 18.0
-size_flags_horizontal = 0
-
-[node name="Sell" type="Button" parent="Grid"]
-margin_top = 22.0
-margin_right = 107.0
-margin_bottom = 40.0
-text = "Sell (500 gold)"
-
-[node name="Spacer2" type="Control" parent="Grid"]
-margin_left = 111.0
-margin_top = 22.0
-margin_right = 111.0
-margin_bottom = 40.0
-size_flags_horizontal = 0
-
 [node name="DamageTitle" type="Label" parent="Grid"]
-margin_top = 44.0
-margin_right = 107.0
-margin_bottom = 58.0
+margin_right = 110.0
+margin_bottom = 14.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.662745, 0.411765, 0.376471, 1 )
 text = "Damage"
 
 [node name="Damage" type="Label" parent="Grid"]
-margin_left = 111.0
-margin_top = 44.0
+margin_left = 114.0
 margin_right = 130.0
-margin_bottom = 58.0
+margin_bottom = 14.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.662745, 0.411765, 0.376471, 1 )
 text = "10"
 
 [node name="AttacksTitle" type="Label" parent="Grid"]
-margin_top = 62.0
-margin_right = 107.0
-margin_bottom = 76.0
+margin_top = 18.0
+margin_right = 110.0
+margin_bottom = 32.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.847059, 0.705882, 0.478431, 1 )
 text = "Attack Speed"
 
 [node name="APS" type="Label" parent="Grid"]
-margin_left = 111.0
-margin_top = 62.0
+margin_left = 114.0
+margin_top = 18.0
 margin_right = 130.0
-margin_bottom = 76.0
+margin_bottom = 32.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.847059, 0.705882, 0.478431, 1 )
 text = "1"
 
 [node name="RangeTitle" type="Label" parent="Grid"]
-margin_top = 80.0
-margin_right = 107.0
-margin_bottom = 94.0
+margin_top = 36.0
+margin_right = 110.0
+margin_bottom = 50.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.368627, 0.545098, 0.607843, 1 )
 text = "Range"
 
 [node name="Range" type="Label" parent="Grid"]
-margin_left = 111.0
-margin_top = 80.0
+margin_left = 114.0
+margin_top = 36.0
 margin_right = 130.0
-margin_bottom = 94.0
+margin_bottom = 50.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.368627, 0.545098, 0.607843, 1 )
 text = "64"
 
 [node name="KillsTitle" type="Label" parent="Grid"]
-margin_top = 98.0
-margin_right = 107.0
-margin_bottom = 112.0
+margin_top = 54.0
+margin_right = 110.0
+margin_bottom = 68.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "Kills"
 
 [node name="Kills" type="Label" parent="Grid"]
-margin_left = 111.0
-margin_top = 98.0
+margin_left = 114.0
+margin_top = 54.0
 margin_right = 130.0
-margin_bottom = 112.0
+margin_bottom = 68.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "0"
+
+[node name="RankUp" type="Button" parent="Grid"]
+margin_top = 72.0
+margin_right = 110.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 110, 0 )
+text = "Rank Up: 444 gold"
+
+[node name="Spacer1" type="Control" parent="Grid"]
+margin_left = 114.0
+margin_top = 72.0
+margin_right = 114.0
+margin_bottom = 90.0
+size_flags_horizontal = 0
+
+[node name="Sell" type="Button" parent="Grid"]
+margin_top = 94.0
+margin_right = 110.0
+margin_bottom = 112.0
+text = "Sell: 500 gold"
+
+[node name="Spacer2" type="Control" parent="Grid"]
+margin_left = 114.0
+margin_top = 94.0
+margin_right = 114.0
+margin_bottom = 112.0
+size_flags_horizontal = 0

@@ -15,6 +15,8 @@ onready var reshape_button = $Control/ReshapeButton
 onready var upgrades_label = $Control/Labels/UpgradesLabel
 onready var cost_label = $Control/Labels/CostLabel
 
+onready var cost_tween = $CostTween
+
 var current = null
 
 func button_(shape):
@@ -40,14 +42,29 @@ func update_selected():
 			b.modulate.a = 0.35
 			l.hide()
 
-func update_info_text():
+func set_cost_text(cost):
+	cost_label.text = "Build cost: %d gold" % cost
+
+var prior_cost = 0
+func tween_up_cost():
+	cost_tween.stop_all()
+	cost_tween.interpolate_method(self, "set_cost_text", prior_cost, Upgrades.tower_cost(current), 1.0, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
+	cost_tween.start()
+	prior_cost = Upgrades.tower_cost(current)
+
+func update_info_text(tween_cost=false):
 	if current == null:
 		cost_label.text = ""
 		upgrades_label.text = ""
 		return
 	
-	var build_cost = "Build Cost: %d gold" % [Upgrades.tower_cost(current)]
-	cost_label.text = build_cost
+	if tween_cost:
+		tween_up_cost()
+	else:
+		prior_cost = Upgrades.tower_cost(current)
+		set_cost_text(Upgrades.tower_cost(current))
+		#var build_cost = "Build Cost: %d gold" % [Upgrades.tower_cost(current)]
+		# cost_label.text = build_cost
 
 	var active_upgrades = Upgrades.active_upgrades(current)
 	if len(active_upgrades) == 0: upgrades_label.text = "Upgrades:\nNone yet!"
@@ -69,11 +86,11 @@ func update_reshape_button_cost():
 	if len(remaining) < 3:
 		reshape_button.text = "No upgrades left"
 	else:
-		reshape_button.text = "ReShape (%d gold)" % [cost]
+		reshape_button.text = "ReShape: %d gold" % [cost]
 
 func handle_reshaped(shape, _upgrade):
 	if current != null and shape == current:
-		update_info_text()
+		update_info_text(true)
 		update_reshape_button_cost()
 		update_disabled_state()
 
@@ -93,7 +110,7 @@ func configure_ui():
 	update_disabled_state()
 
 func clear_shape():
-	current = null
+	current = null 
 	configure_ui()
 
 func set_shape(kind):

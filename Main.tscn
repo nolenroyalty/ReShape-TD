@@ -21,8 +21,6 @@ __meta__ = {
 "_edit_horizontal_guides_": [ 41.0 ]
 }
 
-[node name="EverythingForShader" type="Node2D" parent="."]
-
 [node name="Battlefield" parent="." instance=ExtResource( 1 )]
 position = Vector2( -26, -16 )
 
@@ -73,12 +71,15 @@ script = ExtResource( 7 )
 position = Vector2( 20, 436 )
 z_index = 1
 
-[node name="Shader" type="ColorRect" parent="."]
+[node name="FullSidebar" parent="." instance=ExtResource( 2 )]
+position = Vector2( 554, 0 )
+z_index = 2
+
+[node name="ShaderDisplay" type="Node2D" parent="."]
+z_index = 3
+
+[node name="Shader" type="ColorRect" parent="ShaderDisplay"]
 visible = false
 material = SubResource( 1 )
 margin_right = 700.0
 margin_bottom = 496.0
-
-[node name="FullSidebar" parent="." instance=ExtResource( 2 )]
-position = Vector2( 554, 0 )
-z_index = 2

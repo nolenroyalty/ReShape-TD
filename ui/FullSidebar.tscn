@@ -10,6 +10,7 @@
 script = ExtResource( 4 )
 
 [node name="Background" type="NinePatchRect" parent="."]
+self_modulate = Color( 0.615686, 0.615686, 0.615686, 1 )
 margin_right = 146.0
 margin_bottom = 480.0
 theme = ExtResource( 5 )
@@ -18,19 +19,6 @@ patch_margin_left = 2
 patch_margin_top = 2
 patch_margin_right = 2
 patch_margin_bottom = 2
-
-[node name="ReshapeUpgradeSelector" parent="Background" instance=ExtResource( 2 )]
-position = Vector2( 10, 30 )
-
-[node name="ColorRect" type="ColorRect" parent="Background"]
-margin_left = 2.0
-margin_top = 249.0
-margin_right = 146.0
-margin_bottom = 251.0
-color = Color( 0.92549, 0.85098, 0.839216, 1 )
-
-[node name="IndividualViewer" parent="Background" instance=ExtResource( 3 )]
-position = Vector2( 10, 257 )
 
 [node name="PauseButton" type="Button" parent="Background"]
 margin_left = 10.0
@@ -45,3 +33,33 @@ margin_top = 3.0
 margin_right = 138.0
 margin_bottom = 21.0
 text = "Reset"
+
+[node name="NextWaveButton" type="Button" parent="Background"]
+margin_left = 10.0
+margin_top = 25.0
+margin_right = 138.0
+margin_bottom = 43.0
+hint_tooltip = "Hotkey: N"
+text = "Start"
+
+[node name="DividerTop" type="ColorRect" parent="Background"]
+modulate = Color( 0.615686, 0.615686, 0.615686, 1 )
+margin_left = 2.0
+margin_top = 48.0
+margin_right = 146.0
+margin_bottom = 50.0
+color = Color( 0.92549, 0.85098, 0.839216, 1 )
+
+[node name="ReshapeUpgradeSelector" parent="Background" instance=ExtResource( 2 )]
+position = Vector2( 10, 54 )
+
+[node name="ColorRect" type="ColorRect" parent="Background"]
+modulate = Color( 0.615686, 0.615686, 0.615686, 1 )
+margin_left = 2.0
+margin_top = 266.0
+margin_right = 146.0
+margin_bottom = 268.0
+color = Color( 0.92549, 0.85098, 0.839216, 1 )
+
+[node name="IndividualViewer" parent="Background" instance=ExtResource( 3 )]
+position = Vector2( 10, 274 )

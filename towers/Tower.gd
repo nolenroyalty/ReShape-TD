@@ -27,8 +27,6 @@ var tower_range = null
 var sell_value = null
 var kills = 0
 
-
-
 func acquire_target(target_):
 	target = target_
 	target.connect("freed_for_whatever_reason", self, "handle_target_died", [target])

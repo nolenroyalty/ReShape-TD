@@ -34,10 +34,10 @@ func set_text_for_tower():
 	
 	title.text = "%s Tower Rank %d" % [name, stats.LEVEL]
 
-	rank_up.text = "Rank Up (%s gold)" % tower.upgrade_cost()
-	sell.text = "Sell (%s gold)" % tower.sell_value
+	rank_up.text = "Rank Up: %s gold" % tower.upgrade_cost()
+	sell.text = "Sell: %s gold" % tower.sell_value
 
-	damage.text = "%d" % int(stats.DAMAGE)
+	damage.text = "%d" % int(stats.DAMAGE * Upgrades.damage_mult(tower.my_shape))
 	aps.text = "%.1f" % stats.attacks_per_second()
 	range_text.text = "%d" % int(stats.RANGE_RADIUS)
 	kills.text = "%d" % tower.kills
@@ -57,11 +57,17 @@ func on_sell_button_pressed():
 func on_gold_changed(_gold):
 	set_level_up_status()
 
+func handle_reshaped(shape, _upgrade):
+	if tower and tower.my_shape == shape:
+		set_text_for_tower()
+
 func _ready():
 	assert(tower != null, "tower must be set before adding to scene!")
 	rank_up.connect("pressed", self, "on_level_up_button_pressed")
 	sell.connect("pressed", self, "on_sell_button_pressed")
 	tower.connect("leveled_up", self, "set_text_for_tower")
 	tower.connect("killed", self, "set_text_for_tower")
+	
 	var _ignore = State.connect("gold_updated", self, "on_gold_changed")
+	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")
 	set_text_for_tower()
