@@ -30,7 +30,7 @@ margin_bottom = 251.0
 color = Color( 0.92549, 0.85098, 0.839216, 1 )
 
 [node name="IndividualViewer" parent="Background" instance=ExtResource( 3 )]
-position = Vector2( 9, 259 )
+position = Vector2( 7, 257 )
 
 [node name="PauseButton" type="Button" parent="Background"]
 margin_left = 10.0

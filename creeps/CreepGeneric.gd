@@ -133,6 +133,8 @@ func damage(amount, bonus_gold):
 	if health <= 0:
 		state = S.DYING
 		State.add_gold(gold_value() * (1 + bonus_gold))
+		return true
+	return false
 
 func determine_new_path():
 	var my_position = U.snap_to_grid(position)

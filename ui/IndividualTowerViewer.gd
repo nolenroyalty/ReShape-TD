@@ -2,10 +2,17 @@ extends Node2D
 
 signal tower_sold()
 
-onready var header = $Header
-onready var values = $HBoxContainer/Values
-onready var level_up_button = $LevelUpButton
-onready var sell_button = $SellButton
+onready var title = $Title
+onready var rank_up = $Grid/RankUp
+onready var sell = $Grid/Sell
+onready var damage = $Grid/Damage
+onready var aps = $Grid/APS
+onready var range_text = $Grid/Range
+onready var kills = $Grid/Kills
+
+# onready var values = $HBoxContainer/Values
+# onready var level_up_button = $LevelUpButton
+# onready var sell_button = $SellButton
 var tower = null
 
 func init(tower_):
@@ -13,16 +20,22 @@ func init(tower_):
 
 func set_level_up_status():
 	var upgrade_cost = tower.upgrade_cost()
-	level_up_button.disabled = not State.can_buy(upgrade_cost)
+	rank_up.disabled = not State.can_buy(upgrade_cost)
 
 func set_text_for_tower():
 	var stats = tower.my_stats
 	var name = C.shape_name(tower.my_shape).capitalize()
-	header.text = "%s Tower (level %s)\n" % [name, stats.LEVEL]
-	values.text = "%.1f\n%s\n%s" % [ stats.attacks_per_second(), stats.DAMAGE, stats.RANGE_RADIUS]
+	
+	title.text = "%s Tower (Rank %d)" % [name, stats.LEVEL]
 
-	sell_button.text = " Sell (%s gold) " % tower.sell_value
-	level_up_button.text = " Level up (%s gold) " % tower.upgrade_cost()
+	rank_up.text = " Rank Up / %s gold " % tower.upgrade_cost()
+	sell.text = "Sell / %s gold" % tower.sell_value
+
+	damage.text = "%d" % int(stats.DAMAGE)
+	aps.text = "%.1f" % stats.attacks_per_second()
+	range_text.text = "%d" % int(stats.RANGE_RADIUS)
+	kills.text = "%d" % tower.kills
+
 	set_level_up_status()
 
 func on_level_up_button_pressed():
@@ -39,8 +52,8 @@ func on_gold_changed(_gold):
 
 func _ready():
 	assert(tower != null, "tower must be set before adding to scene!")
-	level_up_button.connect("pressed", self, "on_level_up_button_pressed")
-	sell_button.connect("pressed", self, "on_sell_button_pressed")
+	rank_up.connect("pressed", self, "on_level_up_button_pressed")
+	sell.connect("pressed", self, "on_sell_button_pressed")
 	tower.connect("leveled_up", self, "set_text_for_tower")
 	var _ignore = State.connect("gold_updated", self, "on_gold_changed")
 	set_text_for_tower()

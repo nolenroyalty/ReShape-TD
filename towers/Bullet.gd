@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+signal killed_creep
+
 enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, EXPLODING, HIT_SOMETHING, BEGIN_FADING, FADING } 
 
 const EXPLOSION_SPEED = 0.35
@@ -82,7 +84,10 @@ func hit_something(area):
 	if creep.is_in_group("creep") and not (creep in already_hit):
 		apply_status_effects(creep)
 		var bonus_gold = Upgrades.bonus_gold(my_shape)
-		creep.damage(my_damage(), bonus_gold)
+		
+		if creep.damage(my_damage(), bonus_gold):
+			emit_signal("killed_creep")
+
 		already_hit[creep] = true
 		var chain_target = can_chain()
 		if chain_target:

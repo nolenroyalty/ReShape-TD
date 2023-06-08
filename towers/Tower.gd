@@ -24,6 +24,9 @@ var my_shape = null
 var my_stats = null
 var tower_range = null
 var sell_value = null
+var kills = 0
+
+
 
 func acquire_target(target_):
 	target = target_
@@ -104,6 +107,7 @@ func try_to_shoot():
 			bullet.position = initial_position + direction * C.CELL_SIZE
 			var t = target if angle_offset == 0 else null
 			bullet.init(my_shape, my_stats, t, direction)
+			bullet.connect("killed_creep", self, "got_a_kill")
 			get_parent().add_child(bullet)
 			
 		shot_timer.start(my_stats.ATTACK_SPEED)
@@ -132,6 +136,9 @@ func sell():
 	queue_free()
 	State.add_gold(sell_value)
 	emit_signal("sold")
+
+func got_a_kill():
+	kills += 1
 
 func pressed():
 	# This automatically triggers from the mouseup event that fires when we
