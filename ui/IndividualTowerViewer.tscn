@@ -106,7 +106,7 @@ margin_top = 72.0
 margin_right = 110.0
 margin_bottom = 90.0
 rect_min_size = Vector2( 110, 0 )
-text = "Rank Up: 444 gold"
+text = "Upgrade: 444 gold"
 
 [node name="Spacer1" type="Control" parent="Grid"]
 margin_left = 114.0

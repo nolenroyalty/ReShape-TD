@@ -75,6 +75,12 @@ func set_shape(shape):
 	sidebar.set_shape(shape)
 	battlefield.set_shape(shape)
 
+func handle_tower_built():
+	if Input.is_action_pressed("continue_building"):
+		pass
+	else:
+		set_shape(null)
+
 var started = false
 func start_or_send_next_wave():
 	if not started:
@@ -121,6 +127,7 @@ func _ready():
 	sidebar.connect("send_wave", self, "start_or_send_next_wave")
 	battlefield.connect("selected_tower", self, "show_individual_tower")
 	battlefield.connect("selected_creep", self, "show_individual_creep")
+	battlefield.connect("tower_built", self, "handle_tower_built")
 	wave_display.connect("wave_started", self, "handle_wave_started")
 	wave_display.connect("final_wave_sent", self, "handle_final_wave_sent")
 	wave_display.connect("timer_updated", self, "handle_timer_updated")

@@ -2,6 +2,7 @@ extends Node2D
 
 signal selected_creep(creep)
 signal selected_tower(tower)
+signal tower_built
 
 onready var indicator = $BuildingIndicator
 onready var buildable = $BuildableGrid
@@ -82,6 +83,7 @@ func actually_build_tower(location):
 	tower.connect("selected", self, "tower_selected", [tower])
 	tower.connect("sold", self, "handle_tower_sold", [tower])
 	add_child(tower)
+	emit_signal("tower_built")
 	
 func try_to_build_tower(_event):
 	if not indicator.unblocked():
@@ -111,7 +113,6 @@ func try_to_build_tower(_event):
 
 	actually_build_tower(current_build_location)
 	notify_creeps_of_pathing_change()
-	hide_building_indicator()
 
 func init_pathing_grid():
 	var all_points = []

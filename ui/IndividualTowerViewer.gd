@@ -34,7 +34,7 @@ func set_text_for_tower():
 	
 	title.text = "%s Tower Rank %d" % [name, stats.LEVEL]
 
-	rank_up.text = "Rank Up: %s gold" % tower.upgrade_cost()
+	rank_up.text = "Upgrade: %s gold" % tower.upgrade_cost()
 	sell.text = "Sell: %s gold" % tower.sell_value
 
 	damage.text = "%d" % int(stats.DAMAGE * Upgrades.damage_mult(tower.my_shape))
@@ -61,6 +61,12 @@ func handle_reshaped(shape, _upgrade):
 	if tower and tower.my_shape == shape:
 		set_text_for_tower()
 
+func _process(_delta):
+	if Input.is_action_just_pressed("sell_tower"):
+		on_sell_button_pressed()
+	if Input.is_action_just_pressed("upgrade_tower"):
+		on_level_up_button_pressed()
+	
 func _ready():
 	assert(tower != null, "tower must be set before adding to scene!")
 	rank_up.connect("pressed", self, "on_level_up_button_pressed")
