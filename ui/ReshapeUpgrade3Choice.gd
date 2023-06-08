@@ -26,7 +26,7 @@ func set_shape(shape):
 		current.text = "Active Upgrades: None"
 	else:
 		var l = []
-		for a in active:
+		for a in active: 
 			l.append(Upgrades.title(a))
 		current.text = "Active Upgrades:\n%s" % "\n".join(l)
 	
