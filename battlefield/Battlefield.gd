@@ -30,8 +30,18 @@ var spawn_queue = []
 
 func move_building_indicator(pos):
 	current_build_location = pos + buildable.position
-	indicator.position = current_build_location
-	indicator.begin_showing()
+	if selected_shape != null:
+		indicator.position = current_build_location
+		indicator.begin_showing()
+
+	# if selected_shape == null:
+	# 	indicator.begin_hiding()
+	# 	current_build_location = null
+	# 	return
+	# else:
+	# 	current_build_location = pos + buildable.position
+	# 	indicator.position = current_build_location
+	# 	indicator.begin_showing()
 	
 func hide_building_indicator():
 	current_build_location = null
@@ -189,13 +199,13 @@ func spawn_wave(kind, level, is_boss):
 	add_to_spawn_queue(CreepClass, count, level)
 
 func handle_keypresses__playing(_delta):
-	if Input.is_action_just_pressed("DEBUG_SPAWN_WAVES"):
+	if State.debug and Input.is_action_just_pressed("DEBUG_SPAWN_WAVES"):
 		add_to_spawn_queue(QuickBoss, 1, 2)
-	if Input.is_action_just_pressed("DEBUG_SPAWN_TEST"):
+	if State.debug and Input.is_action_just_pressed("DEBUG_SPAWN_TEST"):
 		add_to_spawn_queue(Normal, 5, 1)
 		# spawn_waves(NormalBoss, 2, 1)
 		# spawn_waves(Thick, 2)
-	if Input.is_action_just_pressed("DEBUG_REFRESH_RANGE"):
+	if State.debug and Input.is_action_just_pressed("DEBUG_REFRESH_RANGE"):
 		for child in get_tree().get_nodes_in_group("tower"):
 			child.refresh_range()
 
@@ -210,6 +220,11 @@ func set_playing():
 
 func set_shape(shape):
 	selected_shape = shape
+	if selected_shape == null:
+		indicator.begin_hiding()
+	elif current_build_location != null:
+		indicator.position = current_build_location
+		indicator.begin_showing()
 
 func _input(event):
 	match state:
@@ -235,3 +250,4 @@ func _ready():
 	$SpawnLeft.init_starting_points()
 	U.GRID = grid
 	rng.randomize()
+	indicator.begin_hiding()

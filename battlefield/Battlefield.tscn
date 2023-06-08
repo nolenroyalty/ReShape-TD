@@ -23,6 +23,7 @@ position = Vector2( 256, 0 )
 
 [node name="BuildableGrid" parent="." instance=ExtResource( 3 )]
 position = Vector2( 48, 48 )
+z_index = 3
 
 [node name="DestRight" parent="." instance=ExtResource( 5 )]
 position = Vector2( 560, 192 )

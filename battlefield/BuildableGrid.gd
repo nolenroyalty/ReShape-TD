@@ -28,11 +28,20 @@ func mouse_entered():
 	mouse_present = true
 
 func mouse_exited():
-	mouse_present = false
-	last_mouse_pos = null
-	emit_signal("mouse_left_buildable_grid")
+	# Work around the case that we get a "mouse exited" signal when the mouse hovers over a creep or tower :/
+	var mouse_grid_pos = determine_mouse_coordinates()
 
-func emit_mouse_coordinates():
+	if mouse_grid_pos.x < 0 or mouse_grid_pos.x >= WIDTH * C.CELL_SIZE \
+		or mouse_grid_pos.y < 0 or mouse_grid_pos.y >= HEIGHT * C.CELL_SIZE:
+
+		mouse_present = false
+		last_mouse_pos = null
+		emit_signal("mouse_left_buildable_grid")
+	elif last_mouse_pos == null or last_mouse_pos != mouse_grid_pos:
+			last_mouse_pos = mouse_grid_pos
+			emit_signal("mouse_buildable_grid_position", mouse_grid_pos)
+
+func determine_mouse_coordinates():
 	# If we're at 16, 16 and the mouse is at 32, 32, the mouse's position relative to our
 	# position is 16, 16
 	# Maybe there's just a way to get this directly? I don't know.
@@ -46,7 +55,11 @@ func emit_mouse_coordinates():
 		mouse_grid_pos.x -= C.CELL_SIZE
 	if mouse_grid_pos.y == (HEIGHT - 1) * C.CELL_SIZE:
 		mouse_grid_pos.y -= C.CELL_SIZE
+	
+	return mouse_grid_pos
 
+func emit_mouse_coordinates():
+	var mouse_grid_pos = determine_mouse_coordinates()
 	if last_mouse_pos == null or last_mouse_pos != mouse_grid_pos:
 		last_mouse_pos = mouse_grid_pos
 		emit_signal("mouse_buildable_grid_position", mouse_grid_pos)

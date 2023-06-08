@@ -15,9 +15,9 @@ func begin_showing():
 	visible()
 
 func visible():
-	$Sprite.visible = true
 	if unblocked(): $Sprite.modulate = C.DARK_GREEN
 	else: $Sprite.modulate = C.RED
+	$Sprite.visible = true
 
 func area_entered(area):
 	intersecting_areas[area] = true
