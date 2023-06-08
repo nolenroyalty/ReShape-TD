@@ -31,6 +31,8 @@ func set_text_for_creep():
 	var resist_chance = creep.RESIST_CHANCE
 	var status_reduction = creep.STATUS_REDUCTION
 
+	$Sprite.texture = creep.get_texture()
+
 	if resist_chance == 0.0:
 		resist_title.hide()
 		resist_text.hide()
@@ -55,14 +57,6 @@ func set_text_for_creep():
 	
 	if creep.stunned: stunned.show()
 	else: stunned.hide()
-
-	# # var kind = "Kind: %s" % creep.KIND
-	# var level = "Level: %s" % creep.level
-	# var health = "Health: %s" % int(creep.health)
-	# var speed = "Speed: %s" % int(creep.SPEED)
-	# var status_effects = "\n".join(creep.get_status_effects())
-	# var t = "\n".join([kind, level, health, speed, status_effects])
-	# label.text = t
 
 func creep_freed():
 	emit_signal("creep_freed")

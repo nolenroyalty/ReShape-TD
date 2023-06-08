@@ -43,6 +43,9 @@ func gold_value():
 	# if is_boss: base = 50
 	# return base * LEVEL
 
+func get_texture():
+	return spriteButton.texture_normal
+
 func get_status_effects():
 	var effects = []
 	if chilled:
