@@ -102,11 +102,11 @@ func handle_wave_started(number, kind, is_boss):
 	var level = (number / 5) + 1
 	battlefield.spawn_wave(kind, level, is_boss)
 	$WaveAndScore/Wave.text = "Wave: %d" % [number + 1] 
-
+ 
 func handle_final_wave_sent():
 	assert(true == false, "TODO: handle final wave sent")
 
-func handle_timer_updated(time):
+func handle_timer_updated(_time):
 	pass
 
 # Called when the node enters the scene tree for the first time.

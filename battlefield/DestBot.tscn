@@ -16,6 +16,7 @@ position = Vector2( 48, 16 )
 shape = SubResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="." index="1"]
+visible = false
 position = Vector2( 48, 16 )
 rotation = 1.5708
 texture = ExtResource( 3 )

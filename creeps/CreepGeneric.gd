@@ -220,7 +220,6 @@ func score_amount():
 	else: return 10
 
 func fade_and_free(time):
-	print("fading?")
 	var tween = Tween.new()
 	tween.interpolate_property(self, "modulate:a", 1.0, 0.0, time, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
 	add_child(tween)

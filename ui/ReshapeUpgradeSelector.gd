@@ -7,7 +7,8 @@ onready var cross = $Control/CrossButton
 onready var crescent = $Control/CrescentButton
 onready var diamond = $Control/DiamondButton
 onready var reshape_button = $Control/ReshapeButton
-onready var info_label = $Control/InfoLabel
+onready var upgrades_label = $Control/UpgradesLabel
+onready var cost_label = $Control/CostLabel
 
 var current = null
 
@@ -26,12 +27,16 @@ func update_selected():
 			b.modulate.a = 0.5
 
 func update_info_text():
-	var build_cost = "Build cost: %d gold" % [Upgrades.tower_cost(current)]
+	var build_cost = "Build Cost: %d gold" % [Upgrades.tower_cost(current)]
+	cost_label.text = build_cost
+
 	var active_upgrades = Upgrades.active_upgrades(current)
-	var l = [build_cost]
-	for u in active_upgrades:
-		l.append(Upgrades.title(u))
-	info_label.text = "\n".join(l)
+	if len(active_upgrades) == 0: upgrades_label.text = "Upgrades: None yet!"
+	else:
+		var l = []
+		for u in active_upgrades:
+			l.append(Upgrades.title(u))
+		upgrades_label.text = "Upgrades:\n".join(l)
 
 func update_reshape_button_cost():
 	if current == null: return
@@ -41,7 +46,7 @@ func update_reshape_button_cost():
 	if len(remaining) < 3:
 		reshape_button.text = "No upgrades left"
 	else:
-		reshape_button.text = "Reshape (%d gold)" % [cost]
+		reshape_button.text = "ReShape all (%d gold)" % [cost]
 
 func handle_reshaped(shape, _upgrade):
 	if current != null and shape == current:

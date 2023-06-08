@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://battlefield/Battlefield.tscn" type="PackedScene" id=1]
 [ext_resource path="res://ui/ReshapeUpgradeSelector.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Score.gd" type="Script" id=7]
 [ext_resource path="res://ui/WaveDisplay.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/ModalShader.tres" type="Shader" id=9]
+[ext_resource path="res://ui/IndividualTowerBuilder.tscn" type="PackedScene" id=10]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 9 )
@@ -18,6 +19,12 @@ shader_param/saturation = 1.0
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 3 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_left = 557.0
+margin_right = 704.0
+margin_bottom = 506.0
+color = Color( 0.341176, 0.337255, 0.278431, 1 )
 
 [node name="EverythingForShader" type="Node2D" parent="."]
 
@@ -77,10 +84,15 @@ text = "Score: 0"
 script = ExtResource( 7 )
 
 [node name="WaveDisplay" parent="." instance=ExtResource( 8 )]
-position = Vector2( 30, 458 )
+position = Vector2( 30, 448 )
+z_index = -1
 
 [node name="Shader" type="ColorRect" parent="."]
 visible = false
 material = SubResource( 1 )
 margin_right = 700.0
 margin_bottom = 496.0
+
+[node name="IndividualTowerViewer" parent="." instance=ExtResource( 10 )]
+visible = false
+position = Vector2( 550, 70 )
