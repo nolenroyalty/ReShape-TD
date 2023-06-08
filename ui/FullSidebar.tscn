@@ -11,7 +11,7 @@ script = ExtResource( 4 )
 
 [node name="Background" type="NinePatchRect" parent="."]
 margin_right = 146.0
-margin_bottom = 500.0
+margin_bottom = 480.0
 theme = ExtResource( 5 )
 texture = ExtResource( 1 )
 patch_margin_left = 2

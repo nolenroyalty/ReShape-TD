@@ -70,7 +70,7 @@ text = "Score: 0"
 script = ExtResource( 7 )
 
 [node name="WaveDisplay" parent="." instance=ExtResource( 8 )]
-position = Vector2( 22, 448 )
+position = Vector2( 20, 436 )
 z_index = -1
 
 [node name="Shader" type="ColorRect" parent="."]
