@@ -27,26 +27,35 @@ func update_selected():
 			b.modulate.a = 0.5
 
 func update_info_text():
+	if current == null:
+		cost_label.text = ""
+		upgrades_label.text = ""
+		return
+	
 	var build_cost = "Build Cost: %d gold" % [Upgrades.tower_cost(current)]
 	cost_label.text = build_cost
 
 	var active_upgrades = Upgrades.active_upgrades(current)
-	if len(active_upgrades) == 0: upgrades_label.text = "Upgrades: None yet!"
+	if len(active_upgrades) == 0: upgrades_label.text = "Upgrades:\nNone yet!"
 	else:
 		var l = []
 		for u in active_upgrades:
-			l.append(Upgrades.title(u))
+			l.append("* " + Upgrades.title(u))
 		upgrades_label.text = "Upgrades:\n" + "\n".join(l)
 
 func update_reshape_button_cost():
-	if current == null: return
+	if current == null:
+		reshape_button.hide()
+		return
+
+	reshape_button.show()
 	var cost = Upgrades.reshape_cost(current)
 	var remaining = Upgrades.possible_upgrades(current)
 	
 	if len(remaining) < 3:
 		reshape_button.text = "No upgrades left"
 	else:
-		reshape_button.text = "ReShape all (%d gold)" % [cost]
+		reshape_button.text = "ReShape (%d gold)" % [cost]
 
 func handle_reshaped(shape, _upgrade):
 	if current != null and shape == current:
@@ -57,17 +66,25 @@ func handle_reshaped(shape, _upgrade):
 func update_disabled_state():
 	if current ==  null:
 		return
+
 	var cost = Upgrades.reshape_cost(current)
 	var gold = State.gold
 	var remaining = Upgrades.possible_upgrades(current)
 	reshape_button.disabled = cost > gold or len(remaining) < 3
 
-func set_shape(kind):
-	current = kind
+func configure_ui():
 	update_selected()
 	update_info_text()
 	update_reshape_button_cost()
 	update_disabled_state()
+
+func clear_shape():
+	current = null
+	configure_ui()
+
+func set_shape(kind):
+	current = kind
+	configure_ui()
 
 func handle_shape_pressed(kind):
 	set_shape(kind)
@@ -89,3 +106,4 @@ func _ready():
 	reshape_button.connect("pressed", self, "handle_reshape_pressed")
 	var _ignore = State.connect("gold_updated", self, "gold_updated")
 	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")
+	configure_ui()

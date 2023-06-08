@@ -4,8 +4,9 @@ var ReshapeUpgradeAll = preload("res://ui/ReshapeUpgradeAllChoices.tscn")
 var ReshapeUpgradePicker = preload("res://ui/ReshapeUpgrade3Choice.tscn")
 
 onready var battlefield = $Battlefield
-onready var upgrade_selector = $ReshapeUpgradeSelector
-onready var individual_viewer = $IndividualViewer
+# onready var upgrade_selector = $ReshapeUpgradeSelector
+# onready var individual_viewer = $IndividualViewer
+onready var sidebar = $FullSidebar
 onready var wave_display = $WaveDisplay
 onready var shade = $Shader
 
@@ -61,20 +62,19 @@ func clear_individual_selection(only_if_this_one=null):
 func show_individual_tower(tower):
 	clear_individual_selection()
 	individual_selection = tower
-	individual_viewer.show_tower(tower)
+	sidebar.show_tower(tower)
 	tower.connect("sold", self, "clear_individual_selection", [tower])
 	tower.display_range()
 
 func show_individual_creep(creep):
 	clear_individual_selection()
 	individual_selection = creep
-	individual_viewer.show_creep(creep)
+	sidebar.show_creep(creep)
 	creep.connect("freed_for_whatever_reason", self, "clear_individual_selection", [creep])
 
 func set_shape(shape):
-	upgrade_selector.set_shape(shape)
+	sidebar.set_shape(shape)
 	battlefield.set_shape(shape)
-
 
 var started = false
 func handle_keypress__running(_delta):
@@ -111,9 +111,9 @@ func handle_timer_updated(_time):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	set_shape(C.SHAPE.CROSS)
-	upgrade_selector.connect("reshape", self, "show_reshape_upgrade_picker")
-	upgrade_selector.connect("selected", self, "set_shape")
+	# set_shape(C.SHAPE.CROSS)
+	sidebar.connect("reshape", self, "show_reshape_upgrade_picker")
+	sidebar.connect("selected", self, "set_shape")
 	battlefield.connect("selected_tower", self, "show_individual_tower")
 	battlefield.connect("selected_creep", self, "show_individual_creep")
 	wave_display.connect("wave_started", self, "handle_wave_started")
