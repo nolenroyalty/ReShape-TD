@@ -116,14 +116,16 @@ func refresh_range():
 func _physics_process(_delta):
 	try_to_shoot()
 
+func upgrade_cost():
+	return Upgrades.upgrade_cost(my_shape, my_stats)
+
 func level_up():
-	var cost = Upgrades.upgrade_cost(my_shape, my_stats)
-	if State.try_to_buy(cost):
-		my_stats.level_up()
-		sell_value *= C.UPGRADE_COST_MULT
-		sell_value = int(sell_value)
-		refresh_range()
-		emit_signal("leveled_up")
+	# CR nroyalty: think about these values
+	my_stats.level_up()
+	sell_value *= C.UPGRADE_COST_MULT
+	sell_value = int(sell_value)
+	refresh_range()
+	emit_signal("leveled_up")
 		
 func sell():
 	hide_range()

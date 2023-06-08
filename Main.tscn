@@ -20,6 +20,9 @@ shader_param/saturation = 1.0
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 3 )
+__meta__ = {
+"_edit_horizontal_guides_": [ 41.0 ]
+}
 
 [node name="SidebarRect" type="NinePatchRect" parent="."]
 margin_left = 554.0
