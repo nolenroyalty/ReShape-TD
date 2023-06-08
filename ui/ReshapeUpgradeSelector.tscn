@@ -13,7 +13,7 @@ script = ExtResource( 6 )
 
 [node name="Control" type="Control" parent="."]
 margin_right = 128.0
-margin_bottom = 128.0
+margin_bottom = 208.0
 theme = ExtResource( 4 )
 
 [node name="ColorRect" type="ColorRect" parent="Control"]
@@ -42,23 +42,53 @@ margin_bottom = 33.0
 texture_normal = ExtResource( 3 )
 
 [node name="ReshapeButton" type="Button" parent="Control"]
-margin_top = 192.0
-margin_right = 128.0
-margin_bottom = 210.0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -53.5
+margin_top = -18.0
+margin_right = 53.5
 theme = ExtResource( 7 )
 custom_fonts/font = ExtResource( 5 )
 
-[node name="CostLabel" type="Label" parent="Control"]
-margin_top = 48.0
-margin_right = 128.0
-margin_bottom = 62.0
+[node name="Labels" type="VBoxContainer" parent="Control"]
+margin_top = 36.0
+margin_right = 107.0
+margin_bottom = 188.0
+
+[node name="CrossTower" type="Label" parent="Control/Labels"]
+margin_right = 107.0
+margin_bottom = 14.0
 custom_colors/font_color = Color( 0.847059, 0.705882, 0.478431, 1 )
+text = "Cross Tower"
+
+[node name="CrescentTower" type="Label" parent="Control/Labels"]
+margin_top = 18.0
+margin_right = 107.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0.419608, 0.462745, 0.211765, 1 )
+text = "Crescent Tower"
+
+[node name="DiamondTower" type="Label" parent="Control/Labels"]
+visible = false
+margin_top = 18.0
+margin_right = 107.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0.368627, 0.545098, 0.607843, 1 )
+text = "Diamond Tower"
+
+[node name="CostLabel" type="Label" parent="Control/Labels"]
+margin_top = 36.0
+margin_right = 107.0
+margin_bottom = 50.0
+custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "Build Cost: 120 Gold"
 
-[node name="UpgradesLabel" type="Label" parent="Control"]
-margin_top = 64.0
-margin_right = 128.0
-margin_bottom = 192.0
-text = "Upgrades:
+[node name="UpgradesLabel" type="Label" parent="Control/Labels"]
+margin_top = 54.0
+margin_right = 107.0
+margin_bottom = 85.0
+text = "Upgrades: 
 None yet!"
 autowrap = true

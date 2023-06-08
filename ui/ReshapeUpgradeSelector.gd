@@ -6,9 +6,14 @@ signal selected(shape)
 onready var cross = $Control/CrossButton
 onready var crescent = $Control/CrescentButton
 onready var diamond = $Control/DiamondButton
+
+onready var cross_label = $Control/Labels/CrossTower
+onready var crescent_label = $Control/Labels/CrescentTower
+onready var diamond_label = $Control/Labels/DiamondTower
+
 onready var reshape_button = $Control/ReshapeButton
-onready var upgrades_label = $Control/UpgradesLabel
-onready var cost_label = $Control/CostLabel
+onready var upgrades_label = $Control/Labels/UpgradesLabel
+onready var cost_label = $Control/Labels/CostLabel
 
 var current = null
 
@@ -18,13 +23,22 @@ func button_(shape):
 		C.SHAPE.CRESCENT: return crescent
 		C.SHAPE.DIAMOND: return diamond
 
+func shape_label(shape):
+	match shape:
+		C.SHAPE.CROSS: return cross_label
+		C.SHAPE.CRESCENT: return crescent_label
+		C.SHAPE.DIAMOND: return diamond_label
+
 func update_selected():
 	for shape in C.shapes:
 		var b = button_(shape)
+		var l = shape_label(shape)
 		if shape == current:
 			b.modulate.a = 1.0
+			l.show()
 		else:
-			b.modulate.a = 0.5
+			b.modulate.a = 0.35
+			l.hide()
 
 func update_info_text():
 	if current == null:

@@ -5,6 +5,7 @@ class_name TowerBase
 signal selected
 signal sold
 signal leveled_up
+signal killed
 
 var TowerRange = preload("res://towers/TowerRange.tscn")
 
@@ -139,6 +140,7 @@ func sell():
 
 func got_a_kill():
 	kills += 1
+	emit_signal("killed")
 
 func pressed():
 	# This automatically triggers from the mouseup event that fires when we

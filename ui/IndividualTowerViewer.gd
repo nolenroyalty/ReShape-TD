@@ -9,11 +9,11 @@ onready var damage = $Grid/Damage
 onready var aps = $Grid/APS
 onready var range_text = $Grid/Range
 onready var kills = $Grid/Kills
-
-# onready var values = $HBoxContainer/Values
-# onready var level_up_button = $LevelUpButton
-# onready var sell_button = $SellButton
 var tower = null
+
+onready var cross_sprite = $CrossSprite
+onready var diamond_sprite = $DiamondSprite
+onready var crescent_sprite = $CrescentSprite
 
 func init(tower_):
 	tower = tower_
@@ -22,20 +22,27 @@ func set_level_up_status():
 	var upgrade_cost = tower.upgrade_cost()
 	rank_up.disabled = not State.can_buy(upgrade_cost)
 
+func set_sprite():
+	var shape = tower.my_shape
+	cross_sprite.visible = shape == C.SHAPE.CROSS
+	diamond_sprite.visible = shape == C.SHAPE.DIAMOND
+	crescent_sprite.visible = shape == C.SHAPE.CRESCENT
+
 func set_text_for_tower():
 	var stats = tower.my_stats
 	var name = C.shape_name(tower.my_shape).capitalize()
 	
-	title.text = "%s Tower (Rank %d)" % [name, stats.LEVEL]
+	title.text = "%s Tower Rank %d" % [name, stats.LEVEL]
 
-	rank_up.text = " Rank Up / %s gold " % tower.upgrade_cost()
-	sell.text = "Sell / %s gold" % tower.sell_value
+	rank_up.text = "Rank Up (%s gold)" % tower.upgrade_cost()
+	sell.text = "Sell (%s gold)" % tower.sell_value
 
 	damage.text = "%d" % int(stats.DAMAGE)
 	aps.text = "%.1f" % stats.attacks_per_second()
 	range_text.text = "%d" % int(stats.RANGE_RADIUS)
 	kills.text = "%d" % tower.kills
 
+	set_sprite()
 	set_level_up_status()
 
 func on_level_up_button_pressed():
@@ -55,5 +62,6 @@ func _ready():
 	rank_up.connect("pressed", self, "on_level_up_button_pressed")
 	sell.connect("pressed", self, "on_sell_button_pressed")
 	tower.connect("leveled_up", self, "set_text_for_tower")
+	tower.connect("killed", self, "set_text_for_tower")
 	var _ignore = State.connect("gold_updated", self, "on_gold_changed")
 	set_text_for_tower()
