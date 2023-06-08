@@ -8,7 +8,7 @@ onready var battlefield = $Battlefield
 # onready var individual_viewer = $IndividualViewer
 onready var sidebar = $FullSidebar
 onready var wave_display = $WaveDisplay
-onready var shade = $Shader
+onready var shade = $ShaderDisplay/Shader
 
 enum S { RUNNING, IN_MENU }
 
@@ -20,7 +20,7 @@ func hide_reshape_upgrade_picker(picker):
 	get_tree().paused = false
 	shade.hide()
 	battlefield.set_playing()
-
+ 
 func handle_upgrade_purchased(shape, upgrade, picker):
 	var cost = Upgrades.reshape_cost(shape)
 	if State.try_to_buy(cost):
@@ -76,6 +76,13 @@ func set_shape(shape):
 	battlefield.set_shape(shape)
 
 var started = false
+func start_or_send_next_wave():
+	if not started:
+		wave_display.start()
+		started = true
+	else:
+		wave_display.advance_immediately()
+
 func handle_keypress__running(_delta):
 	if Input.is_action_just_pressed("select_tower_1"):
 		set_shape(C.SHAPE.CROSS)
@@ -84,11 +91,7 @@ func handle_keypress__running(_delta):
 	if Input.is_action_just_pressed("select_tower_3"):
 		set_shape(C.SHAPE.DIAMOND)
 	if Input.is_action_just_pressed("send_wave"):
-		if not started:
-			wave_display.start()
-			started = true
-		else:
-			wave_display.advance_immediately()
+		start_or_send_next_wave()
 	if State.debug and Input.is_action_just_pressed("DEBUG_GIVE_GOLD"):
 		State.add_gold(1000)
 
@@ -100,7 +103,9 @@ func _process(delta):
 func handle_wave_started(number, kind, is_boss):
 	var level = (number / 5) + 1
 	battlefield.spawn_wave(kind, level, is_boss)
-	$WaveAndScore/Wave.text = "Wave: %d" % [number + 1] 
+	number += 1
+	$WaveAndScore/Wave.text = "Wave: %d" % [number]
+	sidebar.update_for_sent_wave(number)
  
 func handle_final_wave_sent():
 	assert(true == false, "TODO: handle final wave sent")
@@ -113,6 +118,7 @@ func _ready():
 	# set_shape(C.SHAPE.CROSS)
 	sidebar.connect("reshape", self, "show_reshape_upgrade_picker")
 	sidebar.connect("selected", self, "set_shape")
+	sidebar.connect("send_wave", self, "start_or_send_next_wave")
 	battlefield.connect("selected_tower", self, "show_individual_tower")
 	battlefield.connect("selected_creep", self, "show_individual_creep")
 	wave_display.connect("wave_started", self, "handle_wave_started")
