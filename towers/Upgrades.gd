@@ -220,10 +220,10 @@ class IndividualTower extends Node:
 	func status_multiplier():
 		match LEVEL:
 			1: return 1.0
-			2: return 1.2
-			3: return 1.5
-			4: return 1.8
-			5: return 2.5
+			2: return 1.1
+			3: return 1.25
+			4: return 1.5
+			5: return 2.0
 
 	func set_generous_stacks(stacks):
 		_GENEROUS_STACKS = stacks
