@@ -6,6 +6,8 @@ enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, EXPLODING, HIT_S
 
 const EXPLOSION_SPEED = 0.35
 const EXPLOSION_SIZE = 5.0
+# 40 (max diagonal across the buildable grid) * 16 (cell size)
+const MAX_DISTANCE_TRAVELED = 640.0
 
 var my_shape = null
 var my_stats = null
@@ -16,8 +18,10 @@ var returns = false
 var pierces = 0
 var chains = 0
 var explodes = false
+var farshot_return_bonus = 0
 var explosion_scale_left = 4.0
 var already_hit = {}
+var starting_position = null
 
 func init(shape, stats, target_, initial_direction):
 	my_shape = shape
@@ -30,6 +34,7 @@ func init(shape, stats, target_, initial_direction):
 	chains = Upgrades.chains(my_shape)
 	explodes = Upgrades.explodes(my_shape)
 	var size_mult = Upgrades.projectile_size_mult(my_shape)
+	
 	$ChainRange/CollisionShape2D.shape.radius = (my_stats.RANGE_RADIUS / 2) * size_mult
 	$Sprite.scale *= size_mult
 	$Hitbox/Shape.shape.radius *= size_mult
@@ -42,8 +47,19 @@ func init(shape, stats, target_, initial_direction):
 		C.SHAPE.DIAMOND:
 			$Sprite.modulate = C.LIGHT_BLUE
 
+func farshot_mult():
+	if Upgrades.farshot(my_shape):
+		return 1.0 + farshot_return_bonus
+	else:
+		var distance_traveled = starting_position.distance_to(position)
+		distance_traveled += farshot_return_bonus
+		var mult = min(1.0, distance_traveled / MAX_DISTANCE_TRAVELED)
+		return 1.0 + mult
+
 func my_damage():
-	return my_stats.DAMAGE * Upgrades.damage_mult(my_shape)
+	var mult = Upgrades.damage_mult(my_shape)
+	mult *= farshot_mult()
+	return my_stats.DAMAGE * mult
 
 func apply_status_effects(creep):
 	if Upgrades.has_chill(my_shape):
@@ -111,6 +127,11 @@ func hit_something(area):
 func exited_battlefield():
 	if state != S.BEGIN_FADING and state != S.FADING:
 		if returns:
+			
+			if Upgrades.farshot(my_shape):
+				farshot_return_bonus = starting_position.distance_to(position)
+				starting_position = position
+
 			returns = false
 			state = S.MOVING_IN_LAST_DIRECTION
 			direction = direction * -1
@@ -166,3 +187,4 @@ func clear_target_and_free():
 func _ready():
 	assert(my_shape != null, "Shape must be provided prior to adding to scene %s" % [self])
 	var _ignore = $Hitbox.connect("area_entered", self, "hit_something")
+	starting_position = position

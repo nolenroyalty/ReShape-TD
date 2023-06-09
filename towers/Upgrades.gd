@@ -14,7 +14,8 @@ enum T {
 	BONUS_GOLD,
 	GIANT_PROJ,
 	RETURNS,
-	POISONS
+	POISONS,
+	FARSHOT
 }
 
 class Stats extends Node:
@@ -30,6 +31,7 @@ class Stats extends Node:
 	var PROJECTILE_SIZE_MULT = 1
 	var RETURNS = false
 	var POISONS = false
+	var FARSHOT = false
 	var DAMAGE_MULT = 1.0
 
 	func build_cost():
@@ -58,6 +60,7 @@ func _apply(t, stats):
 		T.GIANT_PROJ: stats.PROJECTILE_SIZE_MULT = 2.5
 		T.RETURNS: stats.RETURNS = true
 		T.POISONS: stats.POISONS = true
+		T.FARSHOT: stats.FARSHOT = true
 	
 	stats.upgrades.append(t)
 	return stats
@@ -77,13 +80,14 @@ func title(t):
 	#	T.BURNING_GROUND: return "Burning"
 		T.PIERCES: return "Piercing"
 		T.CHAINS: return "Chaining"
-		T.LESSER_MULTIPROJ: return "Multishotting"
-		T.GREATER_MULTIPROJ: return "MegaMultishotting"
+		T.LESSER_MULTIPROJ: return "Multishot"
+		T.GREATER_MULTIPROJ: return "MegaMultishot"
 		T.STUNNING: return "Stunning"
 		T.BONUS_GOLD: return "Avaricious"
 		T.GIANT_PROJ: return "Giant"
 		T.RETURNS: return "Returning"
 		T.POISONS: return "Poisoning"
+		T.FARSHOT: return "Farshot"
 
 func description(t):
 	match t:
@@ -99,6 +103,7 @@ func description(t):
 		T.GIANT_PROJ: return "Projectiles are much larger"
 		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
 		T.POISONS: return "Projectiles deal 50%x of the tower's damage over time"
+		T.FARSHOT: return "Projectiles deal up 100% more damage based on distance traveled."
 
 class IndividualTower extends Node:
 	var LEVEL = 1
@@ -164,6 +169,9 @@ func upgrade_cost(shape, stats):
 func upgrade(shape, t):
 	state[shape] = _apply(t, state[shape])
 	emit_signal("reshaped", shape, t)
+
+func farshot(t):
+	return state[t].FARSHOT
 
 func projectiles(t):
 	return state[t].PROJECTILES
