@@ -33,23 +33,26 @@ func hide_reshape_upgrade_picker(picker):
 	picker.queue_free()
 	unpause_modal_gone()
  
-func handle_upgrade_purchased(shape, upgrade, picker):
-	var cost = Upgrades.reshape_cost(shape)
+func handle_reshape_chosen(shape, upgrade, cost, picker):
 	if State.try_to_buy(cost):
 		Upgrades.upgrade(shape, upgrade)
 		print("Purchased upgrade %s for %s" % [Upgrades.title(upgrade), C.shape_name(shape)])
 	else:
-		print("POTENTIAL BUG: not enough gold to purchase upgrade!")
+		print("BUG: Tried to reshape but *now* we don't have enough gold??")
 	hide_reshape_upgrade_picker(picker)
-	# upgrade_selector.update_upgrades_text()
 
 func show_reshape_upgrade_picker(shape):
-	pause_for_modal()
+	var cost = Upgrades.reshape_cost(shape)
+	
+	if not State.can_buy(cost):
+		print("BUG? Can't afford reshape but we should be able to")
+		return		
 
+	pause_for_modal()
 	var picker = ReshapeUpgradePicker.instance()
 	add_child(picker)
 	picker.set_shape(shape)
-	picker.connect("chosen", self, "handle_upgrade_purchased", [picker])
+	picker.connect("chosen", self, "handle_reshape_chosen", [cost, picker])
 	picker.connect("cancelled", self, "hide_reshape_upgrade_picker", [picker])
 
 func clear_individual_selection(only_if_this_one=null):

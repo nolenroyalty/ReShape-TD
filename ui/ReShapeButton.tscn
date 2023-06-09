@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/ReShapeButton.gd" type="Script" id=1]
+[ext_resource path="res://ui/SidebarTheme.tres" type="Theme" id=2]
+
+[node name="ReShapeButton" type="Button"]
+margin_right = 4.0
+margin_bottom = 18.0
+theme = ExtResource( 2 )
+text = "ReShape: 500 Gold"
+script = ExtResource( 1 )

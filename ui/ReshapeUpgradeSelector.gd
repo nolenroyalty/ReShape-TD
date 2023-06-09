@@ -12,7 +12,7 @@ onready var cross_label = $Control/Labels/CrossTower
 onready var crescent_label = $Control/Labels/CrescentTower
 onready var diamond_label = $Control/Labels/DiamondTower
 
-onready var reshape_button = $Control/ReshapeButton
+onready var reshape_button = $Control/ReShapeButton
 onready var upgrades_label = $Control/Labels/UpgradesLabel
 onready var cost_label = $Control/Labels/CostLabel
 
@@ -76,8 +76,6 @@ func update_info_text(tween_cost=false):
 		prior_cost = Upgrades.tower_cost(current)
 		set_cost_text(Upgrades.tower_cost(current))
 		set_cost_text_color()
-		#var build_cost = "Build Cost: %d gold" % [Upgrades.tower_cost(current)]
-		# cost_label.text = build_cost
 
 	var active_upgrades = Upgrades.active_upgrades(current)
 	if len(active_upgrades) == 0: upgrades_label.text = "Upgrades:\nNone yet!"
@@ -87,40 +85,14 @@ func update_info_text(tween_cost=false):
 			l.append("* " + Upgrades.title(u))
 		upgrades_label.text = "Upgrades:\n" + "\n".join(l)
 
-func update_reshape_button_cost():
-	if current == null:
-		reshape_button.hide()
-		return
-
-	reshape_button.show()
-	var cost = Upgrades.reshape_cost(current)
-	var remaining = Upgrades.possible_upgrades(current)
-	
-	if len(remaining) < 1:
-		reshape_button.text = "No upgrades left"
-	else:
-		reshape_button.text = "ReShape: %d gold" % [cost]
-
 func handle_reshaped(shape, _upgrade):
 	if current != null and shape == current:
 		update_info_text(true)
-		update_reshape_button_cost()
-		update_disabled_state()
-
-func update_disabled_state():
-	if current ==  null:
-		return
-
-	var cost = Upgrades.reshape_cost(current)
-	var gold = State.gold
-	var remaining = Upgrades.possible_upgrades(current)
-	reshape_button.disabled = cost > gold or len(remaining) < 1
 
 func configure_ui():
 	update_selected()
 	update_info_text()
-	update_reshape_button_cost()
-	update_disabled_state()
+	reshape_button.set_shape(current)
 
 func clear_shape():
 	current = null 
@@ -129,26 +101,25 @@ func clear_shape():
 
 func set_shape(kind):
 	current = kind
-	
 	configure_ui()
 
 func handle_shape_pressed(kind):
 	set_shape(kind)
 	emit_signal("selected", kind)
 
-func handle_reshape_pressed():
-	if current == null: return
-	var cost = Upgrades.reshape_cost(current)
-	if State.can_buy(cost):
-		emit_signal("reshape", current)
-
 func gold_updated(_amount):
-	update_disabled_state()
 	set_cost_text_color()
 
+func handle_reshape_pressed(shape):
+	if shape != current:
+		print("BUG! reshape_pressed called with shape != current %s != %s" % [shape, current])
+		return
+	else:
+		emit_signal("reshape", shape)
+
 func _process(_delta):
-	if Input.is_action_just_pressed("reshape_tower") and current != null:
-		handle_reshape_pressed()
+	# if Input.is_action_just_pressed("reshape_tower") and current != null:
+		# handle_reshape_pressed()
 	if Input.is_action_just_pressed("cancel_build_tower") and current != null:
 		clear_shape()
 
@@ -156,7 +127,7 @@ func _ready():
 	cross.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.CROSS])
 	crescent.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.CRESCENT])
 	diamond.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.DIAMOND])
-	reshape_button.connect("pressed", self, "handle_reshape_pressed")
+	reshape_button.connect("reshape", self, "handle_reshape_pressed")
 	var _ignore = State.connect("gold_updated", self, "gold_updated")
 	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")
 	configure_ui()

@@ -1,6 +1,7 @@
 extends Node2D
 
 signal tower_sold()
+signal reshape(shape)
 
 onready var title = $Title
 onready var rank_up = $Grid/RankUp
@@ -9,6 +10,7 @@ onready var damage = $Grid/Damage
 onready var aps = $Grid/APS
 onready var range_text = $Grid/Range
 onready var kills = $Grid/Kills
+onready var reshape_button = $Grid/ReShapeButton
 var tower = null
 
 onready var cross_sprite = $CrossSprite
@@ -52,6 +54,7 @@ func set_text_for_tower():
 
 	set_sprite()
 	set_level_up_status()
+	reshape_button.set_shape(tower.my_shape)
 
 func on_level_up_button_pressed():
 	if rank_up.disabled:
@@ -73,6 +76,12 @@ func handle_reshaped(shape, _upgrade):
 	if tower and tower.my_shape == shape:
 		set_text_for_tower()
 
+func reshape_button_pressed(shape):
+	if shape != tower.my_shape:
+		print("BUG: reshape button pressed but it sent a shape other than mine (%s / %s)" % [shape, tower.my_shape])
+	else:
+		emit_signal("reshape", tower.my_shape)
+
 func _process(_delta):
 	if Input.is_action_just_pressed("sell_tower"):
 		on_sell_button_pressed()
@@ -85,6 +94,7 @@ func _ready():
 	sell.connect("pressed", self, "on_sell_button_pressed")
 	tower.connect("leveled_up", self, "set_text_for_tower")
 	tower.connect("killed", self, "set_text_for_tower")
+	reshape_button.connect("reshape", self, "reshape_button_pressed")
 	
 	var _ignore = State.connect("gold_updated", self, "on_gold_changed")
 	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")
