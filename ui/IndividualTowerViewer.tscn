@@ -11,28 +11,29 @@
 script = ExtResource( 1 )
 
 [node name="Title" type="Label" parent="."]
+margin_top = -4.0
 margin_right = 128.0
-margin_bottom = 16.0
+margin_bottom = 12.0
 rect_pivot_offset = Vector2( 32, 0 )
 text = "Crescent Tower Rank 2"
 align = 1
 
 [node name="CrossSprite" type="Sprite" parent="."]
-position = Vector2( 64, 36 )
+position = Vector2( 64, 31 )
 texture = ExtResource( 2 )
 
 [node name="CrescentSprite" type="Sprite" parent="."]
-position = Vector2( 64, 36 )
+position = Vector2( 64, 31 )
 texture = ExtResource( 3 )
 
 [node name="DiamondSprite" type="Sprite" parent="."]
-position = Vector2( 64, 36 )
+position = Vector2( 64, 31 )
 texture = ExtResource( 4 )
 
 [node name="Grid" type="GridContainer" parent="."]
-margin_top = 64.0
+margin_top = 47.0
 margin_right = 130.0
-margin_bottom = 192.0
+margin_bottom = 199.0
 theme = ExtResource( 5 )
 columns = 2
 
@@ -85,58 +86,75 @@ size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.368627, 0.545098, 0.607843, 1 )
 text = "64"
 
-[node name="KillsTitle" type="Label" parent="Grid"]
+[node name="StatusMultiplierTitle" type="Label" parent="Grid"]
 margin_top = 54.0
 margin_right = 110.0
 margin_bottom = 68.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.419608, 0.462745, 0.211765, 1 )
+text = "Status Multiplier"
+
+[node name="Status" type="Label" parent="Grid"]
+margin_left = 114.0
+margin_top = 54.0
+margin_right = 130.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.419608, 0.462745, 0.211765, 1 )
+text = "1.0"
+
+[node name="KillsTitle" type="Label" parent="Grid"]
+margin_top = 72.0
+margin_right = 110.0
+margin_bottom = 86.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "Kills"
 
 [node name="Kills" type="Label" parent="Grid"]
 margin_left = 114.0
-margin_top = 54.0
+margin_top = 72.0
 margin_right = 130.0
-margin_bottom = 68.0
+margin_bottom = 86.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "0"
 
 [node name="RankUp" type="Button" parent="Grid"]
-margin_top = 72.0
+margin_top = 90.0
 margin_right = 110.0
-margin_bottom = 90.0
+margin_bottom = 108.0
 rect_min_size = Vector2( 110, 0 )
 text = "Rank Up: 444 gold"
 
 [node name="Spacer1" type="Control" parent="Grid"]
 margin_left = 114.0
-margin_top = 72.0
+margin_top = 90.0
 margin_right = 114.0
-margin_bottom = 90.0
+margin_bottom = 108.0
 size_flags_horizontal = 0
 
 [node name="ReShapeButton" parent="Grid" instance=ExtResource( 6 )]
-margin_top = 94.0
+margin_top = 112.0
 margin_right = 110.0
-margin_bottom = 112.0
+margin_bottom = 130.0
 
 [node name="Spacer3" type="Control" parent="Grid"]
 margin_left = 114.0
-margin_top = 94.0
+margin_top = 112.0
 margin_right = 114.0
-margin_bottom = 112.0
+margin_bottom = 130.0
 size_flags_horizontal = 0
 
 [node name="Sell" type="Button" parent="Grid"]
-margin_top = 116.0
+margin_top = 134.0
 margin_right = 110.0
-margin_bottom = 134.0
+margin_bottom = 152.0
 text = "Sell: 500 gold"
 
 [node name="Spacer2" type="Control" parent="Grid"]
 margin_left = 114.0
-margin_top = 116.0
+margin_top = 134.0
 margin_right = 114.0
-margin_bottom = 134.0
+margin_bottom = 152.0
 size_flags_horizontal = 0

@@ -29,9 +29,10 @@ var current_path : Array
 var destination : Vector2
 var navigation_targets = []
 var display_navigation_targets = false
-var chilled = false setget set_chilled
-var stunned = false setget set_stunned
-var poisoned = false setget set_poisoned
+var current_chilled_status_multiplier = 1.0
+var chilled = false 
+var stunned = false  
+var poisoned = false
 var max_health = 0
 var health = 0
 var rng
@@ -58,7 +59,7 @@ func get_status_effects():
 func determine_speed():
 	var base = SPEED
 	if chilled:
-		var penalty = 0.5
+		var penalty = 0.5 * current_chilled_status_multiplier
 		base -= (base * penalty * STATUS_REDUCTION)
 	if stunned:
 		base = 0
@@ -68,7 +69,14 @@ func status_effect_hit(hit_chance=100):
 	var roll = rng.randi_range(1, 100)
 	return (hit_chance * (1.0 - RESIST_CHANCE)) > roll
 	
-func set_chilled(value):
+func set_chilled(value, status_multiplier):
+	if value:
+		# You can abuse this by having a few powerful chill towers and many weaker ones but I am not
+		# gonna worry about that right now
+		current_chilled_status_multiplier = max(status_multiplier, current_chilled_status_multiplier)
+	else:
+		current_chilled_status_multiplier = 1.0
+	
 	chilled = value
 	$SpriteButton.get_material().set_shader_param("is_chilled", value)
 	emit_signal("state_changed")
@@ -83,19 +91,19 @@ func set_poisoned(value):
 	$SpriteButton.get_material().set_shader_param("is_poisoned", value)
 	emit_signal("state_changed")
 
-func maybe_apply_chilled():
+func maybe_apply_chilled(status_multiplier):
 	if status_effect_hit(100):
-		set_chilled(true)
+		set_chilled(true, status_multiplier)
 		var duration = 1.0
 		$ChillTimer.start(duration)
 
 func _on_chilltimer_timeout():
-	set_chilled(false)
+	set_chilled(false, 1.0)
 
-func maybe_apply_stun(stun_chance):
+func maybe_apply_stun(stun_chance, status_multiplier):
 	if status_effect_hit(stun_chance):
 		set_stunned(true)
-		var duration = 1.0 * STATUS_REDUCTION
+		var duration = 1.0 * STATUS_REDUCTION * status_multiplier
 		$StunTimer.start(duration)
 
 func _on_stuntimer_timeout():

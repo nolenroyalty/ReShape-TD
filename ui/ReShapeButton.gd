@@ -4,8 +4,12 @@ signal reshape(shape)
 var shape = null
 
 func disable_or_enable_for_cost(_amount_ignore):
-	var cost = Upgrades.reshape_cost(shape)
-	disabled = not State.can_buy(cost)
+	if shape == null:
+		hide()
+		disabled = true
+	else:
+		var cost = Upgrades.reshape_cost(shape)
+		disabled = not State.can_buy(cost)
 
 func there_are_upgrades_remaining(shape_):
 	return len(Upgrades.possible_upgrades(shape_)) > 0

@@ -10,6 +10,7 @@ onready var damage = $Grid/Damage
 onready var aps = $Grid/APS
 onready var range_text = $Grid/Range
 onready var kills = $Grid/Kills
+onready var status_text = $Grid/Status
 onready var reshape_button = $Grid/ReShapeButton
 var tower = null
 
@@ -51,6 +52,7 @@ func set_text_for_tower():
 	aps.text = "%.1f" % stats.attacks_per_second()
 	range_text.text = "%d" % int(stats.RANGE_RADIUS)
 	kills.text = "%d" % tower.kills
+	status_text.text = "%.1f" % stats.STATUS_MULTIPLIER
 
 	set_sprite()
 	set_level_up_status()

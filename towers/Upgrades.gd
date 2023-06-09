@@ -70,7 +70,7 @@ func _apply(t, stats):
 			stats.DAMAGE_MULT *= 0.5
 		T.POWERFUL:
 			stats.POWERFUL = true
-			stats.DAMAGE_MULT *= 1.50
+			stats.DAMAGE_MULT *= 1.35
 	
 	stats.upgrades.append(t)
 	return stats
@@ -183,7 +183,7 @@ func description(t):
 		T.POISONS: return "Projectiles deal 50% of the tower's damage over time"
 		T.FARSHOT: return "Projectiles deal up to 100% more damage the farther they travel"
 		T.GENEROUS: return "Deals 50% less damage, but other shapes deal 20% more damage"
-		T.POWERFUL: return "Deals 50% more damage"
+		T.POWERFUL: return "Deals 35% more damage"
 
 class IndividualTower extends Node:
 	var LEVEL = 1
@@ -192,12 +192,14 @@ class IndividualTower extends Node:
 	var PROJECTILE_COUNT = 1
 	var DAMAGE = 10
 	var PROJECTILE_SPEED = 225
+	var STATUS_MULTIPLIER = 1.0
 	
 	func level_up():
 		LEVEL += 1
 		RANGE_RADIUS += 16
 		ATTACK_SPEED -= 0.1 * ATTACK_SPEED
 		DAMAGE *= 2
+		STATUS_MULTIPLIER += 0.3
 	
 	func rank_up_mult():
 		return pow(C.RANK_UP_COST_MULT, (LEVEL + 1))
