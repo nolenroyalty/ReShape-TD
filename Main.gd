@@ -5,6 +5,7 @@ var ReshapeUpgradePicker = preload("res://ui/ReshapeUpgrade3Choice.tscn")
 var PauseModal = preload("res://ui/PauseModal.tscn")
 var ResetModal = preload("res://ui/ResetModal.tscn")
 var EndModal = preload("res://ui/EndModal.tscn")
+var ReshapeWarningModal = preload("res://ui/ReshapeWarningModal.tscn")
 
 onready var battlefield = $Battlefield
 # onready var upgrade_selector = $ReshapeUpgradeSelector
@@ -98,11 +99,17 @@ func handle_tower_built():
 		set_shape(null)
 
 var started = false
+var reshape_warning_shown = false
 func start_or_send_next_wave():
 	if not started:
-		wave_display.start()
-		battlefield.set_playing()
-		started = true
+		if not reshape_warning_shown and Upgrades.first_reshape:
+			reshape_warning_shown = true
+			show_reshape_warning()
+			return
+		else:
+			wave_display.start()
+			battlefield.set_playing()
+			started = true
 	else:
 		wave_display.advance_immediately()
 
@@ -163,6 +170,12 @@ func pause_pressed():
 	var modal = PauseModal.instance()
 	add_child(modal)
 	modal.connect("resumed", self, "resume_pressed", [modal])
+
+func show_reshape_warning():
+	pause_for_modal()
+	var modal = ReshapeWarningModal.instance()
+	add_child(modal)
+	modal.connect("dismissed", self, "resume_pressed", [modal])
 
 func actually_reset(modal):
 	battlefield.reset()

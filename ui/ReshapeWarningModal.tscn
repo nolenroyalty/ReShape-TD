@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ui/sprites/ninepatch-modal.png" type="Texture" id=1]
+[ext_resource path="res://ui/ReshapeWarningModal.gd" type="Script" id=2]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+pause_mode = 2
+script = ExtResource( 2 )
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -160.0
+margin_top = -102.0
+margin_right = 160.0
+margin_bottom = 102.0
+texture = ExtResource( 1 )
+patch_margin_left = 2
+patch_margin_top = 2
+patch_margin_right = 2
+patch_margin_bottom = 2
+
+[node name="Label" type="Label" parent="NinePatchRect"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -35.5
+margin_top = 16.0
+margin_right = 35.5
+margin_bottom = 30.0
+text = "Wait!!"
+align = 1
+
+[node name="Label2" type="Label" parent="NinePatchRect"]
+margin_left = 19.0
+margin_top = 44.0
+margin_right = 304.0
+margin_bottom = 160.0
+text = "Try pressing the \"ReShape\" button on the sidebar after selecting a tower in the upper right.
+
+You'll get to choose an interesting upgrade for one of your towers. Your first upgrade is free!"
+autowrap = true
+
+[node name="Button" type="Button" parent="NinePatchRect"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -30.0
+margin_top = 60.0
+margin_right = 30.0
+margin_bottom = 78.0
+rect_min_size = Vector2( 60, 0 )
+text = "Got It!"

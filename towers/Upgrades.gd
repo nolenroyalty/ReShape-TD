@@ -36,7 +36,6 @@ class Stats extends Node:
 	var FARSHOT = false
 	var DAMAGE_MULT = 1.0
 	var GENEROUS = false
-	var RECEIVED_GENEROUS = false
 	var POWERFUL = false
 
 	func build_cost():
@@ -75,10 +74,6 @@ func _apply(t, stats):
 	stats.upgrades.append(t)
 	return stats
 
-func _give_generous(stats):
-	stats.RECEIVED_GENEROUS = true
-	stats.DAMAGE_MULT *= 1.20
-	return stats
 
 func title(t):
 	match t:
@@ -169,18 +164,18 @@ func requires(t):
 
 func description(t):
 	match t:
-		T.CHILLS: return "Projectiles have a high chance to slow enemies"
+		T.CHILLS: return "Projectiles have slow enemies"
 		T.EXPLODES: return "Projectiles explode on impact"
 	#	T.BURNING_GROUND: return "Leaves burning ground that deals damage over time"
 		T.PIERCES: return "Projectiles pierce up to 2 enemies"
 		T.CHAINS: return "Projectiles chain to up to 2 nearby enemies"
 		T.LESSER_MULTIPROJ: return "Shoots 3 projectiles but does 30% less damage"
 		T.GREATER_MULTIPROJ: return "Shoots 5 projectiles but does 55% less damage"
-		T.STUNNING: return "Projectiles have a low chance to stun enemies"
+		T.STUNNING: return "Projectiles have a 10% chance to stun enemies"
 		T.BONUS_GOLD: return "Tower earns 25% more gold for kills"
 		T.GIANT_PROJ: return "Projectiles are much larger"
 		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
-		T.POISONS: return "Projectiles deal 50% of the tower's damage over time"
+		T.POISONS: return "Projectiles deal an additional 50% of the tower's damage over time"
 		T.FARSHOT: return "Projectiles deal up to 100% more damage the farther they travel"
 		T.GENEROUS: return "Deals 50% less damage but gives a stacking 15% damage buff to other towers in range"
 		T.POWERFUL: return "Deals 35% more damage"
@@ -286,8 +281,10 @@ func possible_upgrades(shape):
 func tower_cost(shape):
 	return int(state[shape].build_cost())
 
+var first_reshape = true
 func reshape_cost(shape):
-	return int(state[shape].reshape_cost())
+	if first_reshape: return 0
+	else: return int(state[shape].reshape_cost())
 
 func rank_up_cost(shape, stats):
 	if stats.LEVEL == C.MAX_LEVEL:
@@ -295,18 +292,11 @@ func rank_up_cost(shape, stats):
 
 	var base_cost = stats.rank_up_base_cost()
 	var mult = 1.0 + 0.25 * len(active_upgrades(shape))
-	# var base = tower_cost(shape)
-	# var mult = stats.rank_up_mult()
 	return int(base_cost * mult)
 
 func upgrade(shape, t):
+	first_reshape = false
 	state[shape] = _apply(t, state[shape])
-	match t:
-		T.GENEROUS: 
-			for s in shapes:
-				if s != shape:
-					state[s] = _give_generous(state[s])
-		_: pass
 	emit_signal("reshaped", shape, t)
 
 func farshot(t):
@@ -349,6 +339,7 @@ func projectile_size_mult(t):
 	return state[t].PROJECTILE_SIZE_MULT
 
 func reset():
+	first_reshape = true
 	for shape in shapes:
 		state[shape] = Stats.new()
 
