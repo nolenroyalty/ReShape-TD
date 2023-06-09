@@ -52,6 +52,11 @@ func prop_send_wave():
 func prop_shape_cleared():
 	emit_signal("shape_cleared")
 
+func reset():
+	set_shape(null)
+	next_wave_button.text = "Start"
+	individual_viewer.free_current()
+
 func _ready():
 	tower_builder.connect("reshape", self, "prop_reshape")
 	tower_builder.connect("selected", self, "prop_selected")

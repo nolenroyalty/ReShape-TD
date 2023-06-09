@@ -116,8 +116,6 @@ margin_bottom = 90.0
 size_flags_horizontal = 0
 
 [node name="Sell" type="Button" parent="Grid"]
-anchor_top = 0.021
-anchor_bottom = 0.028
 margin_top = 94.0
 margin_right = 110.0
 margin_bottom = 112.0

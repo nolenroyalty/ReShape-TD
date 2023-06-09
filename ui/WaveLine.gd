@@ -16,6 +16,10 @@ func _ready():
 	for z in [one, two, three]:
 		z.queue_free()
 
+func reset():
+	for card in cards.get_children():
+		card.queue_free()
+
 func init(waves):
 	var wave_number = 1
 	for wave in waves:

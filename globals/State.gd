@@ -5,10 +5,18 @@ signal gold_updated(amount)
 signal lives_updated(amount)
 signal score_updated(amount)
 
-var gold = 200
-var lives = 20
+var gold : int
+var lives : int
 var debug = true
-var score = 0
+var score : int
+
+func reset():
+	gold = 200
+	emit_signal("gold_updated", gold)
+	lives = 20
+	emit_signal("lives_updated", lives)
+	score = 0
+	emit_signal("score_updated", score)
 
 func add_gold(amount):
 	gold += int(amount)
@@ -35,3 +43,6 @@ func lose_life():
 		emit_signal("game_over")
 	else:
 		emit_signal("lives_updated", lives)
+
+func _ready():
+	reset()

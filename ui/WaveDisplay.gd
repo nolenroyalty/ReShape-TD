@@ -6,6 +6,7 @@ signal timer_updated(amount)
 
 const FULL_TIMER = 25
 const CARD_SIZE = 80
+const ORIGINAL_POSITION = 96
 
 onready var wave_line = $WaveLine
 onready var advance_tween = $AdvanceTween
@@ -80,6 +81,17 @@ func init(waves_):
 func start():
 	advance_immediately()
 	wave_timer.start(1)
+
+func reset():
+	wave_number = 0
+	bonus_from_wave_skipping = 0
+	wave_line.position.x = ORIGINAL_POSITION
+	advance_tween.stop_all()
+	tick_tween.stop_all()
+	wave_timer.stop()
+	timer_amount = FULL_TIMER
+	wave_line.reset()
+	init(all_waves)
 
 func _process(_delta):
 	if State.debug and Input.is_action_just_pressed("DEBUG_START"):

@@ -20,12 +20,12 @@ var Resist = preload("res://creeps/CreepResist.tscn")
 var ResistBoss = preload("res://creeps/ResistantBoss.tscn")
 var Tower = preload("res://towers/Tower.tscn")
 
-enum S { PLAYING, IN_MENU }
+enum S { NOT_YET_STARTED, PLAYING, IN_MENU }
 
 var current_build_location = null
 var rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var selected_shape = null
-var state = S.PLAYING
+var state = S.NOT_YET_STARTED
 var selected_creep_or_tower = null
 var spawn_queue = []
 
@@ -126,10 +126,21 @@ func init_pathing_grid():
 	
 	grid.init(all_points)
 
+func timer_done__add_creep(timer, creep):
+	timer.queue_free()
+	if state == S.PLAYING:
+		add_child(creep)
+	else:
+		print("Not adding creep because the game is not playing - game probably reset?")
+
 func add_creep_soon(creep):
 	var wait_time = rng.randf() * 0.2
-	yield(get_tree().create_timer(wait_time), "timeout")
-	add_child(creep)
+	var t = Timer.new()
+	add_child(t)
+	t.set_wait_time(wait_time)
+	t.set_one_shot(true)
+	t.connect("timeout", self, "timer_done__add_creep", [t, creep])
+	t.start(wait_time)
 
 func spawn(vertical):
 	if vertical: return $SpawnLeft
@@ -169,10 +180,16 @@ func pop_from_spawn_queue():
 		creep.connect("selected", self, "creep_selected", [creep])
 		add_creep_soon(creep)
 
-func handle_event__playing(event):
+func build_tower_for_mouse_event(event):
 	if event is InputEventMouseButton:
 		if current_build_location != null and event.pressed and event.button_index == BUTTON_LEFT:
 			try_to_build_tower(event)
+
+func handle_event__playing(event):
+	build_tower_for_mouse_event(event)
+
+func handle_event__not_started(event):
+	build_tower_for_mouse_event(event)
 
 func add_to_spawn_queue(creep, count, level):
 	for _i in range(count):
@@ -231,6 +248,7 @@ func _input(event):
 	match state:
 		S.PLAYING: handle_event__playing(event)
 		S.IN_MENU: pass
+		S.NOT_YET_STARTED: handle_event__not_started(event)
 	
 func _process(delta):
 	match state:
@@ -240,6 +258,20 @@ func _process(delta):
 				pop_from_spawn_queue()
 
 		S.IN_MENU: pass
+
+func reset():
+	for child in get_tree().get_nodes_in_group("creep"):
+		child.queue_free()
+	for child in get_tree().get_nodes_in_group("tower"):
+		child.queue_free()
+	for child in get_tree().get_nodes_in_group("bullet"):
+		child.queue_free()
+
+	current_build_location = null
+	selected_shape = null
+	state = S.NOT_YET_STARTED
+	selected_creep_or_tower = null
+	spawn_queue = []
 
 func _ready():
 	buildable.connect("mouse_buildable_grid_position", self, "move_building_indicator")

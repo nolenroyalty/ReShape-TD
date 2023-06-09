@@ -225,6 +225,9 @@ func bonus_gold(t):
 func projectile_size_mult(t):
 	return state[t].PROJECTILE_SIZE_MULT
 
-func _ready():
+func reset():
 	for shape in shapes:
 		state[shape] = Stats.new()
+
+func _ready():
+	reset()

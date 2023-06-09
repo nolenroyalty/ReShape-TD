@@ -3,6 +3,7 @@ extends Node2D
 var ReshapeUpgradeAll = preload("res://ui/ReshapeUpgradeAllChoices.tscn")
 var ReshapeUpgradePicker = preload("res://ui/ReshapeUpgrade3Choice.tscn")
 var PauseModal = preload("res://ui/PauseModal.tscn")
+var ResetModal = preload("res://ui/ResetModal.tscn")
 
 onready var battlefield = $Battlefield
 # onready var upgrade_selector = $ReshapeUpgradeSelector
@@ -95,6 +96,7 @@ var started = false
 func start_or_send_next_wave():
 	if not started:
 		wave_display.start()
+		battlefield.set_playing()
 		started = true
 	else:
 		wave_display.advance_immediately()
@@ -139,6 +141,28 @@ func pause_pressed():
 	add_child(modal)
 	modal.connect("resumed", self, "resume_pressed", [modal])
 
+func actually_reset(modal):
+	battlefield.reset()
+	sidebar.reset()
+	wave_display.reset()
+	Upgrades.reset()
+	State.reset()
+	started = false
+
+	modal.queue_free()
+	unpause_modal_gone()
+
+func cancel_reset(modal):
+	modal.queue_free()
+	unpause_modal_gone()
+
+func reset_pressed():
+	pause_for_modal()
+	var modal = ResetModal.instance()
+	add_child(modal)
+	modal.connect("actually_reset", self, "actually_reset", [modal])
+	modal.connect("cancel_reset", self, "cancel_reset", [modal])
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# set_shape(C.SHAPE.CROSS)
@@ -147,6 +171,7 @@ func _ready():
 	sidebar.connect("send_wave", self, "start_or_send_next_wave")
 	sidebar.connect("shape_cleared", self, "handle_sidebar_cleared_shape")
 	sidebar.connect("pause", self, "pause_pressed")
+	sidebar.connect("reset", self, "reset_pressed")
 
 	battlefield.connect("selected_tower", self, "show_individual_tower")
 	battlefield.connect("selected_creep", self, "show_individual_creep")
