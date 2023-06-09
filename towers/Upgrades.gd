@@ -182,7 +182,7 @@ func description(t):
 		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
 		T.POISONS: return "Projectiles deal 50% of the tower's damage over time"
 		T.FARSHOT: return "Projectiles deal up to 100% more damage the farther they travel"
-		T.GENEROUS: return "Deals 50% less damage, but other shapes deal 20% more damage"
+		T.GENEROUS: return "Deals 50% less damage but gives a stacking 15% damage buff to other towers in range"
 		T.POWERFUL: return "Deals 35% more damage"
 
 class IndividualTower extends Node:
@@ -193,8 +193,12 @@ class IndividualTower extends Node:
 	var DAMAGE = 10
 	var PROJECTILE_SPEED = 225
 	var STATUS_MULTIPLIER = 1.0
+	var _GENEROUS_STACKS = 0
 	
-	func damage():
+	func generous_mult():
+		return 1.0 + + C.GENEROUS_TOWER_BONUS * _GENEROUS_STACKS
+
+	func level_damage():
 		match LEVEL:
 			1: return 10
 			2: return 25
@@ -226,9 +230,13 @@ class IndividualTower extends Node:
 			4: return 1.8
 			5: return 2.5
 
+	func set_generous_stacks(stacks):
+		_GENEROUS_STACKS = stacks
+		DAMAGE = level_damage() * generous_mult()
+
 	func level_up():
 		LEVEL += 1
-		DAMAGE = damage()
+		DAMAGE = level_damage() * generous_mult()
 		RANGE_RADIUS = range_radius()
 		ATTACK_SPEED = attack_speed()
 		STATUS_MULTIPLIER = status_multiplier()
@@ -333,6 +341,9 @@ func explodes(t):
 
 func bonus_gold(t):
 	return state[t].BONUS_GOLD
+
+func generous(t):
+	return state[t].GENEROUS
 
 func projectile_size_mult(t):
 	return state[t].PROJECTILE_SIZE_MULT

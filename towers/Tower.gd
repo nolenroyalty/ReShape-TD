@@ -10,6 +10,7 @@ signal killed
 var TowerRange = preload("res://towers/TowerRange.tscn")
 
 onready var shooting_range = $ShootingRange
+onready var generous_range = $GenerousRange
 onready var shot_timer = $ShotTimer
 
 var WAIT_TIME = 1.0
@@ -21,11 +22,13 @@ var Bullet = preload("res://towers/Bullet.tscn")
 
 var target = null
 var everything_in_range = {}
+var towers_we_have_given_generous_to = {}
 var my_shape = null
 var my_stats = null
 var tower_range = null
 var kills = 0
 var gold_spent = 0
+var generous_stacks = 0
 
 func acquire_target(target_):
 	target = target_
@@ -113,6 +116,7 @@ func try_to_shoot():
 
 func refresh_range():
 	$ShootingRange/CollisionShape2D.shape.radius = my_stats.RANGE_RADIUS
+	$GenerousRange/CollisionShape2D.shape.radius = my_stats.RANGE_RADIUS
 	if tower_range != null:
 		tower_range.update()
 
@@ -134,6 +138,10 @@ func level_up():
 	emit_signal("leveled_up")
 		
 func sell():
+	for tower in towers_we_have_given_generous_to.keys():
+		if tower != null and is_instance_valid(tower):
+			tower.remove_generous_bonus()
+
 	hide_range()
 	queue_free()
 	State.add_gold(sell_value())
@@ -151,6 +159,25 @@ func pressed():
 	# so we can ignore this for now.
 	emit_signal("selected")
 
+func enable_generous():
+	$GenerousRange/CollisionShape2D.disabled = false
+
+func add_generous_bonus():
+	generous_stacks += 1
+	my_stats.set_generous_stacks(generous_stacks)
+
+func remove_generous_bonus():
+	if generous_stacks > 0:
+		generous_stacks -= 1
+	my_stats.set_generous_stacks(generous_stacks)
+
+func give_tower_generous(area):
+	var tower = area.get_parent()
+	if tower.is_in_group("tower") and tower != self and not (tower in towers_we_have_given_generous_to):
+		print("give generous bonus to tower")
+		towers_we_have_given_generous_to[tower] = true
+		tower.add_generous_bonus()
+
 func init(shape):
 	my_shape = shape
 	my_stats = Upgrades.IndividualTower.new()
@@ -164,9 +191,20 @@ func init(shape):
 		C.SHAPE.CRESCENT: texture = crescent_tower
 
 	$Building.texture_normal = texture
+	
+	if Upgrades.generous(my_shape):
+		enable_generous()
+
+func handle_reshaped(shape, upgrade):
+	if shape == my_shape and upgrade == Upgrades.T.GENEROUS:
+		enable_generous()
+
+func on_generous_range_area_entered(area):
+	give_tower_generous(area)
 
 func _ready():
 	assert(my_shape != null, "Shape must be provided prior to adding to scene %s" % [self])
 	shooting_range.connect("area_entered", self, "handle_creep_entered_range")
 	shooting_range.connect("area_exited", self, "handle_creep_left_range")
+	generous_range.connect("area_entered", self, "give_tower_generous")
 	var _ignore = $Building.connect("pressed", self, "pressed")
