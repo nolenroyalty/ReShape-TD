@@ -15,7 +15,8 @@ enum T {
 	GIANT_PROJ,
 	RETURNS,
 	POISONS,
-	FARSHOT
+	FARSHOT,
+	GENEROUS
 }
 
 class Stats extends Node:
@@ -33,6 +34,8 @@ class Stats extends Node:
 	var POISONS = false
 	var FARSHOT = false
 	var DAMAGE_MULT = 1.0
+	var GENEROUS = false
+	var RECEIVED_GENEROUS = false
 
 	func build_cost():
 		var mult = pow(2, len(upgrades))
@@ -51,18 +54,26 @@ func _apply(t, stats):
 		T.CHAINS: stats.CHAINS = 2
 		T.LESSER_MULTIPROJ: 
 			stats.PROJECTILES = 3
-			stats.DAMAGE_MULT = 0.7
+			stats.DAMAGE_MULT *= 0.7
 		T.GREATER_MULTIPROJ:
 			stats.PROJECTILES = 5
-			stats.DAMAGE_MULT = 0.45
+			stats.DAMAGE_MULT *= 0.45
 		T.STUNNING: stats.STUNS = true
 		T.BONUS_GOLD: stats.BONUS_GOLD = 0.25
 		T.GIANT_PROJ: stats.PROJECTILE_SIZE_MULT = 2.5
 		T.RETURNS: stats.RETURNS = true
 		T.POISONS: stats.POISONS = true
 		T.FARSHOT: stats.FARSHOT = true
+		T.GENEROUS: 
+			stats.GENEROUS = true
+			stats.DAMAGE_MULT *= 0.5
 	
 	stats.upgrades.append(t)
+	return stats
+
+func _give_generous(stats):
+	stats.RECEIVED_GENEROUS = true
+	stats.DAMAGE_MULT *= 1.20
 	return stats
 
 func excludes(t):
@@ -88,6 +99,7 @@ func title(t):
 		T.RETURNS: return "Returning"
 		T.POISONS: return "Poisoning"
 		T.FARSHOT: return "Farshot"
+		T.GENEROUS: return "Generous"
 
 func description(t):
 	match t:
@@ -103,7 +115,8 @@ func description(t):
 		T.GIANT_PROJ: return "Projectiles are much larger"
 		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
 		T.POISONS: return "Projectiles deal 50%x of the tower's damage over time"
-		T.FARSHOT: return "Projectiles deal up 100% more damage based on distance traveled."
+		T.FARSHOT: return "Projectiles deal up to 100% more damage the farther they travel"
+		T.GENEROUS: return "Deals 50% less damage, but other shapes deal 20% more damage"
 
 class IndividualTower extends Node:
 	var LEVEL = 1
@@ -168,6 +181,12 @@ func upgrade_cost(shape, stats):
 
 func upgrade(shape, t):
 	state[shape] = _apply(t, state[shape])
+	match t:
+		T.GENEROUS: 
+			for s in shapes:
+				if s != shape:
+					state[s] = _give_generous(state[s])
+		_: pass
 	emit_signal("reshaped", shape, t)
 
 func farshot(t):
