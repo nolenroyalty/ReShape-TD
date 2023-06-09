@@ -17,7 +17,8 @@ func set_text(won_game, wave_bonus):
 	var life_penalty = State.life_penalty
 	var killscore = "Kill score: %d" % (score - wave_bonus + life_penalty)
 	var wavebonus = "Bonus from sending waves early: %d" % wave_bonus
-	var lifepenalty = "Penalty from lives lost: -%d" % life_penalty
+	if life_penalty != 0: life_penalty = "-%d" % life_penalty
+	var lifepenalty = "Penalty from lives lost: %s" % life_penalty
 	score_details.text = killscore + "\n" + wavebonus + "\n" + lifepenalty
 	score_full.text = "Final score: %d" % score
 
