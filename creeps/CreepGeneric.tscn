@@ -1,7 +1,18 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://creeps/CreepGeneric.gd" type="Script" id=1]
 [ext_resource path="res://creeps/sprites/creep1.png" type="Texture" id=2]
+[ext_resource path="res://creeps/CreepGeneric.gdshader" type="Shader" id=3]
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/is_poisoned = false
+shader_param/is_chilled = false
+shader_param/is_stunned = false
+shader_param/poison = Vector3( 0, 1, 0 )
+shader_param/chill = Vector3( 0, 0, 1 )
+shader_param/stun = Vector3( 0.1, 0.1, 0.1 )
 
 [sub_resource type="CircleShape2D" id=1]
 resource_local_to_scene = true
@@ -30,6 +41,7 @@ margin_bottom = -9.0
 color = Color( 0.419608, 0.462745, 0.211765, 1 )
 
 [node name="SpriteButton" type="TextureButton" parent="."]
+material = SubResource( 3 )
 margin_left = -8.0
 margin_top = -8.0
 margin_right = 8.0
@@ -39,6 +51,7 @@ mouse_filter = 1
 texture_normal = ExtResource( 2 )
 
 [node name="Hurtbox" type="Area2D" parent="."]
+visible = false
 collision_layer = 66
 collision_mask = 0
 

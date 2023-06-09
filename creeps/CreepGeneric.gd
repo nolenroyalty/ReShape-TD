@@ -29,9 +29,9 @@ var current_path : Array
 var destination : Vector2
 var navigation_targets = []
 var display_navigation_targets = false
-var chilled = false
-var stunned = false
-var poisoned = false
+var chilled = false setget set_chilled
+var stunned = false setget set_stunned
+var poisoned = false setget set_poisoned
 var max_health = 0
 var health = 0
 var rng
@@ -68,27 +68,38 @@ func status_effect_hit(hit_chance=100):
 	var roll = rng.randi_range(1, 100)
 	return (hit_chance * (1.0 - RESIST_CHANCE)) > roll
 	
+func set_chilled(value):
+	chilled = value
+	$SpriteButton.get_material().set_shader_param("is_chilled", value)
+	emit_signal("state_changed")
+
+func set_stunned(value):
+	stunned = value
+	$SpriteButton.get_material().set_shader_param("is_stunned", value)
+	emit_signal("state_changed")
+
+func set_poisoned(value):
+	poisoned = value
+	$SpriteButton.get_material().set_shader_param("is_poisoned", value)
+	emit_signal("state_changed")
+
 func maybe_apply_chilled():
 	if status_effect_hit(100):
-		chilled = true
-		emit_signal("state_changed")
+		set_chilled(true)
 		var duration = 1.0
 		$ChillTimer.start(duration)
 
 func _on_chilltimer_timeout():
-	emit_signal("state_changed")
-	chilled = false
+	set_chilled(false)
 
 func maybe_apply_stun(stun_chance):
 	if status_effect_hit(stun_chance):
-		stunned = true
-		emit_signal("state_changed")
+		set_stunned(true)
 		var duration = 1.0 * STATUS_REDUCTION
 		$StunTimer.start(duration)
 
 func _on_stuntimer_timeout():
-	emit_signal("state_changed")
-	stunned = false
+	set_stunned(false)
 
 func tick_poison(timer, damage, bonus_gold, ticks_remaining):
 	if ticks_remaining == 0:
@@ -105,8 +116,7 @@ func tick_poison(timer, damage, bonus_gold, ticks_remaining):
 
 func maybe_apply_poison(amount, bonus_gold):
 	if status_effect_hit(100):
-		poisoned = true
-		emit_signal("state_changed")
+		set_poisoned(true)
 		$IsPoisonedTimer.start(1.5)
 		var timer = Timer.new()
 		timer.one_shot = true
@@ -120,8 +130,7 @@ func maybe_apply_poison(amount, bonus_gold):
 		# 	damage(d, bonus_gold)
 
 func _on_ispoisonedtimer_timeout():
-	emit_signal("state_changed")
-	poisoned = false
+	set_poisoned(false)
 	
 func is_alive():
 	return state != S.DYING and state != S.AT_DESTINATION and state != S.IN_GOAL_AREA
