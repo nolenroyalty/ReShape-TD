@@ -82,8 +82,14 @@ func explode():
 	var t = Tween.new()
 	var start_scale = $Sprite.scale
 	var final_scale = start_scale * EXPLOSION_SIZE
-	t.interpolate_property($Sprite, "modulate:a", null, 0.3, EXPLOSION_SPEED, Tween.TRANS_QUAD, Tween.EASE_OUT)
-	t.interpolate_property($Sprite, "scale", null, final_scale, EXPLOSION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+	var end_amount = 0.3
+	var explosion_speed = EXPLOSION_SPEED
+	if Upgrades.projectile_size_mult(my_shape) > 1.0:
+		end_amount = 0.1
+		explosion_speed = EXPLOSION_SPEED / 2.0
+
+	t.interpolate_property($Sprite, "modulate:a", null, end_amount, explosion_speed, Tween.TRANS_QUAD, Tween.EASE_OUT)
+	t.interpolate_property($Sprite, "scale", null, final_scale, explosion_speed, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	var current_radius = $Hitbox/Shape.shape.radius
 	var final_radius = current_radius * EXPLOSION_SIZE
 	t.interpolate_property($Hitbox/Shape, "shape:radius", null, final_radius, EXPLOSION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
@@ -125,7 +131,7 @@ func hit_something(area):
 			state = S.BEGIN_FADING
 		
 func exited_battlefield():
-	if state != S.BEGIN_FADING and state != S.FADING:
+	if state != S.BEGIN_FADING and state != S.FADING and state != S.EXPLODING:
 		if returns:
 			if Upgrades.farshot(my_shape):
 				farshot_return_bonus = starting_position.distance_to(position)
