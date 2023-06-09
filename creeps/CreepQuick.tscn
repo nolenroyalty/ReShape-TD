@@ -5,20 +5,15 @@
 [ext_resource path="res://creeps/CreepQuick.gd" type="Script" id=3]
 
 [sub_resource type="CapsuleShape2D" id=1]
+resource_local_to_scene = true
 radius = 5.0
-height = 5.0
+height = 4.0
 
 [node name="Creep" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
 
-[node name="SpriteButton" parent="." index="0"]
-margin_left = 8.0
-margin_top = -7.0
-margin_right = 24.0
-margin_bottom = 9.0
-rect_rotation = 89.9999
+[node name="SpriteButton" parent="." index="2"]
 texture_normal = ExtResource( 2 )
 
 [node name="CollisionShape2D" parent="Hurtbox" index="0"]
-position = Vector2( 0, 1 )
 shape = SubResource( 1 )

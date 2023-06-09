@@ -9,7 +9,15 @@ radius = 8.0
 
 [node name="Creep" instance=ExtResource( 1 )]
 
-[node name="SpriteButton" parent="." index="0"]
+[node name="HealthBarEmpty" parent="." index="0"]
+margin_top = -12.0
+margin_bottom = -10.0
+
+[node name="HealthBarFull" parent="." index="1"]
+margin_top = -12.0
+margin_bottom = -10.0
+
+[node name="SpriteButton" parent="." index="2"]
 texture_normal = ExtResource( 2 )
 
 [node name="CollisionShape2D" parent="Hurtbox" index="0"]

@@ -32,6 +32,7 @@ var display_navigation_targets = false
 var chilled = false
 var stunned = false
 var poisoned = false
+var max_health = 0
 var health = 0
 var rng
 
@@ -127,6 +128,7 @@ func is_alive():
 
 func damage(amount, bonus_gold):
 	health -= amount
+	$HealthBarFull.rect_scale.x = max(float(health), 0.0) / float(max_health)
 	emit_signal("state_changed")
 	if health <= 0:
 		state = S.DYING
@@ -178,7 +180,10 @@ func become_blocked():
 func update_rotation(target):
 	# We default to facing DOWN, which is 90 degrees.
 	# If we get back 0 degrees, we want to rotate -90 degrezzes
-	rotation_degrees = rad2deg(position.angle_to_point(target)) + 90
+	var rot = rad2deg(position.angle_to_point(target)) + 180
+	# var rot = rad2deg(position.angle_to_point(target)) + 90
+	spriteButton.rect_rotation = rot
+	$Hurtbox.rotation_degrees = rot
 
 func handle_collides(planned_move, my_remainder):
 	for i in get_slide_count():
@@ -304,6 +309,7 @@ func init(level_, dest):
 	self.level = level_
 	destination = dest
 	health = compute_health()
+	max_health = health
 
 func selected():
 	emit_signal("selected")
