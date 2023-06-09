@@ -143,7 +143,7 @@ func requires(t):
 		T.BONUS_GOLD: 
 			r.length = 1
 		T.GIANT_PROJ: 
-			r.any_of = [ T.EXPLODES, T.PIERCES, T.CHAINS ]
+			r.any_of = [ T.EXPLODES, T.PIERCES, T.CHAINS, T.LESSER_MULTIPROJ, T.GREATER_MULTIPROJ ]
 			r.length = 2
 		T.RETURNS: 
 			r.any_of = [ T.PIERCES, T.CHAINS, T.LESSER_MULTIPROJ, T.GREATER_MULTIPROJ]

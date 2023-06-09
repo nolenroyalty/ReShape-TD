@@ -85,8 +85,8 @@ func explode():
 	var end_amount = 0.3
 	var explosion_speed = EXPLOSION_SPEED
 	if Upgrades.projectile_size_mult(my_shape) > 1.0:
-		end_amount = 0.1
-		explosion_speed = EXPLOSION_SPEED / 2.0
+		end_amount = 0.25
+		explosion_speed = EXPLOSION_SPEED * 0.8
 
 	t.interpolate_property($Sprite, "modulate:a", null, end_amount, explosion_speed, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	t.interpolate_property($Sprite, "scale", null, final_scale, explosion_speed, Tween.TRANS_LINEAR, Tween.EASE_OUT)

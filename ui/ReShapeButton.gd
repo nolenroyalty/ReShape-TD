@@ -7,7 +7,7 @@ func disable_or_enable_for_cost(_amount_ignore):
 	if shape == null:
 		hide()
 		disabled = true
-	else:
+	elif there_are_upgrades_remaining(shape):
 		var cost = Upgrades.reshape_cost(shape)
 		disabled = not State.can_buy(cost)
 
