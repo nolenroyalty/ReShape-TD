@@ -96,7 +96,7 @@ func update_reshape_button_cost():
 	var cost = Upgrades.reshape_cost(current)
 	var remaining = Upgrades.possible_upgrades(current)
 	
-	if len(remaining) < 3:
+	if len(remaining) < 1:
 		reshape_button.text = "No upgrades left"
 	else:
 		reshape_button.text = "ReShape: %d gold" % [cost]

@@ -42,6 +42,9 @@ func compute_path(start, end):
 func is_disabled(point):
 	return astar.is_point_disabled(_id_of_point(point))
 
+func has_point(point):
+	return astar.has_point(_id_of_point(point))
+
 func disable_points(points):
 	print("Disabling points: %s" % [points])
 	for point in points:

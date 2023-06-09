@@ -125,8 +125,7 @@ func _process(delta):
 		S.IN_MENU: pass
 	
 func handle_wave_started(number, kind, is_boss):
-	var level = (number / 5) + 1
-	battlefield.spawn_wave(kind, level, is_boss)
+	battlefield.spawn_wave(kind, number + 1, is_boss)
 	number += 1
 	$WaveAndScore/Wave.text = "Wave: %d" % [number]
 	sidebar.update_for_sent_wave(number, final_wave_sent)

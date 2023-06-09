@@ -101,6 +101,10 @@ func can_build_tower():
 
 	var tower_points = relevant_points_for_tower(current_build_location)
 	for pos in tower_points:
+		if not grid.has_point(pos):
+			print("Not allowing tower build because it's off the grid - maybe the user alt-tabbed?")
+			return false
+
 		if grid.is_disabled(pos):
 			print("Not allowing tower build because it overlaps with a tower")
 			return false

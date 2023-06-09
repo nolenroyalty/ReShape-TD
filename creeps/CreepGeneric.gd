@@ -35,13 +35,11 @@ var poisoned = false
 var health = 0
 var rng
 
-# Maybe we want gold to scale with level? Not sure.
 func gold_value():
-	if is_boss: return 50
-	else: return 10
-	# var base = 10
-	# if is_boss: base = 50
-	# return base * LEVEL
+	var base = 2
+	if is_boss: base = 10
+	var mult = 1.0 + (0.2 * level)
+	return base * mult
 
 func get_texture():
 	return spriteButton.texture_normal
@@ -221,7 +219,7 @@ func handle_move(forced_move=null):
 		# handle_collides(planned_move, remaining_velocity)
 
 func score_amount():
-	if is_boss: return 50
+	if is_boss: return 80
 	else: return 10
 
 func fade_and_free(time):
@@ -292,12 +290,26 @@ func handle_points_changed(_points):
 			update_current_path()
 			state = S.MOVING
 
+func compute_health():
+	var mult_total = 1.0
+	var mult_incr = 0.2
+	var i = 1
+	var lvl = level
+
+	while lvl > 0:
+		i = i % 5
+		if i == 0: mult_incr += 0.1
+		mult_total += mult_incr
+		lvl -= 1
+	
+	var base = BASE_HEALTH
+	if is_boss: base *= 10
+	return base * mult_total
+
 func init(level_, dest):
 	self.level = level_
 	destination = dest
-	health = BASE_HEALTH * level
-	if is_boss:
-		health *= 10
+	health = compute_health()
 
 func selected():
 	emit_signal("selected")

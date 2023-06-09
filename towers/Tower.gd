@@ -119,14 +119,14 @@ func refresh_range():
 func _physics_process(_delta):
 	try_to_shoot()
 
-func upgrade_cost():
-	return Upgrades.upgrade_cost(my_shape, my_stats)
+func rank_up_cost():
+	return Upgrades.rank_up_cost(my_shape, my_stats)
 
 func sell_value():
 	return int(gold_spent / 2.0)
 
 func level_up():
-	gold_spent += upgrade_cost()
+	gold_spent += rank_up_cost()
 	my_stats.level_up()
 	$Level.text = "%s" % [my_stats.LEVEL]
 	$Level.visible = true

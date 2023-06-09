@@ -80,14 +80,6 @@ func _give_generous(stats):
 	stats.DAMAGE_MULT *= 1.20
 	return stats
 
-func excludes(t):
-	match t:
-		T.LESSER_MULTIPROJ: return [ T.GREATER_MULTIPROJ ]
-		T.GREATER_MULTIPROJ: return [ T.LESSER_MULTIPROJ ]
-		T.PIERCES: return [ T.CHAINS ]
-		T.CHAINS: return [ T.PIERCES ]
-		_: return []
-
 func title(t):
 	match t:
 		T.CHILLS: return "Chilling"
@@ -109,6 +101,7 @@ func title(t):
 class Requirements extends Node:
 	var all_of = {}
 	var any_of = []
+	var none_of = []
 	var length = 0
 
 	func matches(upgrades):
@@ -117,6 +110,10 @@ class Requirements extends Node:
 
 		for t in all_of:
 			if not (t in upgrades):
+				return false
+		
+		for t in none_of:
+			if t in upgrades:
 				return false
 		
 		if len(any_of) == 0:
@@ -136,12 +133,16 @@ func requires(t):
 			pass
 		T.PIERCES:
 			r.length = 1
-		T.CHAINS: 
-			pass
+			r.none_of = [ T.CHAINS ]
+		T.CHAINS:
+			r.length = 0
+			r.none_of = [T.PIERCES]
 		T.LESSER_MULTIPROJ:
-			pass
+			r.length = 0
+			r.none_of = [ T.GREATER_MULTIPROJ ]
 		T.GREATER_MULTIPROJ:
 			r.length = 1
+			r.none_of = [ T.LESSER_MULTIPROJ ]
 		T.STUNNING:
 			r.length = 2
 		T.BONUS_GOLD: 
@@ -158,10 +159,11 @@ func requires(t):
 			r.any_of = [T.PIERCES, T.CHAINS, T.LESSER_MULTIPROJ, T.GREATER_MULTIPROJ]
 			r.length = 1
 		T.GENEROUS: 
-			r.any_of = [ T.CHILLS, T.LESSER_MULTIPROJ, T.GREATER_MULTIPROJ ]
 			r.length = 1
+			r.none_of = [T.POWERFUL]
 		T.POWERFUL:
-			r.length = 3
+			r.length = 2
+			r.none_of = [T.GENEROUS]
 	
 	return r
 
@@ -193,12 +195,12 @@ class IndividualTower extends Node:
 	
 	func level_up():
 		LEVEL += 1
-		RANGE_RADIUS += 16
-		ATTACK_SPEED -= 0.1 * ATTACK_SPEED
-		DAMAGE *= 2
+		RANGE_RADIUS += 24
+		ATTACK_SPEED -= 0.15 * ATTACK_SPEED
+		DAMAGE *= 2.5
 	
-	func upgrade_mult():
-		return pow(C.UPGRADE_COST_MULT, LEVEL)
+	func rank_up_mult():
+		return pow(C.RANK_UP_COST_MULT, LEVEL)
 	
 	func attacks_per_second():
 		return 1.0 / ATTACK_SPEED
@@ -213,22 +215,16 @@ func active_upgrades(shape):
 	return state[shape].upgrades
 
 func possible_upgrades(shape):
-	# Add exclusions
 	var possible = []
-	var excluded = {}
 	var used = {}
 	var active = active_upgrades(shape)
-	
-	for t in active:
-		for exclude in excludes(t):
-			excluded[exclude] = true
 	
 	for s in shapes:
 		for t in active_upgrades(s):
 			used[t] = true
 
 	for t in all_upgrades():
-		if not (t in used) and not (t in excluded):
+		if not (t in used):
 			var req = requires(t)
 			if req.matches(active):
 				possible.append(t)
@@ -241,9 +237,9 @@ func tower_cost(shape):
 func reshape_cost(shape):
 	return int(state[shape].reshape_cost())
 
-func upgrade_cost(shape, stats):
+func rank_up_cost(shape, stats):
 	var base = tower_cost(shape)
-	var mult = stats.upgrade_mult()
+	var mult = stats.rank_up_mult()
 	return int(base * mult)
 
 func upgrade(shape, t):

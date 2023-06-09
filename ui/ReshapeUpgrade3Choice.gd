@@ -42,7 +42,7 @@ func set_shape(shape):
 		chosen.append(possible[choice])
 		possible.remove(choice)
 	
-	if len(chosen) < 3:
+	if len(chosen) < 1:
 		# We've run out of choices
 		cancelled(shape)
 		return
