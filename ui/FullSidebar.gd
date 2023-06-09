@@ -37,8 +37,12 @@ func prop_reshape(shape):
 func prop_selected(shape):
 	emit_signal("selected", shape)
 
-func update_for_sent_wave(number):
-	next_wave_button.text = "Send Creep Wave %d" % (number + 1)
+func update_for_sent_wave(number, final_wave_sent):
+	if final_wave_sent:
+		next_wave_button.text = "No more waves!"
+		next_wave_button.disabled = true
+	else:
+		next_wave_button.text = "Send Creep Wave %d" % (number + 1)
 
 func prop_reset():
 	emit_signal("reset")

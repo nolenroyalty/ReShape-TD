@@ -141,15 +141,16 @@ func init_pathing_grid():
 	grid.init(all_points)
 
 func timer_done__add_creep(timer, creep):
-	timer.queue_free()
 	if state == S.PLAYING:
 		add_child(creep)
 	else:
 		print("Not adding creep because the game is not playing - game probably reset?")
+	timer.queue_free()
 
 func add_creep_soon(creep):
 	var wait_time = rng.randf() * 0.2
 	var t = Timer.new()
+	t.add_to_group("creep_timer")
 	add_child(t)
 	t.set_wait_time(wait_time)
 	t.set_one_shot(true)
@@ -249,6 +250,12 @@ func set_in_menu():
 
 func set_playing():
 	state = S.PLAYING
+
+func no_more_creeps():
+	var no_creeps = len(get_tree().get_nodes_in_group("creep")) == 0 
+	var no_creep_timers = len(get_tree().get_nodes_in_group("creep_timer")) == 0
+	var spawn_queue_empty = len(spawn_queue) == 0
+	return no_creeps and no_creep_timers and spawn_queue_empty
 
 func set_shape(shape):
 	selected_shape = shape

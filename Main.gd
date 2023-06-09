@@ -4,6 +4,7 @@ var ReshapeUpgradeAll = preload("res://ui/ReshapeUpgradeAllChoices.tscn")
 var ReshapeUpgradePicker = preload("res://ui/ReshapeUpgrade3Choice.tscn")
 var PauseModal = preload("res://ui/PauseModal.tscn")
 var ResetModal = preload("res://ui/ResetModal.tscn")
+var EndModal = preload("res://ui/EndModal.tscn")
 
 onready var battlefield = $Battlefield
 # onready var upgrade_selector = $ReshapeUpgradeSelector
@@ -12,10 +13,11 @@ onready var sidebar = $FullSidebar
 onready var wave_display = $WaveDisplay
 onready var shade = $ShaderDisplay/Shader
 
-enum S { RUNNING, IN_MENU }
+enum S { RUNNING, IN_MENU, WON_GAME, LOST_GAME }
 
 var individual_selection = null
 var state = S.RUNNING
+var final_wave_sent = false
 
 func pause_for_modal():
 	get_tree().paused = true
@@ -115,7 +117,11 @@ func handle_keypress__running(_delta):
 
 func _process(delta):
 	match state:
-		S.RUNNING: handle_keypress__running(delta)
+		S.RUNNING: 
+			handle_keypress__running(delta)
+			if final_wave_sent and battlefield.no_more_creeps():
+				state = S.WON_GAME
+				won_game()
 		S.IN_MENU: pass
 	
 func handle_wave_started(number, kind, is_boss):
@@ -123,14 +129,30 @@ func handle_wave_started(number, kind, is_boss):
 	battlefield.spawn_wave(kind, level, is_boss)
 	number += 1
 	$WaveAndScore/Wave.text = "Wave: %d" % [number]
-	sidebar.update_for_sent_wave(number)
+	sidebar.update_for_sent_wave(number, final_wave_sent)
  
 func handle_final_wave_sent():
-	assert(true == false, "TODO: handle final wave sent")
+	print("Final wave sent!")
+	final_wave_sent = true
+	sidebar.update_for_sent_wave(0, true)
 
 func handle_timer_updated(_time):
 	pass
 
+func end_game(won):
+	pause_for_modal()
+	var modal = EndModal.instance()
+	add_child(modal)
+	modal.set_text(won, wave_display.bonus_from_wave_skipping)
+	modal.connect("play_again", self, "actually_reset", [modal])
+
+func won_game():
+	end_game(true)
+
+func lost_game():
+	state = S.LOST_GAME
+	end_game(false)
+	
 func resume_pressed(modal):
 	modal.queue_free()
 	unpause_modal_gone()
@@ -148,6 +170,8 @@ func actually_reset(modal):
 	Upgrades.reset()
 	State.reset()
 	started = false
+	$WaveAndScore/Wave.text = "Wave: 1"
+	final_wave_sent = false
 
 	modal.queue_free()
 	unpause_modal_gone()
@@ -181,4 +205,5 @@ func _ready():
 	wave_display.connect("final_wave_sent", self, "handle_final_wave_sent")
 	wave_display.connect("timer_updated", self, "handle_timer_updated")
 
+	var _ignore = State.connect("game_over", self, "lost_game")
 	VisualServer.set_default_clear_color(C.BLACK)
