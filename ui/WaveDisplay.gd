@@ -40,7 +40,7 @@ func reset_timer():
 	emit_signal("timer_updated", timer_amount)
 
 func advance_immediately():
-	if wave_number != 0:
+	if wave_number != 0 and wave_number + 1 < len(waves):
 		var bonus = timer_amount * 3
 		bonus_from_wave_skipping += bonus
 		State.add_score(bonus)

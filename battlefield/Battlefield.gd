@@ -210,9 +210,11 @@ func add_to_spawn_queue(creep, count, level):
 	for _i in range(count):
 		spawn_queue.append([creep, level])
 
-func spawn_wave(kind, level, is_boss):
-	var count = 5
-	if is_boss: count = 1
+func spawn_wave(kind, level, is_boss, number_of_creeps=null):
+	if number_of_creeps == null:
+		number_of_creeps = 9
+		if is_boss: number_of_creeps = 1
+
 	var CreepClass = null
 
 	match kind:
@@ -229,7 +231,7 @@ func spawn_wave(kind, level, is_boss):
 			if is_boss: CreepClass = ResistBoss
 			else: CreepClass = Resist
 	
-	add_to_spawn_queue(CreepClass, count, level)
+	add_to_spawn_queue(CreepClass, number_of_creeps, level)
 
 func handle_keypresses__playing(_delta):
 	if State.debug and Input.is_action_just_pressed("DEBUG_SPAWN_WAVES"):
@@ -286,6 +288,8 @@ func reset():
 	for child in get_tree().get_nodes_in_group("tower"):
 		child.queue_free()
 	for child in get_tree().get_nodes_in_group("bullet"):
+		child.queue_free()
+	for child in get_tree().get_nodes_in_group("creep_timer"):
 		child.queue_free()
 
 	current_build_location = null

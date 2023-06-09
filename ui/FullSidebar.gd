@@ -43,6 +43,7 @@ func update_for_sent_wave(number, final_wave_sent):
 		next_wave_button.disabled = true
 	else:
 		next_wave_button.text = "Send Creep Wave %d" % (number + 1)
+		next_wave_button.disabled = false
 
 func prop_reset():
 	emit_signal("reset")
@@ -59,6 +60,7 @@ func prop_shape_cleared():
 func reset():
 	set_shape(null)
 	next_wave_button.text = "Start"
+	next_wave_button.disabled = false
 	individual_viewer.free_current()
 
 func _ready():

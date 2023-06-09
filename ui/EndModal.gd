@@ -3,7 +3,8 @@ extends CanvasLayer
 signal play_again()
 
 onready var title = $NinePatchRect/Title
-onready var score_label = $NinePatchRect/ScoreLabel
+onready var score_details = $NinePatchRect/ScoreDetails
+onready var score_full = $NinePatchRect/ScoreFull
 onready var button = $NinePatchRect/Button
 
 func set_text(won_game, wave_bonus):
@@ -17,8 +18,8 @@ func set_text(won_game, wave_bonus):
 	var killscore = "Kill score: %d" % (score - wave_bonus + life_penalty)
 	var wavebonus = "Bonus from sending waves early: %d" % wave_bonus
 	var lifepenalty = "Penalty from lives lost: -%d" % life_penalty
-	var total = "Total score: %d" % score
-	score_label.text = killscore + "\n" + wavebonus + "\n" + lifepenalty + "\n" + total
+	score_details.text = killscore + "\n" + wavebonus + "\n" + lifepenalty
+	score_full.text = "Final score: %d" % score
 
 func on_button_pressed():
 	emit_signal("play_again")
