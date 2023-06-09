@@ -114,7 +114,7 @@ func update_disabled_state():
 	var cost = Upgrades.reshape_cost(current)
 	var gold = State.gold
 	var remaining = Upgrades.possible_upgrades(current)
-	reshape_button.disabled = cost > gold or len(remaining) < 3
+	reshape_button.disabled = cost > gold or len(remaining) < 1
 
 func configure_ui():
 	update_selected()
