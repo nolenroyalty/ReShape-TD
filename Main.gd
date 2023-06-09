@@ -2,6 +2,7 @@ extends Node2D
 
 var ReshapeUpgradeAll = preload("res://ui/ReshapeUpgradeAllChoices.tscn")
 var ReshapeUpgradePicker = preload("res://ui/ReshapeUpgrade3Choice.tscn")
+var PauseModal = preload("res://ui/PauseModal.tscn")
 
 onready var battlefield = $Battlefield
 # onready var upgrade_selector = $ReshapeUpgradeSelector
@@ -15,11 +16,19 @@ enum S { RUNNING, IN_MENU }
 var individual_selection = null
 var state = S.RUNNING
 
-func hide_reshape_upgrade_picker(picker):
-	picker.queue_free()
+func pause_for_modal():
+	get_tree().paused = true
+	shade.show()
+	battlefield.set_in_menu()
+
+func unpause_modal_gone():
 	get_tree().paused = false
 	shade.hide()
 	battlefield.set_playing()
+
+func hide_reshape_upgrade_picker(picker):
+	picker.queue_free()
+	unpause_modal_gone()
  
 func handle_upgrade_purchased(shape, upgrade, picker):
 	var cost = Upgrades.reshape_cost(shape)
@@ -32,9 +41,7 @@ func handle_upgrade_purchased(shape, upgrade, picker):
 	# upgrade_selector.update_upgrades_text()
 
 func show_reshape_upgrade_picker(shape):
-	shade.show()
-	get_tree().paused = true
-	battlefield.set_in_menu()
+	pause_for_modal()
 
 	var picker = ReshapeUpgradePicker.instance()
 	add_child(picker)
@@ -122,6 +129,16 @@ func handle_final_wave_sent():
 func handle_timer_updated(_time):
 	pass
 
+func resume_pressed(modal):
+	modal.queue_free()
+	unpause_modal_gone()
+
+func pause_pressed():
+	pause_for_modal()
+	var modal = PauseModal.instance()
+	add_child(modal)
+	modal.connect("resumed", self, "resume_pressed", [modal])
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	# set_shape(C.SHAPE.CROSS)
@@ -129,9 +146,12 @@ func _ready():
 	sidebar.connect("selected", self, "set_shape")
 	sidebar.connect("send_wave", self, "start_or_send_next_wave")
 	sidebar.connect("shape_cleared", self, "handle_sidebar_cleared_shape")
+	sidebar.connect("pause", self, "pause_pressed")
+
 	battlefield.connect("selected_tower", self, "show_individual_tower")
 	battlefield.connect("selected_creep", self, "show_individual_creep")
 	battlefield.connect("tower_built", self, "handle_tower_built")
+
 	wave_display.connect("wave_started", self, "handle_wave_started")
 	wave_display.connect("final_wave_sent", self, "handle_final_wave_sent")
 	wave_display.connect("timer_updated", self, "handle_timer_updated")
