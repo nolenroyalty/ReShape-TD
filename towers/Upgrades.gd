@@ -218,6 +218,9 @@ func possible_upgrades(shape):
 	var possible = []
 	var used = {}
 	var active = active_upgrades(shape)
+
+	if len(active) == C.MAX_UPGRADES:
+		return []
 	
 	for s in shapes:
 		for t in active_upgrades(s):

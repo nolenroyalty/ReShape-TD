@@ -1,7 +1,7 @@
 extends Node2D
 
 signal final_wave_sent
-signal wave_started(number, kind, is_boss)
+signal wave_started(wave_number, kind, is_boss, creep_count)
 signal timer_updated(amount)
 
 const FULL_TIMER = 25
@@ -25,7 +25,10 @@ func release_wave(number):
 	var wave = waves[number]
 	print("Wave %s started (kind: %s)" % [number, C.creep_name(wave[0])])
 
-	emit_signal("wave_started", number, wave[0], wave[1])
+	var creep_count = null
+	if len(wave) == 3: creep_count = wave[2]
+
+	emit_signal("wave_started", number + 1, wave[0], wave[1], creep_count)
 	if wave_number + 1 >= len(waves):
 		emit_signal("final_wave_sent")
 
@@ -124,13 +127,22 @@ var all_waves = [
 	[ q, false],
 	[ r, false],
 	[ q, true],
-	[ t, true],
-	[ r, true],
-	[ n, true],
-	[ q, true],
-	[ t, true],
-	[ r, true],
-	[ n, true],
+	[ n, true, 2],
+	[ t, false, 12],
+	[ q, false, 10],
+	[ r, false, 10],
+	[ n, false, 12],
+	[ r, true, 2],
+	[ n, true, 3],
+	[ t, false, 12],
+	[ q, false, 10],
+	[ q, true, 3],
+	[ t, true, 3],
+	[ n, false, 15],
+	[ r, false, 16],
+	[ t, false, 16],
+	[ r, true, 3],
+	[ n, true, 5],
 ]
 
 # Called when the node enters the scene tree for the first time.

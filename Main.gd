@@ -124,11 +124,10 @@ func _process(delta):
 				won_game()
 		S.IN_MENU: pass
 	
-func handle_wave_started(number, kind, is_boss):
-	battlefield.spawn_wave(kind, number + 1, is_boss)
-	number += 1
-	$WaveAndScore/Wave.text = "Wave: %d" % [number]
-	sidebar.update_for_sent_wave(number, final_wave_sent)
+func handle_wave_started(wave_number, kind, is_boss, creep_count):
+	battlefield.spawn_wave(kind, wave_number, is_boss, creep_count)
+	$WaveAndScore/Wave.text = "Wave: %d" % [wave_number]
+	sidebar.update_for_sent_wave(wave_number, final_wave_sent)
  
 func handle_final_wave_sent():
 	print("Final wave sent!")

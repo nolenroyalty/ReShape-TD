@@ -41,7 +41,6 @@ func set_text_for_tower():
 	if cost == null:
 		rank_up.text = "Max Rank"
 	else:
-		print(cost)
 		rank_up.text = "Rank Up: %s gold" % cost
 		
 	sell.text = "Sell: %s gold" % tower.sell_value()
@@ -55,7 +54,11 @@ func set_text_for_tower():
 	set_level_up_status()
 
 func on_level_up_button_pressed():
+	if rank_up.disabled:
+		return
 	var cost = tower.rank_up_cost()
+	if cost == null:
+		return
 	if State.try_to_buy(cost):
 		tower.level_up()
 

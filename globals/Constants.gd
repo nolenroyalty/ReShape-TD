@@ -7,6 +7,7 @@ var shapes = [ SHAPE.CROSS, SHAPE.CRESCENT, SHAPE.DIAMOND ]
 const BASE_TOWER_COST = 5
 const RANK_UP_COST_MULT = 2.0
 const MAX_LEVEL = 5
+const MAX_UPGRADES = 5
 
 func shape_name(shape):
 	match shape:
