@@ -174,7 +174,7 @@ func description(t):
 		T.STUNNING: return "Projectiles have a 10% chance to stun enemies"
 		T.BONUS_GOLD: return "Tower earns 25% more gold for kills"
 		T.GIANT_PROJ: return "Projectiles are much larger"
-		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
+		T.RETURNS: return "Projectiles return to the tower after exiting the battlefield"
 		T.POISONS: return "Projectiles deal an additional 50% of the tower's damage over time"
 		T.FARSHOT: return "Projectiles deal up to 100% more damage the farther they travel"
 		T.GENEROUS: return "Deals 50% less damage but gives a stacking 15% damage buff to other towers in range"
