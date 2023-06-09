@@ -127,7 +127,6 @@ func hit_something(area):
 func exited_battlefield():
 	if state != S.BEGIN_FADING and state != S.FADING:
 		if returns:
-			
 			if Upgrades.farshot(my_shape):
 				farshot_return_bonus = starting_position.distance_to(position)
 				starting_position = position
