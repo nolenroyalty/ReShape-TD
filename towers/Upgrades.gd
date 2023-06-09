@@ -291,7 +291,7 @@ func rank_up_cost(shape, stats):
 		return null
 
 	var base_cost = stats.rank_up_base_cost()
-	var mult = 1.0 + 0.25 * len(active_upgrades(shape))
+	var mult = 1.0 + 0.10 * len(active_upgrades(shape))
 	return int(base_cost * mult)
 
 func upgrade(shape, t):
