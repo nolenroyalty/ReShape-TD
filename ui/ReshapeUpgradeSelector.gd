@@ -130,6 +130,10 @@ func handle_reshape_pressed():
 func gold_updated(_amount):
 	update_disabled_state()
 
+func _process(_delta):
+	if Input.is_action_just_pressed("reshape_tower") and current != null:
+		handle_reshape_pressed()
+
 func _ready():
 	cross.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.CROSS])
 	crescent.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.CRESCENT])
