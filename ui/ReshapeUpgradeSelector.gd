@@ -2,6 +2,7 @@ extends Node2D
 
 signal reshape(shape)
 signal selected(shape)
+signal shape_cleared
 
 onready var cross = $Control/CrossButton
 onready var crescent = $Control/CrescentButton
@@ -42,11 +43,21 @@ func update_selected():
 			b.modulate.a = 0.35
 			l.hide()
 
+func set_cost_text_color():
+	if cant_afford():
+		cost_label.set("custom_colors/font_color", C.RED)
+	else:
+		cost_label.set("custom_colors/font_color", Color("#ac82b2"))
+
 func set_cost_text(cost):
 	cost_label.text = "Build cost: %d gold" % cost
+	
+func cant_afford():
+	return current != null and not State.can_buy(Upgrades.tower_cost(current))
 
 var prior_cost = 0
 func tween_up_cost():
+	set_cost_text_color()
 	cost_tween.stop_all()
 	cost_tween.interpolate_method(self, "set_cost_text", prior_cost, Upgrades.tower_cost(current), 1.0, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
 	cost_tween.start()
@@ -63,6 +74,7 @@ func update_info_text(tween_cost=false):
 	else:
 		prior_cost = Upgrades.tower_cost(current)
 		set_cost_text(Upgrades.tower_cost(current))
+		set_cost_text_color()
 		#var build_cost = "Build Cost: %d gold" % [Upgrades.tower_cost(current)]
 		# cost_label.text = build_cost
 
@@ -112,6 +124,7 @@ func configure_ui():
 func clear_shape():
 	current = null 
 	configure_ui()
+	emit_signal("shape_cleared")
 
 func set_shape(kind):
 	current = kind
@@ -129,10 +142,13 @@ func handle_reshape_pressed():
 
 func gold_updated(_amount):
 	update_disabled_state()
+	set_cost_text_color()
 
 func _process(_delta):
 	if Input.is_action_just_pressed("reshape_tower") and current != null:
 		handle_reshape_pressed()
+	if Input.is_action_just_pressed("cancel_build_tower") and current != null:
+		clear_shape()
 
 func _ready():
 	cross.connect("pressed", self, "handle_shape_pressed", [C.SHAPE.CROSS])

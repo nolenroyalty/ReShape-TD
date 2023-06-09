@@ -75,6 +75,9 @@ func set_shape(shape):
 	sidebar.set_shape(shape)
 	battlefield.set_shape(shape)
 
+func handle_sidebar_cleared_shape():
+	battlefield.set_shape(null)
+
 func handle_tower_built():
 	if Input.is_action_pressed("continue_building"):
 		pass
@@ -125,6 +128,7 @@ func _ready():
 	sidebar.connect("reshape", self, "show_reshape_upgrade_picker")
 	sidebar.connect("selected", self, "set_shape")
 	sidebar.connect("send_wave", self, "start_or_send_next_wave")
+	sidebar.connect("shape_cleared", self, "handle_sidebar_cleared_shape")
 	battlefield.connect("selected_tower", self, "show_individual_tower")
 	battlefield.connect("selected_creep", self, "show_individual_creep")
 	battlefield.connect("tower_built", self, "handle_tower_built")
