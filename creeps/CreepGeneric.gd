@@ -122,20 +122,15 @@ func tick_poison(timer, damage, bonus_gold, ticks_remaining):
 	timer.connect("timeout", self, "tick_poison", [timer, damage, bonus_gold, ticks_remaining])
 	timer.start(0.5)
 
-func maybe_apply_poison(amount, bonus_gold):
+func maybe_apply_poison(amount, status_multiplier, bonus_gold):
 	if status_effect_hit(100):
 		set_poisoned(true)
 		$IsPoisonedTimer.start(1.5)
 		var timer = Timer.new()
 		timer.one_shot = true
 		add_child(timer)
-		var d = (amount / 3.0) * STATUS_REDUCTION
+		var d = (amount / 3.0) * STATUS_REDUCTION * status_multiplier
 		tick_poison(timer, d, bonus_gold, 3)
-		
-		# for _i in range(3):
-		# 	var d = (amount / 3.0) * STATUS_REDUCTION
-		# 	yield(get_tree().create_timer(0.5), "timeout")
-		# 	damage(d, bonus_gold)
 
 func _on_ispoisonedtimer_timeout():
 	set_poisoned(false)
