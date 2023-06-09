@@ -3,9 +3,8 @@ extends CanvasLayer
 signal chosen(shape, upgrade)
 signal cancelled(shape)
 
-onready var left = $Background/Choices/Left
-onready var right = $Background/Choices/Right
-onready var center = $Background/Choices/Center
+var UpgradeButton = preload("res://ui/UpgradeButton.tscn")
+
 onready var title = $Background/Title
 onready var current = $Background/CurrentUpgrades
 # onready var cancel = $Background/Cancel
@@ -47,10 +46,8 @@ func set_shape(shape):
 		cancelled(shape)
 		return
 	
-	left.set_upgrade_text(chosen[0])
-	right.set_upgrade_text(chosen[1])
-	center.set_upgrade_text(chosen[2])
-	
-	left.connect("pressed", self, "on_button_pressed", [shape, chosen[0]])
-	right.connect("pressed", self, "on_button_pressed", [shape, chosen[1]])
-	center.connect("pressed", self, "on_button_pressed", [shape, chosen[2]])
+	for choice in chosen:
+		var button = UpgradeButton.instance()
+		button.set_upgrade_text(choice)
+		$Background/Choices.add_child(button)
+		button.connect("pressed", self, "on_button_pressed", [shape, choice])
