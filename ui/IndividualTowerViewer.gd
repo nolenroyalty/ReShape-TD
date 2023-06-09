@@ -35,7 +35,7 @@ func set_text_for_tower():
 	title.text = "%s Tower Rank %d" % [name, stats.LEVEL]
 
 	rank_up.text = "Upgrade: %s gold" % tower.upgrade_cost()
-	sell.text = "Sell: %s gold" % tower.sell_value
+	sell.text = "Sell: %s gold" % tower.sell_value()
 
 	damage.text = "%d" % int(stats.DAMAGE * Upgrades.damage_mult(tower.my_shape))
 	aps.text = "%.1f" % stats.attacks_per_second()

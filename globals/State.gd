@@ -14,7 +14,7 @@ var score : int
 var life_penalty : int
 
 func reset():
-	gold = 200
+	gold = 150
 	emit_signal("gold_updated", gold)
 	lives = 20
 	emit_signal("lives_updated", lives)

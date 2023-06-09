@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://towers/Tower.gd" type="Script" id=1]
+[ext_resource path="res://fonts/HelvetiPixel.ttf" type="DynamicFontData" id=2]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 16, 16 )
@@ -8,6 +9,10 @@ extents = Vector2( 16, 16 )
 [sub_resource type="CircleShape2D" id=2]
 resource_local_to_scene = true
 radius = 64.0
+
+[sub_resource type="DynamicFont" id=3]
+size = 8
+font_data = ExtResource( 2 )
 
 [node name="Tower" type="Node2D" groups=["tower"]]
 script = ExtResource( 1 )
@@ -33,3 +38,12 @@ shape = SubResource( 2 )
 
 [node name="ShotTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="Level" type="Label" parent="."]
+visible = false
+margin_left = 25.0
+margin_top = 23.0
+margin_right = 65.0
+margin_bottom = 37.0
+custom_fonts/font = SubResource( 3 )
+text = "5"

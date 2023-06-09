@@ -72,6 +72,7 @@ func update_info_text(tween_cost=false):
 	if tween_cost:
 		tween_up_cost()
 	else:
+		cost_tween.stop_all()
 		prior_cost = Upgrades.tower_cost(current)
 		set_cost_text(Upgrades.tower_cost(current))
 		set_cost_text_color()
@@ -128,6 +129,7 @@ func clear_shape():
 
 func set_shape(kind):
 	current = kind
+	
 	configure_ui()
 
 func handle_shape_pressed(kind):

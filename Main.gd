@@ -175,6 +175,7 @@ func actually_reset(modal):
 
 	modal.queue_free()
 	unpause_modal_gone()
+	state = S.RUNNING
 
 func cancel_reset(modal):
 	modal.queue_free()

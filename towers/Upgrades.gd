@@ -16,7 +16,8 @@ enum T {
 	RETURNS,
 	POISONS,
 	FARSHOT,
-	GENEROUS
+	GENEROUS,
+	POWERFUL
 }
 
 class Stats extends Node:
@@ -36,10 +37,10 @@ class Stats extends Node:
 	var DAMAGE_MULT = 1.0
 	var GENEROUS = false
 	var RECEIVED_GENEROUS = false
+	var POWERFUL = false
 
 	func build_cost():
-		var mult = pow(2, len(upgrades))
-		return mult * C.BASE_TOWER_COST
+		return (len(upgrades) + 1) * C.BASE_TOWER_COST
 	
 	func reshape_cost():
 		var mult = pow(2, len(upgrades))
@@ -67,6 +68,9 @@ func _apply(t, stats):
 		T.GENEROUS: 
 			stats.GENEROUS = true
 			stats.DAMAGE_MULT *= 0.5
+		T.POWERFUL:
+			stats.POWERFUL = true
+			stats.DAMAGE_MULT *= 1.50
 	
 	stats.upgrades.append(t)
 	return stats
@@ -100,6 +104,66 @@ func title(t):
 		T.POISONS: return "Poisoning"
 		T.FARSHOT: return "Farshot"
 		T.GENEROUS: return "Generous"
+		T.POWERFUL: return "Powerful"
+
+class Requirements extends Node:
+	var all_of = {}
+	var any_of = []
+	var length = 0
+
+	func matches(upgrades):
+		if len(upgrades) < length:
+			return false
+
+		for t in all_of:
+			if not (t in upgrades):
+				return false
+		
+		if len(any_of) == 0:
+			return true
+		else:
+			for t in any_of:
+				if t in upgrades:
+					return true
+			return false
+
+func requires(t):
+	var r = Requirements.new()
+	match t:
+		T.CHILLS:
+			pass
+		T.EXPLODES:
+			pass
+		T.PIERCES:
+			r.length = 1
+		T.CHAINS: 
+			pass
+		T.LESSER_MULTIPROJ:
+			pass
+		T.GREATER_MULTIPROJ:
+			r.length = 1
+		T.STUNNING:
+			r.length = 2
+		T.BONUS_GOLD: 
+			r.length = 1
+		T.GIANT_PROJ: 
+			r.any_of = [ T.EXPLODES, T.PIERCES, T.CHAINS ]
+			r.length = 2
+		T.RETURNS: 
+			r.any_of = [ T.PIERCES, T.CHAINS, T.LESSER_MULTIPROJ, T.GREATER_MULTIPROJ]
+			r.length = 2
+		T.POISONS: 
+			pass
+		T.FARSHOT:
+			r.any_of = [T.PIERCES, T.CHAINS, T.LESSER_MULTIPROJ, T.GREATER_MULTIPROJ]
+			r.length = 1
+		T.GENEROUS: 
+			r.any_of = [ T.CHILLS, T.LESSER_MULTIPROJ, T.GREATER_MULTIPROJ ]
+			r.length = 1
+		T.POWERFUL:
+			r.length = 3
+	
+	return r
 
 func description(t):
 	match t:
@@ -114,9 +178,10 @@ func description(t):
 		T.BONUS_GOLD: return "Tower earns 25% more gold for kills"
 		T.GIANT_PROJ: return "Projectiles are much larger"
 		T.RETURNS: return "Projectiles return to the tower after hitting an enemy"
-		T.POISONS: return "Projectiles deal 50%x of the tower's damage over time"
+		T.POISONS: return "Projectiles deal 50% of the tower's damage over time"
 		T.FARSHOT: return "Projectiles deal up to 100% more damage the farther they travel"
 		T.GENEROUS: return "Deals 50% less damage, but other shapes deal 20% more damage"
+		T.POWERFUL: return "Deals 50% more damage"
 
 class IndividualTower extends Node:
 	var LEVEL = 1
@@ -152,7 +217,9 @@ func possible_upgrades(shape):
 	var possible = []
 	var excluded = {}
 	var used = {}
-	for t in active_upgrades(shape):
+	var active = active_upgrades(shape)
+	
+	for t in active:
 		for exclude in excludes(t):
 			excluded[exclude] = true
 	
@@ -162,9 +229,9 @@ func possible_upgrades(shape):
 
 	for t in all_upgrades():
 		if not (t in used) and not (t in excluded):
-			possible.append(t)
-		# if not (t in active_upgrades(shape)) and not (t in excluded):
-			# possible.append(t)
+			var req = requires(t)
+			if req.matches(active):
+				possible.append(t)
 
 	return possible
 

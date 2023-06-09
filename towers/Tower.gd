@@ -24,8 +24,8 @@ var everything_in_range = {}
 var my_shape = null
 var my_stats = null
 var tower_range = null
-var sell_value = null
 var kills = 0
+var gold_spent = 0
 
 func acquire_target(target_):
 	target = target_
@@ -122,18 +122,21 @@ func _physics_process(_delta):
 func upgrade_cost():
 	return Upgrades.upgrade_cost(my_shape, my_stats)
 
+func sell_value():
+	return int(gold_spent / 2.0)
+
 func level_up():
-	# CR nroyalty: think about these values
+	gold_spent += upgrade_cost()
 	my_stats.level_up()
-	sell_value *= C.UPGRADE_COST_MULT
-	sell_value = int(sell_value)
+	$Level.text = "%s" % [my_stats.LEVEL]
+	$Level.visible = true
 	refresh_range()
 	emit_signal("leveled_up")
 		
 func sell():
 	hide_range()
 	queue_free()
-	State.add_gold(sell_value)
+	State.add_gold(sell_value())
 	emit_signal("sold")
 
 func got_a_kill():
@@ -151,7 +154,7 @@ func pressed():
 func init(shape):
 	my_shape = shape
 	my_stats = Upgrades.IndividualTower.new()
-	sell_value = Upgrades.tower_cost(my_shape) / 2
+	gold_spent = Upgrades.tower_cost(my_shape)
 
 	var texture = null
 
