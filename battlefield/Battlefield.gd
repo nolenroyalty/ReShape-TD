@@ -34,15 +34,6 @@ func move_building_indicator(pos):
 	if selected_shape != null:
 		indicator.position = current_build_location
 		indicator.begin_showing()
-
-	# if selected_shape == null:
-	# 	indicator.begin_hiding()
-	# 	current_build_location = null
-	# 	return
-	# else:
-	# 	current_build_location = pos + buildable.position
-	# 	indicator.position = current_build_location
-	# 	indicator.begin_showing()
 	
 func hide_building_indicator():
 	current_build_location = null
@@ -84,31 +75,54 @@ func actually_build_tower(location):
 	tower.connect("sold", self, "handle_tower_sold", [tower])
 	add_child(tower)
 	emit_signal("tower_built")
-	
-func try_to_build_tower(_event):
+
+func can_build_tower():
 	if not indicator.unblocked():
 		return false
 	
+	if selected_shape == null:
+		return false
+	
 	var creep_pos = {}
+	var start_end_pairs = []
+	
+	for vertical in [true, false]:
+		var start = spawn(vertical).starting_points[0] + U.snap_to_grid(spawn(vertical).position)
+		var end = dest(vertical).get_center_point() + U.snap_to_grid(dest(vertical).position)
+		start_end_pairs.append([start, end])
 
 	for creep in get_tree().get_nodes_in_group("creep"):
-		if creep.position.distance_to(current_build_location) < C.CELL_SIZE * 2:
-			creep_pos[U.snap_to_grid(creep.position)] = true
+		var p = U.snap_to_grid(creep.position)
+		var d = U.snap_to_grid(creep.destination)
+		start_end_pairs.append([p, d])
 
-	for pos in relevant_points_for_tower(current_build_location):
+		if creep.position.distance_to(current_build_location) < C.CELL_SIZE * 2:
+			creep_pos[p] = true
+
+	var tower_points = relevant_points_for_tower(current_build_location)
+	for pos in tower_points:
 		if grid.is_disabled(pos):
+			print("Not allowing tower build because it overlaps with a tower")
 			return false
 		
 		if pos in creep_pos:
+			print("Not allowing tower build because it overlaps with a creep")
 			return false
-		
-	if selected_shape == null:
+
+	if grid.would_block_a_path(tower_points, start_end_pairs):
+		print("Not allowing tower build because it blocks a path")
+		return false
+	
+	return true
+
+func try_to_build_tower(_event):
+	if not can_build_tower():
 		return false
 
 	var cost = Upgrades.tower_cost(selected_shape)
 	if not State.try_to_buy(cost):
 		print("Not enough money to place tower!")
-		# play sound?
+		# play sound!!!
 		return false
 
 	actually_build_tower(current_build_location)
@@ -157,7 +171,7 @@ func pop_from_spawn_queue():
 	var creep_info = spawn_queue.pop_front()
 	var CreepKind = creep_info[0]
 	var level = creep_info[1]
-	for vertical in [ true, false]:
+	for vertical in [true, false]:
 		var start_area = spawn(vertical)
 		var end_area = dest(vertical)
 
@@ -271,6 +285,7 @@ func reset():
 	selected_shape = null
 	state = S.NOT_YET_STARTED
 	selected_creep_or_tower = null
+	grid.reset()
 	spawn_queue = []
 
 func _ready():
