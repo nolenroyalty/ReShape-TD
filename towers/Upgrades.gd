@@ -194,15 +194,54 @@ class IndividualTower extends Node:
 	var PROJECTILE_SPEED = 225
 	var STATUS_MULTIPLIER = 1.0
 	
+	func damage():
+		match LEVEL:
+			1: return 10
+			2: return 25
+			3: return 50
+			4: return 100
+			5: return 250
+	
+	func range_radius():
+		match LEVEL:
+			1: return 64
+			2: return 80
+			3: return 96
+			4: return 112
+			5: return 144
+	
+	func attack_speed():
+		match LEVEL:
+			1: return 1.0
+			2: return 0.9
+			3: return 0.85
+			4: return 0.7
+			5: return 0.65
+	
+	func status_multiplier():
+		match LEVEL:
+			1: return 1.0
+			2: return 1.2
+			3: return 1.5
+			4: return 1.8
+			5: return 2.5
+
 	func level_up():
 		LEVEL += 1
-		RANGE_RADIUS += 16
-		ATTACK_SPEED -= 0.1 * ATTACK_SPEED
-		DAMAGE *= 2
-		STATUS_MULTIPLIER += 0.3
+		DAMAGE = damage()
+		RANGE_RADIUS = range_radius()
+		ATTACK_SPEED = attack_speed()
+		STATUS_MULTIPLIER = status_multiplier()
 	
-	func rank_up_mult():
-		return pow(C.RANK_UP_COST_MULT, (LEVEL + 1))
+	func rank_up_base_cost():
+		match LEVEL:
+			1: return 20
+			2: return 60
+			3: return 150
+			4: return 350
+			5:
+				print("why are we asking for the rank up cost of a level 5 tower")
+				return 500
 	
 	func attacks_per_second():
 		return 1.0 / ATTACK_SPEED
@@ -246,9 +285,11 @@ func rank_up_cost(shape, stats):
 	if stats.LEVEL == C.MAX_LEVEL:
 		return null
 
-	var base = tower_cost(shape)
-	var mult = stats.rank_up_mult()
-	return int(base * mult)
+	var base_cost = stats.rank_up_base_cost()
+	var mult = 1.0 + 0.25 * len(active_upgrades(shape))
+	# var base = tower_cost(shape)
+	# var mult = stats.rank_up_mult()
+	return int(base_cost * mult)
 
 func upgrade(shape, t):
 	state[shape] = _apply(t, state[shape])
