@@ -6,6 +6,7 @@ signal creep_freed
 onready var title = $Title
 onready var health = $GridContainer/Health
 onready var speed = $GridContainer/Speed
+onready var level = $GridContainer/Level
 
 onready var resist_title = $GridContainer/ResistTitle
 onready var resist_text = $GridContainer/Resist
@@ -25,6 +26,7 @@ func init(creep_):
 func set_text_for_creep():
 	var suffix = " (Boss)" if creep.is_boss else ""
 	title.text = "%s Creep%s" % [creep.KIND, suffix]
+	level.text = "%s" % int(creep.level)
 	health.text = "%s" % int(creep.health)
 	speed.text = "%s" % int(creep.determine_speed())
 

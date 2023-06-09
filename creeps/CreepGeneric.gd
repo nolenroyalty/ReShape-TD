@@ -249,7 +249,7 @@ func begin_dying():
 var just_reached = false
 func handle_reached_goal():
 	# Eventually we'll want to stick around for a second and play an animation here
-	if just_reached:
+	if just_reached or began_to_die:
 		return
 	just_reached = true
 	State.lose_life()
@@ -291,20 +291,14 @@ func handle_points_changed(_points):
 			state = S.MOVING
 
 func compute_health():
-	var mult_total = 1.0
-	var mult_incr = 0.2
-	var i = 1
-	var lvl = level
-
-	while lvl > 0:
-		i = i % 5
-		if i == 0: mult_incr += 0.1
-		mult_total += mult_incr
-		lvl -= 1
+	var base = 2.0
+	var double_every_this_many_levels = 5
+	var e = float(level) / double_every_this_many_levels
+	var mult = pow(base, e)
 	
-	var base = BASE_HEALTH
-	if is_boss: base *= 10
-	return base * mult_total
+	var h = BASE_HEALTH
+	if is_boss: h *= 10
+	return h * mult
 
 func init(level_, dest):
 	self.level = level_

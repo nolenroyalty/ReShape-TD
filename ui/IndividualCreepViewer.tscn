@@ -22,75 +22,90 @@ margin_right = 128.0
 margin_bottom = 144.0
 columns = 2
 
-[node name="HealthTitle" type="Label" parent="GridContainer"]
+[node name="LevelTitle" type="Label" parent="GridContainer"]
 margin_right = 91.0
 margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "Level"
+
+[node name="Level" type="Label" parent="GridContainer"]
+margin_left = 95.0
+margin_right = 128.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "50"
+
+[node name="HealthTitle" type="Label" parent="GridContainer"]
+margin_top = 18.0
+margin_right = 91.0
+margin_bottom = 32.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.662745, 0.411765, 0.376471, 1 )
 text = "Health"
 
 [node name="Health" type="Label" parent="GridContainer"]
 margin_left = 95.0
+margin_top = 18.0
 margin_right = 128.0
-margin_bottom = 14.0
+margin_bottom = 32.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.662745, 0.411765, 0.376471, 1 )
 text = "50"
 
 [node name="SpeedTitle" type="Label" parent="GridContainer"]
-margin_top = 18.0
+margin_top = 36.0
 margin_right = 91.0
-margin_bottom = 32.0
+margin_bottom = 50.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.847059, 0.705882, 0.478431, 1 )
 text = "Speed"
 
 [node name="Speed" type="Label" parent="GridContainer"]
 margin_left = 95.0
-margin_top = 18.0
+margin_top = 36.0
 margin_right = 128.0
-margin_bottom = 32.0
+margin_bottom = 50.0
 custom_colors/font_color = Color( 0.847059, 0.705882, 0.478431, 1 )
 text = "50"
 
 [node name="ResistTitle" type="Label" parent="GridContainer"]
-margin_top = 36.0
+margin_top = 54.0
 margin_right = 91.0
-margin_bottom = 50.0
+margin_bottom = 68.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "Resist Chance"
 
 [node name="Resist" type="Label" parent="GridContainer"]
 margin_left = 95.0
-margin_top = 36.0
+margin_top = 54.0
 margin_right = 128.0
-margin_bottom = 50.0
+margin_bottom = 68.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "20%"
 
 [node name="StatusTitle" type="Label" parent="GridContainer"]
-margin_top = 54.0
+margin_top = 72.0
 margin_right = 91.0
-margin_bottom = 68.0
+margin_bottom = 86.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "Status Reduction"
 
 [node name="StatusChance" type="Label" parent="GridContainer"]
 margin_left = 95.0
-margin_top = 54.0
+margin_top = 72.0
 margin_right = 128.0
-margin_bottom = 68.0
+margin_bottom = 86.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.67451, 0.509804, 0.698039, 1 )
 text = "50%"
 
 [node name="Statuses" type="VBoxContainer" parent="GridContainer"]
-margin_top = 72.0
+margin_top = 90.0
 margin_right = 91.0
-margin_bottom = 122.0
+margin_bottom = 140.0
 
 [node name="Chilled" type="Label" parent="GridContainer/Statuses"]
 margin_right = 91.0

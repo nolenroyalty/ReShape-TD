@@ -82,7 +82,7 @@ func explode():
 	var t = Tween.new()
 	var start_scale = $Sprite.scale
 	var final_scale = start_scale * EXPLOSION_SIZE
-	t.interpolate_property($Sprite, "modulate:a", null, 0.6, EXPLOSION_SPEED, Tween.TRANS_QUAD, Tween.EASE_OUT)
+	t.interpolate_property($Sprite, "modulate:a", null, 0.3, EXPLOSION_SPEED, Tween.TRANS_QUAD, Tween.EASE_OUT)
 	t.interpolate_property($Sprite, "scale", null, final_scale, EXPLOSION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	var current_radius = $Hitbox/Shape.shape.radius
 	var final_radius = current_radius * EXPLOSION_SIZE

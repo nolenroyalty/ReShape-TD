@@ -195,12 +195,12 @@ class IndividualTower extends Node:
 	
 	func level_up():
 		LEVEL += 1
-		RANGE_RADIUS += 24
-		ATTACK_SPEED -= 0.15 * ATTACK_SPEED
-		DAMAGE *= 2.5
+		RANGE_RADIUS += 16
+		ATTACK_SPEED -= 0.1 * ATTACK_SPEED
+		DAMAGE *= 2
 	
 	func rank_up_mult():
-		return pow(C.RANK_UP_COST_MULT, LEVEL)
+		return pow(C.RANK_UP_COST_MULT, (LEVEL + 1))
 	
 	func attacks_per_second():
 		return 1.0 / ATTACK_SPEED
@@ -238,6 +238,9 @@ func reshape_cost(shape):
 	return int(state[shape].reshape_cost())
 
 func rank_up_cost(shape, stats):
+	if stats.LEVEL == C.MAX_LEVEL:
+		return null
+
 	var base = tower_cost(shape)
 	var mult = stats.rank_up_mult()
 	return int(base * mult)

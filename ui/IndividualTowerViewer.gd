@@ -20,7 +20,10 @@ func init(tower_):
 
 func set_level_up_status():
 	var rank_up_cost = tower.rank_up_cost()
-	rank_up.disabled = not State.can_buy(rank_up_cost)
+	if rank_up_cost == null:
+		rank_up.disabled = true
+	else:
+		rank_up.disabled = not State.can_buy(rank_up_cost)
 
 func set_sprite():
 	var shape = tower.my_shape
@@ -34,7 +37,13 @@ func set_text_for_tower():
 	
 	title.text = "%s Tower Rank %d" % [name, stats.LEVEL]
 
-	rank_up.text = "Rank Up: %s gold" % tower.rank_up_cost()
+	var cost = tower.rank_up_cost()
+	if cost == null:
+		rank_up.text = "Max Rank"
+	else:
+		print(cost)
+		rank_up.text = "Rank Up: %s gold" % cost
+		
 	sell.text = "Sell: %s gold" % tower.sell_value()
 
 	damage.text = "%d" % int(stats.DAMAGE * Upgrades.damage_mult(tower.my_shape))
