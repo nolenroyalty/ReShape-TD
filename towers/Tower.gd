@@ -14,7 +14,8 @@ onready var shooting_range = $ShootingRange
 onready var generous_range = $GenerousRange
 onready var shot_timer = $ShotTimer
 onready var audio = $AudioStreamPlayer
-onready var animation_player = $AnimationPlayer
+onready var sprite_animator = $SpriteAnimationPlayer
+onready var rect_animator = $ColorRectAnimationPlayer
 
 var WAIT_TIME = 1.0
 
@@ -122,7 +123,7 @@ func try_to_shoot():
 			get_parent().add_child(bullet)
 		
 		maybe_play_shoot_sound()
-		animation_player.play("shoot")
+		sprite_animator.play("shoot")
 		shot_timer.start(my_stats.ATTACK_SPEED)
 
 func refresh_range():
@@ -203,7 +204,7 @@ func init(shape):
 		enable_generous()
 
 func handle_reshaped(shape, upgrade):
-	animation_player.play("Reshaped")
+	rect_animator.play("reshaped")
 	if shape == my_shape and upgrade == Upgrades.T.GENEROUS:
 		enable_generous()
 
