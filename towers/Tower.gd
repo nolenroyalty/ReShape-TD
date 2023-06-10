@@ -7,11 +7,14 @@ signal sold
 signal leveled_up
 signal killed
 
+const SHOOT_SOUND = preload("res://towers/sounds/shoot1.wav")
 var TowerRange = preload("res://towers/TowerRange.tscn")
 
 onready var shooting_range = $ShootingRange
 onready var generous_range = $GenerousRange
 onready var shot_timer = $ShotTimer
+onready var audio = $AudioStreamPlayer
+onready var animation_player = $AnimationPlayer
 
 var WAIT_TIME = 1.0
 
@@ -87,6 +90,12 @@ func handle_target_died(creep):
 func shooting_off_cooldown():
 	return shot_timer.is_stopped()
 
+func maybe_play_shoot_sound():
+	if GlobalAudio.request_play_shoot():
+		audio.stream = SHOOT_SOUND
+		audio.volume_db = -22.5
+		audio.play()
+
 func try_to_shoot():
 	if valid_target(target) and shooting_off_cooldown():
 		var projectile_count = Upgrades.projectiles(my_shape)
@@ -111,7 +120,9 @@ func try_to_shoot():
 			bullet.init(my_shape, my_stats, t, direction)
 			bullet.connect("killed_creep", self, "got_a_kill")
 			get_parent().add_child(bullet)
-			
+		
+		maybe_play_shoot_sound()
+		animation_player.play("shoot")
 		shot_timer.start(my_stats.ATTACK_SPEED)
 
 func refresh_range():
@@ -183,19 +194,16 @@ func init(shape):
 	my_stats = Upgrades.IndividualTower.new()
 	gold_spent = Upgrades.tower_cost(my_shape)
 
-	var texture = null
-
 	match shape:
-		C.SHAPE.CROSS: texture = cross_tower
-		C.SHAPE.DIAMOND: texture = diamond_tower
-		C.SHAPE.CRESCENT: texture = crescent_tower
+		C.SHAPE.CROSS: $Sprite.frame = 1
+		C.SHAPE.DIAMOND: $Sprite.frame = 2
+		C.SHAPE.CRESCENT: $Sprite.frame = 0
 
-	$Building.texture_normal = texture
-	
 	if Upgrades.generous(my_shape):
 		enable_generous()
 
 func handle_reshaped(shape, upgrade):
+	animation_player.play("Reshaped")
 	if shape == my_shape and upgrade == Upgrades.T.GENEROUS:
 		enable_generous()
 
@@ -207,4 +215,6 @@ func _ready():
 	shooting_range.connect("area_entered", self, "handle_creep_entered_range")
 	shooting_range.connect("area_exited", self, "handle_creep_left_range")
 	generous_range.connect("area_entered", self, "give_tower_generous")
+	
 	var _ignore = $Building.connect("pressed", self, "pressed")
+	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")

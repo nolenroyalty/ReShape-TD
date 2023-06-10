@@ -4,10 +4,14 @@ signal killed_creep
 
 enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, EXPLODING, HIT_SOMETHING, BEGIN_FADING, FADING } 
 
+
 const EXPLOSION_SPEED = 0.35
 const EXPLOSION_SIZE = 5.0
 # 40 (max diagonal across the buildable grid) * 16 (cell size)
 const MAX_DISTANCE_TRAVELED = 640.0
+const EXPLOSION_SOUND = preload("res://towers/sounds/explosion.wav")
+
+onready var audio = $AudioStreamPlayer
 
 var my_shape = null
 var my_stats = null
@@ -77,6 +81,11 @@ func can_chain():
 	var closest = U.get_closest_creep(center, $ChainRange, already_hit)
 	return closest
 
+func maybe_play_explosion_sound():
+	if GlobalAudio.request_play_explosion():
+		audio.stream = EXPLOSION_SOUND
+		audio.volume_db = -20.0
+		audio.play()
 
 func explode():
 	var t = Tween.new()
@@ -95,6 +104,7 @@ func explode():
 	t.interpolate_property($Hitbox/Shape, "shape:radius", null, final_radius, EXPLOSION_SPEED, Tween.TRANS_LINEAR, Tween.EASE_OUT)
 	add_child(t)
 	t.start()
+	maybe_play_explosion_sound()
 	yield(t, "tween_all_completed")
 	state = S.BEGIN_FADING
 

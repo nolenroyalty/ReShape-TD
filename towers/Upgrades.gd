@@ -23,7 +23,7 @@ enum T {
 class Stats extends Node:
 	var upgrades = []
 	var CHILLS = false
-	var EXPLODES = false
+	var EXPLODES = true
 # 	var BURNING_GROUND = false
 	var PIERCES = 0
 	var CHAINS = 0
