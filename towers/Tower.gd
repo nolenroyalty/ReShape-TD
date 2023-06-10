@@ -204,9 +204,11 @@ func init(shape):
 		enable_generous()
 
 func handle_reshaped(shape, upgrade):
-	rect_animator.play("reshaped")
-	if shape == my_shape and upgrade == Upgrades.T.GENEROUS:
-		enable_generous()
+	if shape == my_shape:
+		rect_animator.play("reshaped")
+
+		if upgrade == Upgrades.T.GENEROUS:
+			enable_generous()
 
 func on_generous_range_area_entered(area):
 	give_tower_generous(area)

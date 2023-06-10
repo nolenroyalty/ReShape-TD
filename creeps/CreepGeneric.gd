@@ -144,7 +144,8 @@ func damage(amount, bonus_gold):
 	emit_signal("state_changed")
 	if health <= 0:
 		state = S.DYING
-		State.add_gold(gold_value() * (1 + bonus_gold))
+		var t = gold_value() * (1 + bonus_gold)
+		State.add_gold(t)
 		return true
 	return false
 
