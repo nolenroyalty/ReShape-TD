@@ -16,7 +16,7 @@ shader_param/stun = Vector3( 0.1, 0.1, 0.1 )
 
 [sub_resource type="CircleShape2D" id=1]
 resource_local_to_scene = true
-radius = 11.0
+radius = 7.0
 
 [sub_resource type="CircleShape2D" id=2]
 radius = 2.0

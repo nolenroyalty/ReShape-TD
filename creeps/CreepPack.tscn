@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://creeps/CreepGeneric.tscn" type="PackedScene" id=1]
+[ext_resource path="res://creeps/sprites/creeppack.png" type="Texture" id=2]
+[ext_resource path="res://creeps/CreepGeneric.gdshader" type="Shader" id=3]
+[ext_resource path="res://creeps/CreepPack.gd" type="Script" id=4]
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 3 )
+shader_param/is_poisoned = false
+shader_param/is_chilled = false
+shader_param/is_stunned = false
+shader_param/poison = Vector3( 0, 1, 0 )
+shader_param/chill = Vector3( 0, 0, 1 )
+shader_param/stun = Vector3( 0.1, 0.1, 0.1 )
+
+[sub_resource type="CircleShape2D" id=2]
+resource_local_to_scene = true
+radius = 6.0
+
+[node name="CreepGeneric" instance=ExtResource( 1 )]
+script = ExtResource( 4 )
+
+[node name="HealthBarEmpty" parent="." index="0"]
+margin_top = -10.0
+margin_bottom = -8.0
+
+[node name="HealthBarFull" parent="." index="1"]
+margin_top = -10.0
+margin_bottom = -8.0
+
+[node name="SpriteButton" parent="." index="2"]
+material = SubResource( 1 )
+texture_normal = ExtResource( 2 )
+
+[node name="Hurtbox" parent="." index="3"]
+visible = true
+
+[node name="CollisionShape2D" parent="Hurtbox" index="0"]
+shape = SubResource( 2 )

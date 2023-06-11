@@ -8,6 +8,7 @@ func set_color(kind):
 		C.CREEP_KIND.QUICK: background.modulate = Color("#8e3a47")
 		C.CREEP_KIND.THICK: background.modulate = Color("#3f6050")
 		C.CREEP_KIND.RESISTANT: background.modulate = Color("#ac82b2")
+		C.CREEP_KIND.PACK: background.modulate = Color("#ad9688")
 
 func set_text(kind, number, is_boss):
 	var prefix = "%d. " % number
@@ -19,6 +20,7 @@ func set_text(kind, number, is_boss):
 			C.CREEP_KIND.QUICK: label.text = prefix + "Quick"
 			C.CREEP_KIND.THICK: label.text = prefix + "Thick"
 			C.CREEP_KIND.RESISTANT: label.text = prefix + "Resistant"
+			C.CREEP_KIND.PACK: label.text = prefix + "Pack"
 
 func init(kind, number, is_boss):
 	set_color(kind)

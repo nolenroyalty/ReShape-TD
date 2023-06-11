@@ -20,6 +20,8 @@ var Quick = preload("res://creeps/CreepQuick.tscn")
 var QuickBoss = preload("res://creeps/QuickBoss.tscn")
 var Resist = preload("res://creeps/CreepResist.tscn")
 var ResistBoss = preload("res://creeps/ResistantBoss.tscn")
+var Pack = preload("res://creeps/CreepPack.tscn")
+var PackBoss = preload("res://creeps/PackBoss.tscn")
 var Tower = preload("res://towers/Tower.tscn")
 
 enum S { NOT_YET_STARTED, PLAYING, IN_MENU }
@@ -173,11 +175,42 @@ func dest(vertical):
 
 var last_vertical = null
 var last_horizontal = null
+
+func spawn_timer_time(creep_kind):
+	if creep_kind == C.CREEP_KIND.PACK:
+		return 0.175
+	else:
+		return 0.3
+
+func determine_creep_class(creep_kind, is_boss):
+	var CreepClass = null
+
+	match creep_kind:
+		C.CREEP_KIND.NORMAL:
+			if is_boss: CreepClass = NormalBoss
+			else: CreepClass = Normal
+		C.CREEP_KIND.THICK:
+			if is_boss: CreepClass = ThickBoss
+			else: CreepClass = Thick
+		C.CREEP_KIND.QUICK:
+			if is_boss: CreepClass = QuickBoss
+			else: CreepClass = Quick
+		C.CREEP_KIND.RESISTANT:
+			if is_boss: CreepClass = ResistBoss
+			else: CreepClass = Resist
+		C.CREEP_KIND.PACK:
+			if is_boss: CreepClass = PackBoss
+			else: CreepClass = Pack
+	return CreepClass
+
 func pop_from_spawn_queue():
-	spawn_timer.start()
 	var creep_info = spawn_queue.pop_front()
-	var CreepKind = creep_info[0]
-	var level = creep_info[1]
+	var kind = creep_info[0]
+	var is_boss = creep_info[1]
+	var level = creep_info[2]
+	spawn_timer.start(spawn_timer_time(kind))
+	var CreepClass = determine_creep_class(kind, is_boss)
+
 	for vertical in [true, false]:
 		var start_area = spawn(vertical)
 		var end_area = dest(vertical)
@@ -195,7 +228,7 @@ func pop_from_spawn_queue():
 		
 		var start = points[idx % len(points)] + U.snap_to_grid(start_area.position)
 		var end = end_area.get_center_point() + U.snap_to_grid(end_area.position)
-		var creep = CreepKind.instance()
+		var creep = CreepClass.instance()
 		creep.position = U.center(start)
 		creep.init(level, end)
 		creep.connect("selected", self, "creep_selected", [creep])
@@ -212,9 +245,9 @@ func handle_event__playing(event):
 func handle_event__not_started(event):
 	build_tower_for_mouse_event(event)
 
-func add_to_spawn_queue(creep, count, level):
+func add_to_spawn_queue(creep, is_boss, count, level):
 	for _i in range(count):
-		spawn_queue.append([creep, level])
+		spawn_queue.append([creep, is_boss, level])
 
 func spawn_wave(kind, level, is_boss, number_of_creeps=null):
 	if GlobalAudio.request_play_wave_release():
@@ -223,26 +256,16 @@ func spawn_wave(kind, level, is_boss, number_of_creeps=null):
 		audio.play()
 
 	if number_of_creeps == null:
-		number_of_creeps = 9
-		if is_boss: number_of_creeps = 1
+		if kind == C.CREEP_KIND.PACK:
+			if is_boss:
+				number_of_creeps = 3
+			else:
+				number_of_creeps = 14
+		else:
+			number_of_creeps = 9
+			if is_boss: number_of_creeps = 1
 
-	var CreepClass = null
-
-	match kind:
-		C.CREEP_KIND.NORMAL:
-			if is_boss: CreepClass = NormalBoss
-			else: CreepClass = Normal
-		C.CREEP_KIND.THICK:
-			if is_boss: CreepClass = ThickBoss
-			else: CreepClass = Thick
-		C.CREEP_KIND.QUICK:
-			if is_boss: CreepClass = QuickBoss
-			else: CreepClass = Quick
-		C.CREEP_KIND.RESISTANT:
-			if is_boss: CreepClass = ResistBoss
-			else: CreepClass = Resist
-	
-	add_to_spawn_queue(CreepClass, number_of_creeps, level)
+	add_to_spawn_queue(kind, is_boss, number_of_creeps, level)
 
 func get_towers():
 	return get_tree().get_nodes_in_group("tower")

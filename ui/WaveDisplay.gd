@@ -44,7 +44,7 @@ func reset_timer():
 	emit_signal("timer_updated", timer_amount)
 
 func advance_immediately():
-	if wave_number != 0 and wave_number + 1 < len(waves):
+	if wave_number != 0 and wave_number < len(waves):
 		var bonus = timer_amount * 3
 		bonus_from_wave_skipping += bonus
 		State.add_score(bonus)
@@ -112,8 +112,15 @@ var n = C.CREEP_KIND.NORMAL
 var t = C.CREEP_KIND.THICK
 var r = C.CREEP_KIND.RESISTANT
 var q = C.CREEP_KIND.QUICK
+var p = C.CREEP_KIND.PACK
 
 var all_waves = [
+	[ p, false],
+	[ p, true],
+	[ p, false]
+]
+
+var _all_waves = [
 	[ n, false],
 	[ n, false],
 	[ t, false],

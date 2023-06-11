@@ -137,7 +137,7 @@ func tick_poison(timer, damage, bonus_gold, ticks_remaining, tower):
 			tower.got_a_kill()
 
 	ticks_remaining -= 1
-	timer.connect("timeout", self, "tick_poison", [timer, damage, bonus_gold, ticks_remaining])
+	timer.connect("timeout", self, "tick_poison", [timer, damage, bonus_gold, ticks_remaining, tower])
 	timer.start(0.5)
 
 func maybe_apply_poison(amount, status_multiplier, bonus_gold, tower):

@@ -29,7 +29,7 @@ const BLACK = Color("#1b1b17")
 const YELLOW = Color("#d8b47a")
 const LIGHT_GREEN = Color("#6b7636")
 
-enum CREEP_KIND { NORMAL, QUICK, THICK, RESISTANT }
+enum CREEP_KIND { NORMAL, QUICK, THICK, RESISTANT, PACK }
 
 func creep_name(creep):
 	match creep:
@@ -41,3 +41,5 @@ func creep_name(creep):
 			return "thick"
 		CREEP_KIND.RESISTANT:
 			return "resistant"
+		CREEP_KIND.PACK:
+			return "pack"
