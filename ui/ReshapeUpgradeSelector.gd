@@ -117,6 +117,11 @@ func handle_reshape_pressed(shape):
 	else:
 		emit_signal("reshape", shape)
 
+func _input(event):
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == BUTTON_RIGHT and current != null:
+			clear_shape()	
+
 func _process(_delta):
 	# if Input.is_action_just_pressed("reshape_tower") and current != null:
 		# handle_reshape_pressed()
