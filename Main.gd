@@ -6,6 +6,7 @@ var PauseModal = preload("res://ui/PauseModal.tscn")
 var ResetModal = preload("res://ui/ResetModal.tscn")
 var EndModal = preload("res://ui/EndModal.tscn")
 var ReshapeWarningModal = preload("res://ui/ReshapeWarningModal.tscn")
+var DamageTestModal = preload("res://ui/DamageTestModal.tscn")
 
 onready var battlefield = $Battlefield
 # onready var upgrade_selector = $ReshapeUpgradeSelector
@@ -146,12 +147,29 @@ func handle_final_wave_sent():
 func handle_timer_updated(_time):
 	pass
 
+func display_damage_test_results(damage_done, killed):
+	state = S.WON_GAME
+	battlefield.disconnect("damage_test_complete", self, "display_damage_test_results")
+	pause_for_modal()
+	var modal = DamageTestModal.instance()
+	add_child(modal)
+	modal.init(damage_done, killed)
+	modal.connect("play_again", self, "actually_reset", [modal])
+
+func send_damage_test(modal):
+	state = S.RUNNING
+	modal.queue_free()
+	unpause_modal_gone()
+	battlefield.send_damage_test()
+	battlefield.connect("damage_test_complete", self, "display_damage_test_results")
+
 func end_game(won):
 	pause_for_modal()
 	var modal = EndModal.instance()
 	add_child(modal)
 	modal.set_text(won, wave_display.bonus_from_wave_skipping)
 	modal.connect("play_again", self, "actually_reset", [modal])
+	modal.connect("send_damage_test", self, "send_damage_test", [modal])
 
 func won_game():
 	end_game(true)

@@ -3,6 +3,7 @@ extends Node2D
 signal selected_creep(creep)
 signal selected_tower(tower)
 signal tower_built
+signal damage_test_complete(damage_done, killed)
 
 onready var indicator = $BuildingIndicator
 onready var buildable = $BuildableGrid
@@ -22,6 +23,7 @@ var Resist = preload("res://creeps/CreepResist.tscn")
 var ResistBoss = preload("res://creeps/ResistantBoss.tscn")
 var Pack = preload("res://creeps/CreepPack.tscn")
 var PackBoss = preload("res://creeps/PackBoss.tscn")
+var DamageTest = preload("res://creeps/DamageTest.tscn")
 var Tower = preload("res://towers/Tower.tscn")
 
 enum S { NOT_YET_STARTED, PLAYING, IN_MENU }
@@ -233,6 +235,25 @@ func pop_from_spawn_queue():
 		creep.init(level, end)
 		creep.connect("selected", self, "creep_selected", [creep])
 		add_creep_soon(creep)
+
+func prop_damage_test_complete(damage_done, killed):
+	emit_signal("damage_test_complete", damage_done, killed)
+
+func send_damage_test():
+	var dt = DamageTest.instance()
+
+	var vertical = rng.randf() < 0.5
+	var start_area = spawn(vertical)
+	var end_area = dest(vertical)
+	var points = start_area.starting_points
+	var idx = rng.randi_range(0, len(points) - 1)
+	var start = points[idx % len(points)] + U.snap_to_grid(start_area.position)
+	var end = end_area.get_center_point() + U.snap_to_grid(end_area.position)
+	dt.position = U.center(start)
+	dt.init(1, end)
+	dt.connect("selected", self, "creep_selected", [dt])
+	dt.connect("damage_test_complete", self, "prop_damage_test_complete")
+	add_child(dt)
 
 func build_tower_for_mouse_event(event):
 	if event is InputEventMouseButton:

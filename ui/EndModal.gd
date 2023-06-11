@@ -1,11 +1,13 @@
 extends CanvasLayer
 
 signal play_again()
+signal send_damage_test()
 
 onready var title = $NinePatchRect/Title
 onready var score_details = $NinePatchRect/ScoreDetails
 onready var score_full = $NinePatchRect/ScoreFull
-onready var button = $NinePatchRect/Button
+onready var play_again = $NinePatchRect/PlayAgain
+onready var damage_test = $NinePatchRect/DamageTest
 
 func set_text(won_game, wave_bonus):
 	if won_game:
@@ -22,8 +24,12 @@ func set_text(won_game, wave_bonus):
 	score_details.text = killscore + "\n" + wavebonus + "\n" + lifepenalty
 	score_full.text = "Final score: %d" % score
 
-func on_button_pressed():
+func on_play_again_pressed():
 	emit_signal("play_again")
 
+func on_damage_test_pressed():
+	emit_signal("send_damage_test")
+
 func _ready():
-	button.connect("pressed", self, "on_button_pressed")
+	play_again.connect("pressed", self, "on_play_again_pressed")
+	damage_test.connect("pressed", self, "on_damage_test_pressed")

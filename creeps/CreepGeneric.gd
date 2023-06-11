@@ -73,7 +73,7 @@ func determine_speed():
 	var base = SPEED
 	if chilled:
 		var penalty = 0.5 * current_chilled_status_multiplier
-		base -= (base * penalty * STATUS_REDUCTION)
+		base -= (base * penalty * (1 - STATUS_REDUCTION))
 		base = max(base, MIN_SPEED)
 	if stunned:
 		base = 0
@@ -116,9 +116,9 @@ func _on_chilltimer_timeout():
 
 func maybe_apply_stun(stun_chance, status_multiplier):
 	if status_effect_hit(stun_chance) and cant_be_stunned_timer.is_stopped():
-		cant_be_stunned_timer.start(STUN_REPEAT_DELAY)
 		set_stunned(true)
-		var duration = 1.0 * STATUS_REDUCTION * status_multiplier
+		var duration = 1.0 * (1 - STATUS_REDUCTION) * status_multiplier
+		cant_be_stunned_timer.start(duration + STUN_REPEAT_DELAY)
 		$StunTimer.start(duration)
 
 func _on_stuntimer_timeout():
@@ -147,7 +147,7 @@ func maybe_apply_poison(amount, status_multiplier, bonus_gold, tower):
 		var timer = Timer.new()
 		timer.one_shot = true
 		add_child(timer)
-		var d = (amount / 3.0) * STATUS_REDUCTION * status_multiplier
+		var d = (amount / 3.0) * (1 - STATUS_REDUCTION) * status_multiplier
 		tick_poison(timer, d, bonus_gold, 3, tower)
 
 func _on_ispoisonedtimer_timeout():
@@ -279,6 +279,10 @@ func fade_and_free(time):
 	yield(tween, "tween_completed")
 	call_deferred("queue_free")
 
+func maybe_do_something_on_death():
+	# Just a hook for the damage test to emit a signal
+	pass
+
 var began_to_die = false
 func begin_dying():
 	if began_to_die:
@@ -288,6 +292,7 @@ func begin_dying():
 		target.queue_free()
 
 	began_to_die = true
+	maybe_do_something_on_death()
 	State.add_score(score_amount())
 	emit_signal("died")
 	emit_signal("freed_for_whatever_reason")
@@ -295,18 +300,20 @@ func begin_dying():
 	$CollisionShape2D.disabled = true
 	fade_and_free(0.2)
 
-var just_reached = false
-func handle_reached_goal():
-	# Eventually we'll want to stick around for a second and play an animation here
-	if just_reached or began_to_die:
-		return
-	just_reached = true
+func lose_life_unless_you_are_the_damage_test():
 	if GlobalAudio.request_play_lose_life():
 		audio.stream = EscapeSound
 		audio.play()
 		audio.volume_db = -15
-	
+
 	State.lose_life()
+
+var just_reached = false
+func handle_reached_goal():
+	if just_reached or began_to_die:
+		return
+	just_reached = true
+	lose_life_unless_you_are_the_damage_test()
 
 	for target in navigation_targets:
 		target.queue_free()

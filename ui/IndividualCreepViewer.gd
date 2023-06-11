@@ -49,7 +49,7 @@ func set_text_for_creep():
 	else:
 		status_title.show()
 		status_text.show()
-		status_text.text = "%s%%" % int((1 - status_reduction) * 100)
+		status_text.text = "%s%%" % int(status_reduction * 100)
 
 	if creep.chilled: chilled.show()
 	else: chilled.hide()
