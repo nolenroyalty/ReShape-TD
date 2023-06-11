@@ -58,19 +58,23 @@ func advance_immediately():
 	advance_tween.start()
 	reset_timer()
 	advance_wave()
+	wave_timer.start(1)
 
-func tween_one_tick():
+func tween_one_tick(ensure_at_final=false):
 	if advance_tween.is_active():
 		return
 	
-	var amount_to_tick = float(CARD_SIZE) / float(FULL_TIMER)
-	tick_tween.interpolate_property(wave_line, "position:x", null, wave_line.position.x - amount_to_tick, 1.0, Tween.TRANS_LINEAR)
+	var amount_to_tick = float(CARD_SIZE - 1) / float(FULL_TIMER)
+	if ensure_at_final:
+		tick_tween.interpolate_property(wave_line, "position:x", null, final_offset_for_this_wave(), 1.0, Tween.TRANS_LINEAR)
+	else:
+		tick_tween.interpolate_property(wave_line, "position:x", null, wave_line.position.x - amount_to_tick, 1.0, Tween.TRANS_LINEAR)
 	tick_tween.start()
 
 func handle_tick():
 	if timer_amount <= 0:
 		reset_timer()
-		tween_one_tick()
+		tween_one_tick(true)
 		advance_wave()
 	else:
 		timer_amount -= 1
@@ -81,9 +85,16 @@ func init(waves_):
 	waves = waves_
 	wave_line.init(waves)
 
+func _process(_delta):
+	if State.debug and Input.is_action_just_pressed("ui_accept"):
+		start()
+	if State.debug and Input.is_action_just_pressed("ui_right"):
+		advance_immediately()
+
 func start():
 	advance_immediately()
 	wave_timer.start(1)
+	tween_one_tick()
 
 func reset():
 	wave_number = 0

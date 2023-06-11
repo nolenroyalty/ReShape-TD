@@ -55,4 +55,6 @@ position = Vector2( 0, 16 )
 wait_time = 0.3
 one_shot = true
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
 [connection signal="body_exited" from="BattlefieldBounds" to="BattlefieldBounds" method="_on_BattlefieldBounds_body_exited"]

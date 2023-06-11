@@ -8,6 +8,8 @@ onready var indicator = $BuildingIndicator
 onready var buildable = $BuildableGrid
 onready var grid = $PathingGrid
 onready var spawn_timer = $SpawnTimer
+onready var audio = $AudioStreamPlayer
+var WaveReleaseSound = preload("res://battlefield/sounds/waverelease.wav")
 
 var Creep = preload("res://creeps/CreepGeneric.tscn")
 var Normal = preload("res://creeps/CreepNormal.tscn")
@@ -215,6 +217,11 @@ func add_to_spawn_queue(creep, count, level):
 		spawn_queue.append([creep, level])
 
 func spawn_wave(kind, level, is_boss, number_of_creeps=null):
+	if GlobalAudio.request_play_wave_release():
+		audio.stream = WaveReleaseSound
+		audio.volume_db = -10
+		audio.play()
+
 	if number_of_creeps == null:
 		number_of_creeps = 9
 		if is_boss: number_of_creeps = 1

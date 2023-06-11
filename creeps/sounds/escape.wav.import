@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/escape.wav-f6e4b1c54e6a962bfd31fa4cb048ebb8.sample"
+
+[deps]
+
+source_file="res://creeps/sounds/escape.wav"
+dest_files=[ "res://.import/escape.wav-f6e4b1c54e6a962bfd31fa4cb048ebb8.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

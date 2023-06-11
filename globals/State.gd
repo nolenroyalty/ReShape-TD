@@ -15,7 +15,7 @@ var life_penalty : int
 var begun = false
 
 func reset():
-	gold = 150
+	gold = 100
 	emit_signal("gold_updated", gold)
 	lives = 20
 	emit_signal("lives_updated", lives)

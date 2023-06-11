@@ -72,6 +72,12 @@ one_shot = true
 wait_time = 1.5
 one_shot = true
 
+[node name="CantBeStunnedTimer" type="Timer" parent="."]
+wait_time = 0.25
+one_shot = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+
 [connection signal="timeout" from="ChillTimer" to="." method="_on_chilltimer_timeout"]
 [connection signal="timeout" from="StunTimer" to="." method="_on_stuntimer_timeout"]
 [connection signal="timeout" from="IsPoisonedTimer" to="." method="_on_ispoisonedtimer_timeout"]

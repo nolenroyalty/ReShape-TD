@@ -5,3 +5,4 @@ func handle_gold_updated(amount):
 
 func _ready():
 	var _ignore = State.connect("gold_updated", self, "handle_gold_updated")
+	handle_gold_updated(State.gold)

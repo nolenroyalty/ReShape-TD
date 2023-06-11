@@ -10,6 +10,9 @@ signal freed_for_whatever_reason
 signal state_changed
 
 var NavigationTarget = preload("res://creeps/NavigationTarget.tscn")
+var EscapeSound = preload("res://creeps/sounds/escape.wav")
+onready var cant_be_stunned_timer = $CantBeStunnedTimer
+onready var audio = $AudioStreamPlayer
 
 enum S { SPAWNED, MOVING, BLOCKED, IN_GOAL_AREA, AT_DESTINATION, DYING }
 
@@ -21,6 +24,8 @@ var RESIST_CHANCE = 0.0
 var STATUS_REDUCTION = 1.0
 var is_boss = false
 var level = 1
+var MIN_SPEED = 12
+const STUN_REPEAT_DELAY = 0.25
 
 onready var spriteButton = $SpriteButton
 
@@ -38,10 +43,15 @@ var health = 0
 var rng
 
 func gold_value():
-	var base = 2
-	if is_boss: base = 10
-	var mult = 1.0 + (0.2 * level)
-	return base * mult
+	if is_boss:
+		return 10 + 3 * level
+	else:
+		return 1 + level / 3.0
+	
+	# var base = 1
+	# if is_boss: base = 10
+	# var mult = 1.0 + (0.2 * level)
+	# return base * mult
 
 func get_texture():
 	return spriteButton.texture_normal
@@ -61,6 +71,7 @@ func determine_speed():
 	if chilled:
 		var penalty = 0.5 * current_chilled_status_multiplier
 		base -= (base * penalty * STATUS_REDUCTION)
+		base = max(base, MIN_SPEED)
 	if stunned:
 		base = 0
 	return base
@@ -101,7 +112,8 @@ func _on_chilltimer_timeout():
 	set_chilled(false, 1.0)
 
 func maybe_apply_stun(stun_chance, status_multiplier):
-	if status_effect_hit(stun_chance):
+	if status_effect_hit(stun_chance) and cant_be_stunned_timer.is_stopped():
+		cant_be_stunned_timer.start(STUN_REPEAT_DELAY)
 		set_stunned(true)
 		var duration = 1.0 * STATUS_REDUCTION * status_multiplier
 		$StunTimer.start(duration)
@@ -270,6 +282,11 @@ func handle_reached_goal():
 	if just_reached or began_to_die:
 		return
 	just_reached = true
+	if GlobalAudio.request_play_lose_life():
+		audio.stream = EscapeSound
+		audio.play()
+		audio.volume_db = -15
+	
 	State.lose_life()
 
 	for target in navigation_targets:
@@ -310,7 +327,7 @@ func handle_points_changed(_points):
 
 func compute_health():
 	var base = 2.0
-	var double_every_this_many_levels = 5
+	var double_every_this_many_levels = 4.5
 	var e = float(level) / double_every_this_many_levels
 	var mult = pow(base, e)
 	
