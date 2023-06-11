@@ -11,7 +11,12 @@ onready var shoot_timer = $ShootTimer
 onready var lose_life_timer = $LoseLifeTimer
 onready var wave_release_timer = $WaveReleaseTimer
 
+var audio_disabled = false
+
 func _request_play(timer, threshold):
+	if audio_disabled:
+		return false
+		
 	if timer.is_stopped():
 		timer.start(threshold)
 		return true

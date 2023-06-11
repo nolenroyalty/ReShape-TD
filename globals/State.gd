@@ -13,6 +13,8 @@ var debug = true
 var score : int
 var life_penalty : int
 var begun = false
+var has_ranked_up_ever = false
+var wave__hack_for_tower_to_access_this = 0
 
 func reset():
 	gold = 100
@@ -23,6 +25,7 @@ func reset():
 	emit_signal("score_updated", score)
 	life_penalty = 0
 	begun = false
+	wave__hack_for_tower_to_access_this = 0
 
 func add_gold(amount):
 	gold += int(amount)

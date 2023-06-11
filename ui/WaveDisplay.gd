@@ -24,6 +24,7 @@ func final_offset_for_this_wave():
 func release_wave(number):
 	var wave = waves[number]
 	print("Wave %s started (kind: %s)" % [number, C.creep_name(wave[0])])
+	State.wave__hack_for_tower_to_access_this = number
 
 	var creep_count = null
 	if len(wave) == 3: creep_count = wave[2]

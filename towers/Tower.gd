@@ -149,6 +149,7 @@ func sell_value(full_value = false):
 	else: return int(val / 2.0)
 
 func actually_level_up():
+	State.has_ranked_up_ever = true
 	leveling_up = false
 	my_stats.level_up()
 	$Level.text = "%s" % [my_stats.LEVEL]

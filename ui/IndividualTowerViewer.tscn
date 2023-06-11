@@ -1,10 +1,42 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://ui/IndividualTowerViewer.gd" type="Script" id=1]
 [ext_resource path="res://towers/sprites/crosstower.png" type="Texture" id=2]
 [ext_resource path="res://towers/sprites/crescenttower.png" type="Texture" id=3]
 [ext_resource path="res://towers/sprites/diamondtower.png" type="Texture" id=4]
 [ext_resource path="res://ui/SidebarTheme.tres" type="Theme" id=5]
+
+[sub_resource type="Animation" id=1]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("Grid/RankUp:rect_scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "pulse_rankup"
+length = 8.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath("Grid/RankUp:rect_scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 3.3, 4.1, 5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1, 1 ), Vector2( 1.05, 1.05 ), Vector2( 1, 1 ) ]
+}
 
 [node name="IndividualTowerViewer" type="Node2D"]
 script = ExtResource( 1 )
@@ -124,6 +156,7 @@ margin_top = 90.0
 margin_right = 110.0
 margin_bottom = 108.0
 rect_min_size = Vector2( 110, 0 )
+rect_pivot_offset = Vector2( 55, 9 )
 text = "Rank Up: 444 gold"
 
 [node name="Spacer1" type="Control" parent="Grid"]
@@ -145,3 +178,7 @@ margin_top = 112.0
 margin_right = 114.0
 margin_bottom = 130.0
 size_flags_horizontal = 0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 1 )
+anims/pulse_rankup = SubResource( 2 )

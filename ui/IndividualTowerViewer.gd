@@ -11,6 +11,8 @@ onready var aps = $Grid/APS
 onready var range_text = $Grid/Range
 onready var kills = $Grid/Kills
 onready var status_text = $Grid/Status
+onready var anim = $AnimationPlayer
+
 var tower = null
 
 onready var cross_sprite = $CrossSprite
@@ -81,6 +83,10 @@ func reshape_button_pressed(shape):
 	else:
 		emit_signal("reshape", tower.my_shape)
 
+func handle_tower_leveled():
+	anim.stop()
+	set_text_for_tower()
+
 func _process(_delta):
 	if Input.is_action_just_pressed("sell_tower"):
 		on_sell_button_pressed()
@@ -91,10 +97,13 @@ func _ready():
 	assert(tower != null, "tower must be set before adding to scene!")
 	rank_up.connect("pressed", self, "on_level_up_button_pressed")
 	sell.connect("pressed", self, "on_sell_button_pressed")
-	tower.connect("leveled_up", self, "set_text_for_tower")
+	tower.connect("leveled_up", self, "handle_tower_leveled")
 	tower.connect("killed", self, "set_text_for_tower")
 	# reshape_button.connect("reshape", self, "reshape_button_pressed")
 	
 	var _ignore = State.connect("gold_updated", self, "on_gold_changed")
 	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")
 	set_text_for_tower()
+	if not State.has_ranked_up_ever and State.wave__hack_for_tower_to_access_this > 4:
+		# Pulse the rankup thing a bit if it hasn't been used a few waves in so that folks realize it's there.
+		anim.play("pulse_rankup")
