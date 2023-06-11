@@ -173,6 +173,8 @@ func damage(amount, is_crit, bonus_gold):
 	health -= amount
 	$HealthBarFull.rect_scale.x = max(float(health), 0.0) / float(max_health)
 	emit_signal("state_changed")
+	
+	# This is bugged and can give gold for a death multiple times. Fix after we're sure it won't break balance.
 	if health <= 0:
 		state = S.DYING
 		var t = gold_value() * (1 + bonus_gold)
