@@ -6,13 +6,14 @@ signal send_damage_test()
 onready var title = $NinePatchRect/Title
 onready var score_details = $NinePatchRect/ScoreDetails
 onready var score_full = $NinePatchRect/ScoreFull
-onready var play_again = $NinePatchRect/PlayAgain
-onready var damage_test = $NinePatchRect/DamageTest
+onready var play_again = $NinePatchRect/GridContainer/PlayAgain
+onready var damage_test = $NinePatchRect/GridContainer/DamageTest
 
 func set_text(won_game, wave_bonus):
 	if won_game:
 		title.text = "You won!!"
 	else:
+		damage_test.hide()
 		title.text = "You lost :("
 	
 	var score = State.score

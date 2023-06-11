@@ -96,7 +96,7 @@ func explode():
 	var t = Tween.new()
 	var start_scale = $Sprite.scale
 	var final_scale = start_scale * EXPLOSION_SIZE
-	var end_amount = 0.35
+	var end_amount = 0.4
 	var explosion_speed = EXPLOSION_SPEED
 	if Upgrades.projectile_size_mult(my_shape) > 1.0:
 		end_amount = 0.25

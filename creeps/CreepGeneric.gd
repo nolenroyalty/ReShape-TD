@@ -28,7 +28,7 @@ var is_boss = false
 var level = 1
 var MIN_SPEED = 12
 const STUN_REPEAT_DELAY = 0.25
-const CRIT_REPEAT_DELAY = 0.2
+const CRIT_REPEAT_DELAY = 1
 
 onready var spriteButton = $SpriteButton
 
@@ -353,7 +353,7 @@ func handle_points_changed(_points):
 
 func compute_health():
 	var base = 2.0
-	var double_every_this_many_levels = 4.5
+	var double_every_this_many_levels = 4.75
 	var e = float(level) / double_every_this_many_levels
 	var mult = pow(base, e)
 	

@@ -114,48 +114,64 @@ var r = C.CREEP_KIND.RESISTANT
 var q = C.CREEP_KIND.QUICK
 var p = C.CREEP_KIND.PACK
 
-var all_waves = [
-	[ p, false],
-	[ p, true],
-	[ p, false]
-]
+# It's dumb that I put this in this file but whatever.
 
-var _all_waves = [
+# var all_waves = [
+# 	[ p, false],
+# 	[ p, true],
+# 	[ p, false]
+# ]
+
+var all_waves = [
 	[ n, false],
 	[ n, false],
 	[ t, false],
 	[ q, false],
+	[ p, false],
 	[ r, false],
-	[ n, true],
+	[ n, true], # 7, we've seen all the types and a boss
+
 	[ q, false],
 	[ t, false],
 	[ r, false],
-	[ q, true],
+	[ p , false],
+	[ n, false ],
+	[ q, true], # 13 / 6, all the types and two bosses
+
 	[ t, false],
 	[ n, false],
+	[ p, false, 15],
+	[ q, false],
+	[ r, true], # 18 / 5, all the types and three bosses
+
 	[ n, false],
-	[ r, true],
-	[ n, true],
+	[ r, false],
+	[ q, false],
 	[ t, false],
+	[ p, true], # 23 / 5, first group of multiple bosses
+
+	[ n, true, 2], # 24 / first multiple boss in a row
+	[ t, true, 3], # 25
+
 	[ q, false],
 	[ r, false],
-	[ q, true],
-	[ n, true, 2],
+	[ p, false],
+	[ n, false],
+	[ t, false],
+	[ p, false, 18], # 31 / 5, first huge group of creeps
+
 	[ t, false, 12],
-	[ q, false, 10],
-	[ r, false, 10],
-	[ n, false, 12],
-	[ r, true, 2],
-	[ n, true, 3],
-	[ t, false, 12],
-	[ q, false, 10],
-	[ q, true, 3],
-	[ t, true, 3],
+	[ q, false, 12],
+	[ r, false, 12],
 	[ n, false, 15],
-	[ r, false, 16],
-	[ t, false, 16],
+	[ p, false, 20], # 36 / 5, huge groups of creeps and money infusion
+
+	[ q, true, 3],
 	[ r, true, 3],
 	[ n, true, 5],
+	[ p, true, 6],
+	[ t, true, 5],
+	[ n, false, 20] # 42 / 6, all the bosses in a row and then some normal creeps
 ]
 
 # Called when the node enters the scene tree for the first time.

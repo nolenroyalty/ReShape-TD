@@ -2,7 +2,7 @@ extends Node2D
 
 # Stops us from playing an overwhelming number of sound effects
 const explosion_frequency = 0.275
-const shoot_frequency = 0.1
+const shoot_frequency = 0.175
 const lose_life_frequency = 0.2
 const wave_release_frequency = 0.15
 

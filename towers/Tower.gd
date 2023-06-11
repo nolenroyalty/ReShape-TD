@@ -236,7 +236,6 @@ func remove_generous_bonus():
 func give_tower_generous(area):
 	var tower = area.get_parent()
 	if tower.is_in_group("tower") and tower != self and not (tower in towers_we_have_given_generous_to):
-		print("give generous bonus to tower")
 		towers_we_have_given_generous_to[tower] = true
 		tower.add_generous_bonus()
 

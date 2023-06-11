@@ -1,7 +1,7 @@
 extends Creep
 
 signal damage_test_complete(damage_done, killed)
-const STARTING_HEALTH = 50000000
+const STARTING_HEALTH = 100000000
 
 func init(level, dest):
 	KIND = "Mega"

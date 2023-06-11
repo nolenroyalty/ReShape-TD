@@ -2,7 +2,7 @@ extends Creep
 
 func init(level, dest):
 	KIND = "Thick"
-	BASE_HEALTH = 150
+	BASE_HEALTH = 175
 	SPEED = 32
 	is_boss = true
 	STATUS_REDUCTION = 0.5
