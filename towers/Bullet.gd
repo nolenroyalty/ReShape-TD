@@ -118,7 +118,7 @@ func hit_something(area):
 		return
 
 	var creep = area.get_parent()
-	if creep.is_in_group("creep") and not (creep in already_hit):
+	if creep.is_in_group("creep") and not (creep in already_hit) and creep.is_alive():
 		apply_status_effects(creep)
 		var bonus_gold = Upgrades.bonus_gold(my_shape)
 		
