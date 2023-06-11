@@ -358,7 +358,7 @@ func handle_points_changed(_points):
 
 func compute_health():
 	var base = 2.0
-	var double_every_this_many_levels = 4.85
+	var double_every_this_many_levels = 4.9
 	var e = float(level) / double_every_this_many_levels
 	var mult = pow(base, e)
 	
