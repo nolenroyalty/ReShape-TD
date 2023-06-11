@@ -42,6 +42,10 @@ func reshaped(shape_, _upgrade):
 	if shape_ == shape:
 		set_shape(shape_)
 
+func _process(_delta):
+	if Input.is_action_just_pressed("reshape_tower"):
+		pressed()
+
 func _ready():
 	var _ignore = self.connect("pressed", self, "pressed")
 	_ignore = State.connect("gold_updated", self, "disable_or_enable_for_cost")

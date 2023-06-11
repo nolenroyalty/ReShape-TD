@@ -1,11 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/IndividualTowerViewer.gd" type="Script" id=1]
 [ext_resource path="res://towers/sprites/crosstower.png" type="Texture" id=2]
 [ext_resource path="res://towers/sprites/crescenttower.png" type="Texture" id=3]
 [ext_resource path="res://towers/sprites/diamondtower.png" type="Texture" id=4]
 [ext_resource path="res://ui/SidebarTheme.tres" type="Theme" id=5]
-[ext_resource path="res://ui/ReShapeButton.tscn" type="PackedScene" id=6]
 
 [node name="IndividualTowerViewer" type="Node2D"]
 script = ExtResource( 1 )
@@ -134,27 +133,15 @@ margin_right = 114.0
 margin_bottom = 108.0
 size_flags_horizontal = 0
 
-[node name="ReShapeButton" parent="Grid" instance=ExtResource( 6 )]
-margin_top = 112.0
-margin_right = 110.0
-margin_bottom = 130.0
-
-[node name="Spacer3" type="Control" parent="Grid"]
-margin_left = 114.0
-margin_top = 112.0
-margin_right = 114.0
-margin_bottom = 130.0
-size_flags_horizontal = 0
-
 [node name="Sell" type="Button" parent="Grid"]
-margin_top = 134.0
+margin_top = 112.0
 margin_right = 110.0
-margin_bottom = 152.0
+margin_bottom = 130.0
 text = "Sell: 500 gold"
 
 [node name="Spacer2" type="Control" parent="Grid"]
 margin_left = 114.0
-margin_top = 134.0
+margin_top = 112.0
 margin_right = 114.0
-margin_bottom = 152.0
+margin_bottom = 130.0
 size_flags_horizontal = 0

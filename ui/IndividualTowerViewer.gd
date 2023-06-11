@@ -11,7 +11,6 @@ onready var aps = $Grid/APS
 onready var range_text = $Grid/Range
 onready var kills = $Grid/Kills
 onready var status_text = $Grid/Status
-onready var reshape_button = $Grid/ReShapeButton
 var tower = null
 
 onready var cross_sprite = $CrossSprite
@@ -56,7 +55,6 @@ func set_text_for_tower():
 
 	set_sprite()
 	set_level_up_status()
-	reshape_button.set_shape(tower.my_shape)
 
 func on_level_up_button_pressed():
 	if rank_up.disabled:
@@ -95,7 +93,7 @@ func _ready():
 	sell.connect("pressed", self, "on_sell_button_pressed")
 	tower.connect("leveled_up", self, "set_text_for_tower")
 	tower.connect("killed", self, "set_text_for_tower")
-	reshape_button.connect("reshape", self, "reshape_button_pressed")
+	# reshape_button.connect("reshape", self, "reshape_button_pressed")
 	
 	var _ignore = State.connect("gold_updated", self, "on_gold_changed")
 	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")
