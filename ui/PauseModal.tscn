@@ -12,10 +12,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -113.0
-margin_top = -76.0
-margin_right = 113.0
-margin_bottom = 76.0
+margin_left = -142.0
+margin_top = -192.0
+margin_right = 146.0
+margin_bottom = 112.0
 texture = ExtResource( 1 )
 patch_margin_left = 2
 patch_margin_top = 2
@@ -26,19 +26,188 @@ patch_margin_bottom = 2
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -35.5
-margin_top = 52.0
+margin_top = 17.0
 margin_right = 35.5
-margin_bottom = 66.0
-text = "Game Paused"
+margin_bottom = 65.0
+text = "Game Paused
+
+HOTKEYS"
+align = 1
 
 [node name="Button" type="Button" parent="NinePatchRect"]
 anchor_left = 0.5
-anchor_top = 0.5
+anchor_top = 1.0
 anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -30.0
-margin_top = 6.0
-margin_right = 30.0
-margin_bottom = 24.0
+anchor_bottom = 1.0
+margin_left = -64.0
+margin_top = -34.0
+margin_right = 64.0
+margin_bottom = -16.0
 rect_min_size = Vector2( 60, 0 )
 text = "Resume"
+
+[node name="GridContainer" type="GridContainer" parent="NinePatchRect"]
+margin_left = 32.0
+margin_top = 80.0
+margin_right = 277.0
+margin_bottom = 320.0
+mouse_filter = 2
+columns = 2
+
+[node name="Label" type="Label" parent="NinePatchRect/GridContainer"]
+margin_right = 99.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "1"
+
+[node name="Label2" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_right = 245.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+text = "Build Cross Tower"
+align = 2
+
+[node name="Label3" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 18.0
+margin_right = 99.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "2"
+
+[node name="Label4" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 18.0
+margin_right = 245.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "Build Crescent Tower"
+align = 2
+
+[node name="Label5" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 36.0
+margin_right = 99.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+text = "3"
+
+[node name="Label6" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 36.0
+margin_right = 245.0
+margin_bottom = 50.0
+size_flags_horizontal = 3
+text = "Build Diamond Tower"
+align = 2
+
+[node name="Label7" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 54.0
+margin_right = 99.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+text = "Esc or Right Click"
+
+[node name="Label8" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 54.0
+margin_right = 245.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+text = "Clear Current Tower"
+align = 2
+
+[node name="Label9" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 72.0
+margin_right = 99.0
+margin_bottom = 86.0
+size_flags_horizontal = 3
+text = "Shift (Hold)"
+
+[node name="Label10" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 72.0
+margin_right = 245.0
+margin_bottom = 86.0
+size_flags_horizontal = 3
+text = "Build Multiple Towers"
+align = 2
+
+[node name="Label11" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 90.0
+margin_right = 99.0
+margin_bottom = 104.0
+size_flags_horizontal = 3
+text = "S"
+
+[node name="Label12" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 90.0
+margin_right = 245.0
+margin_bottom = 104.0
+size_flags_horizontal = 3
+text = "Sell Tower"
+align = 2
+
+[node name="Label13" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 108.0
+margin_right = 99.0
+margin_bottom = 122.0
+size_flags_horizontal = 3
+text = "U"
+
+[node name="Label14" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 108.0
+margin_right = 245.0
+margin_bottom = 122.0
+size_flags_horizontal = 3
+text = "Rank Up Individiual Tower"
+align = 2
+
+[node name="Label15" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 126.0
+margin_right = 99.0
+margin_bottom = 140.0
+size_flags_horizontal = 3
+text = "R"
+
+[node name="Label16" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 126.0
+margin_right = 245.0
+margin_bottom = 140.0
+size_flags_horizontal = 3
+text = "ReShape Towers"
+align = 2
+
+[node name="Label17" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 144.0
+margin_right = 99.0
+margin_bottom = 158.0
+size_flags_horizontal = 3
+text = "N"
+
+[node name="Label18" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 144.0
+margin_right = 245.0
+margin_bottom = 158.0
+size_flags_horizontal = 3
+text = "Send Next Wave"
+align = 2
+
+[node name="Label19" type="Label" parent="NinePatchRect/GridContainer"]
+margin_top = 162.0
+margin_right = 99.0
+margin_bottom = 176.0
+size_flags_horizontal = 3
+text = "/ or ?"
+
+[node name="Label20" type="Label" parent="NinePatchRect/GridContainer"]
+margin_left = 103.0
+margin_top = 162.0
+margin_right = 245.0
+margin_bottom = 176.0
+size_flags_horizontal = 3
+text = "Show This Menu"
+align = 2

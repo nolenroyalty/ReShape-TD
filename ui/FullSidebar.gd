@@ -63,11 +63,15 @@ func reset():
 	next_wave_button.disabled = false
 	individual_viewer.free_current()
 
+func _process(_delta):
+	if Input.is_action_just_pressed("pause"):
+		prop_pause()
+
 func _ready():
 	tower_builder.connect("reshape", self, "prop_reshape")
 	tower_builder.connect("selected", self, "prop_selected")
 	tower_builder.connect("shape_cleared", self, "prop_shape_cleared")
-	
+
 	individual_viewer.connect("reshape", self, "prop_reshape")
 
 	var _ignore = reset_button.connect("pressed", self, "prop_reset")

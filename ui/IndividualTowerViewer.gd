@@ -104,6 +104,6 @@ func _ready():
 	var _ignore = State.connect("gold_updated", self, "on_gold_changed")
 	_ignore = Upgrades.connect("reshaped", self, "handle_reshaped")
 	set_text_for_tower()
-	if not State.has_ranked_up_ever and State.wave__hack_for_tower_to_access_this > 4:
+	if not State.has_ranked_up_ever and State.wave__hack_for_tower_to_access_this > 3:
 		# Pulse the rankup thing a bit if it hasn't been used a few waves in so that folks realize it's there.
 		anim.play("pulse_rankup")
