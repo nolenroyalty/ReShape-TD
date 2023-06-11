@@ -9,7 +9,7 @@ signal score_updated(amount)
 
 var gold : int
 var lives : int
-var debug = true
+var debug = false
 var score : int
 var life_penalty : int
 var begun = false
