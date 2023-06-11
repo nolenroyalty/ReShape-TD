@@ -96,12 +96,6 @@ func reset():
 	wave_line.reset()
 	init(all_waves)
 
-func _process(_delta):
-	if State.debug and Input.is_action_just_pressed("DEBUG_START"):
-		start()
-	if State.debug and Input.is_action_just_pressed("DEBUG_ADVANCE"):
-		advance_immediately()
-
 var n = C.CREEP_KIND.NORMAL
 var t = C.CREEP_KIND.THICK
 var r = C.CREEP_KIND.RESISTANT

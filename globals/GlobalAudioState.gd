@@ -1,8 +1,8 @@
 extends Node2D
 
 # Stops us from playing an overwhelming number of sound effects
-const explosion_frequency = 0.125
-const shoot_frequency = 0.01
+const explosion_frequency = 0.3
+const shoot_frequency = 0.15
 
 onready var explosion_timer = $ExplosionTimer
 onready var shoot_timer = $ShootTimer
@@ -12,6 +12,7 @@ func _request_play(timer, threshold):
 		timer.start(threshold)
 		return true
 	else:
+		print("disallow")
 		return false
 
 func request_play_explosion():

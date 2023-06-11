@@ -196,3 +196,11 @@ modulate = Color( 1, 1, 1, 0 )
 margin_right = 32.0
 margin_bottom = 32.0
 mouse_filter = 2
+
+[node name="RankUpRect" type="ColorRect" parent="."]
+visible = false
+margin_left = 3.0
+margin_top = 13.0
+margin_right = 29.0
+margin_bottom = 19.0
+mouse_filter = 2

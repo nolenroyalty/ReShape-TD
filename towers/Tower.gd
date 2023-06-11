@@ -34,6 +34,7 @@ var kills = 0
 var gold_spent = 0
 var generous_stacks = 0
 var began_selling = false
+var leveling_up = false
 
 func acquire_target(target_):
 	target = target_
@@ -93,12 +94,12 @@ func shooting_off_cooldown():
 	return shot_timer.is_stopped()
 
 func can_shoot():
-	return shooting_off_cooldown() and valid_target(target) and not began_selling
+	return shooting_off_cooldown() and valid_target(target) and not began_selling and not leveling_up
 
 func maybe_play_shoot_sound():
 	if GlobalAudio.request_play_shoot():
 		audio.stream = SHOOT_SOUND
-		audio.volume_db = -22.5
+		audio.volume_db = -30
 		audio.play()
 
 func try_to_shoot():
@@ -147,14 +148,42 @@ func sell_value(full_value = false):
 	if full_value: return int(val)
 	else: return int(val / 2.0)
 
-func level_up():
-	gold_spent += rank_up_cost()
+func actually_level_up():
+	leveling_up = false
 	my_stats.level_up()
 	$Level.text = "%s" % [my_stats.LEVEL]
 	$Level.visible = true
 	refresh_range()
 	emit_signal("leveled_up")
-		
+
+func handle_levelup_animation_finished(_rect, _key, tween):
+	tween.call_deferred("queue_free")
+	$Sprite.visible = true
+	$RankUpRect.visible = false
+	actually_level_up()	
+
+func level_up():
+	if my_stats.LEVEL < C.MAX_LEVEL and not leveling_up and not began_selling:
+		if State.try_to_buy(rank_up_cost()):
+			leveling_up = true
+			gold_spent += rank_up_cost()
+			if not State.begun:
+				actually_level_up()
+			else:
+				var t = Tween.new()
+				$RankUpRect.rect_scale = U.v(0, 1)
+				$RankUpRect.visible = true
+				$Sprite.visible = false
+				match my_shape:
+					C.SHAPE.CROSS: $RankUpRect.color = C.YELLOW
+					C.SHAPE.DIAMOND: $RankUpRect.color = C.LIGHT_BLUE
+					C.SHAPE.CRESCENT: $RankUpRect.color = C.DARK_GREEN
+				add_child(t)
+				var time = my_stats.upgrade_time()
+				t.interpolate_property($RankUpRect, "rect_scale", null, U.v(1, 1), time, Tween.TRANS_LINEAR, Tween.EASE_OUT)
+				t.start()
+				t.connect("tween_completed", self, "handle_levelup_animation_finished", [t])
+			
 func actually_sell(full_value = false):
 	State.add_gold(sell_value(full_value))
 	hide_range()
@@ -165,7 +194,7 @@ func sell_animation_finished(name, full_value=false):
 	if name == "sold": actually_sell(full_value)
 
 func sell():
-	if began_selling:
+	if began_selling or leveling_up:
 		return
 	
 	began_selling = true

@@ -84,7 +84,7 @@ func can_chain():
 func maybe_play_explosion_sound():
 	if GlobalAudio.request_play_explosion():
 		audio.stream = EXPLOSION_SOUND
-		audio.volume_db = -20.0
+		audio.volume_db = -30.0
 		audio.play()
 
 func explode():

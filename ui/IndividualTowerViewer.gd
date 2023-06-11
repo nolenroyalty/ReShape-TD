@@ -64,8 +64,7 @@ func on_level_up_button_pressed():
 	var cost = tower.rank_up_cost()
 	if cost == null:
 		return
-	if State.try_to_buy(cost):
-		tower.level_up()
+	tower.level_up()
 
 func on_sell_button_pressed():
 	emit_signal("tower_sold")

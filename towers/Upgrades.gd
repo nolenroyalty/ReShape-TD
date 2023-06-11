@@ -224,6 +224,14 @@ class IndividualTower extends Node:
 			3: return 1.25
 			4: return 1.5
 			5: return 2.0
+	
+	func upgrade_time():
+		match LEVEL:
+			1: return 1.25
+			2: return 3.0
+			3: return 5.0
+			4: return 9.0
+			5: return 15.0
 
 	func set_generous_stacks(stacks):
 		_GENEROUS_STACKS = stacks

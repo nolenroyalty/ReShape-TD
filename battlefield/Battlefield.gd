@@ -237,17 +237,6 @@ func spawn_wave(kind, level, is_boss, number_of_creeps=null):
 	
 	add_to_spawn_queue(CreepClass, number_of_creeps, level)
 
-func handle_keypresses__playing(_delta):
-	if State.debug and Input.is_action_just_pressed("DEBUG_SPAWN_WAVES"):
-		add_to_spawn_queue(QuickBoss, 1, 2)
-	if State.debug and Input.is_action_just_pressed("DEBUG_SPAWN_TEST"):
-		add_to_spawn_queue(Normal, 5, 1)
-		# spawn_waves(NormalBoss, 2, 1)
-		# spawn_waves(Thick, 2)
-	if State.debug and Input.is_action_just_pressed("DEBUG_REFRESH_RANGE"):
-		for child in get_tree().get_nodes_in_group("tower"):
-			child.refresh_range()
-
 func get_towers():
 	return get_tree().get_nodes_in_group("tower")
 
@@ -277,10 +266,9 @@ func _input(event):
 		S.IN_MENU: pass
 		S.NOT_YET_STARTED: handle_event__not_started(event)
 	
-func _process(delta):
+func _process(_delta):
 	match state:
 		S.PLAYING: 
-			handle_keypresses__playing(delta)
 			if len(spawn_queue) > 0 and spawn_timer.is_stopped():
 				pop_from_spawn_queue()
 
