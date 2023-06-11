@@ -43,22 +43,6 @@ tracks/1/keys = {
 "values": [ Color( 1, 1, 1, 0 ) ]
 }
 
-[sub_resource type="Animation" id=6]
-resource_name = "Reshaped"
-length = 0.75
-tracks/0/type = "value"
-tracks/0/path = NodePath("ReShapedRect:modulate")
-tracks/0/interp = 2
-tracks/0/loop_wrap = true
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/keys = {
-"times": PoolRealArray( 0, 0.4, 0.75 ),
-"transitions": PoolRealArray( 1, 1, 1 ),
-"update": 0,
-"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 0.882353 ), Color( 1, 1, 1, 0 ) ]
-}
-
 [sub_resource type="Animation" id=5]
 resource_name = "shoot"
 length = 0.5
@@ -84,6 +68,22 @@ tracks/1/keys = {
 "transitions": PoolRealArray( 1, 1, 1 ),
 "update": 0,
 "values": [ Vector2( 1, 1 ), Vector2( 1.5, 1.5 ), Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=9]
+resource_name = "sold"
+length = 1.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 0.1, 0.1 ) ]
 }
 
 [sub_resource type="Animation" id=7]
@@ -184,8 +184,8 @@ text = "5"
 
 [node name="SpriteAnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 4 )
-anims/Reshaped = SubResource( 6 )
 anims/shoot = SubResource( 5 )
+anims/sold = SubResource( 9 )
 
 [node name="ColorRectAnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 7 )

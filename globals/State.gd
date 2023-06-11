@@ -12,6 +12,7 @@ var lives : int
 var debug = true
 var score : int
 var life_penalty : int
+var begun = false
 
 func reset():
 	gold = 150
@@ -21,6 +22,7 @@ func reset():
 	score = 0
 	emit_signal("score_updated", score)
 	life_penalty = 0
+	begun = false
 
 func add_gold(amount):
 	gold += int(amount)

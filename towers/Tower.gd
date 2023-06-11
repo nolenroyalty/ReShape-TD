@@ -33,6 +33,7 @@ var tower_range = null
 var kills = 0
 var gold_spent = 0
 var generous_stacks = 0
+var began_selling = false
 
 func acquire_target(target_):
 	target = target_
@@ -91,6 +92,9 @@ func handle_target_died(creep):
 func shooting_off_cooldown():
 	return shot_timer.is_stopped()
 
+func can_shoot():
+	return shooting_off_cooldown() and valid_target(target) and not began_selling
+
 func maybe_play_shoot_sound():
 	if GlobalAudio.request_play_shoot():
 		audio.stream = SHOOT_SOUND
@@ -98,7 +102,7 @@ func maybe_play_shoot_sound():
 		audio.play()
 
 func try_to_shoot():
-	if valid_target(target) and shooting_off_cooldown():
+	if can_shoot():
 		var projectile_count = Upgrades.projectiles(my_shape)
 		var initial_position = my_center()
 		var initial_direction = initial_position.direction_to(target.position)
@@ -138,8 +142,10 @@ func _physics_process(_delta):
 func rank_up_cost():
 	return Upgrades.rank_up_cost(my_shape, my_stats)
 
-func sell_value():
-	return int(gold_spent / 2.0)
+func sell_value(full_value = false):
+	var val = gold_spent
+	if full_value: return int(val)
+	else: return int(val / 2.0)
 
 func level_up():
 	gold_spent += rank_up_cost()
@@ -149,15 +155,29 @@ func level_up():
 	refresh_range()
 	emit_signal("leveled_up")
 		
+func actually_sell(full_value = false):
+	State.add_gold(sell_value(full_value))
+	hide_range()
+	emit_signal("sold")
+	queue_free()
+
+func sell_animation_finished(name, full_value=false):
+	if name == "sold": actually_sell(full_value)
+
 func sell():
+	if began_selling:
+		return
+	
+	began_selling = true
 	for tower in towers_we_have_given_generous_to.keys():
 		if tower != null and is_instance_valid(tower):
 			tower.remove_generous_bonus()
-
-	hide_range()
-	queue_free()
-	State.add_gold(sell_value())
-	emit_signal("sold")
+	
+	if State.begun:
+		sprite_animator.play("sold")
+		sprite_animator.connect("animation_finished", self, "sell_animation_finished", [false])
+	else:
+		actually_sell(true)
 
 func got_a_kill():
 	kills += 1

@@ -98,18 +98,17 @@ func handle_tower_built():
 	else:
 		set_shape(null)
 
-var started = false
 var reshape_warning_shown = false
 func start_or_send_next_wave():
-	if not started:
+	if not State.begun:
 		if not reshape_warning_shown and Upgrades.first_reshape:
 			reshape_warning_shown = true
 			show_reshape_warning()
 			return
 		else:
+			State.begun = true
 			wave_display.start()
 			battlefield.set_playing()
-			started = true
 	else:
 		wave_display.advance_immediately()
 
@@ -183,7 +182,6 @@ func actually_reset(modal):
 	wave_display.reset()
 	Upgrades.reset()
 	State.reset()
-	started = false
 	$WaveAndScore/Wave.text = "Wave: 1"
 	final_wave_sent = false
 
