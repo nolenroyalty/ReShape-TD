@@ -49,7 +49,7 @@ func gold_value():
 	if is_boss:
 		return 10 + 3 * level
 	else:
-		return 1 + level / 2.5
+		return 1 + level / 2.0
 	
 	# var base = 1
 	# if is_boss: base = 10
@@ -167,6 +167,9 @@ func maybe_display_crit_text(amount):
 		get_parent().add_child(crit_text)
 
 func damage(amount, is_crit, bonus_gold):
+	if health <= 0:
+		return false
+
 	if is_crit:
 		maybe_display_crit_text(amount)
 
