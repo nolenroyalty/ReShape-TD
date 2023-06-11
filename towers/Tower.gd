@@ -123,7 +123,7 @@ func try_to_shoot():
 			var direction = initial_direction.rotated(deg2rad(angle_offset))
 			bullet.position = initial_position + direction * C.CELL_SIZE
 			var t = target if angle_offset == 0 else null
-			bullet.init(my_shape, my_stats, t, direction)
+			bullet.init(my_shape, my_stats, t, direction, self)
 			bullet.connect("killed_creep", self, "got_a_kill")
 			get_parent().add_child(bullet)
 		

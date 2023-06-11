@@ -8,6 +8,8 @@ const GENEROUS_TOWER_BONUS = 0.15
 const BASE_TOWER_COST = 5
 const MAX_LEVEL = 5
 const MAX_UPGRADES = 5
+const CRIT_MULTI = 2.5
+const CRIT_CHANCE = 0.35
 
 func shape_name(shape):
 	match shape:

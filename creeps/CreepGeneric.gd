@@ -11,8 +11,10 @@ signal state_changed
 
 var NavigationTarget = preload("res://creeps/NavigationTarget.tscn")
 var EscapeSound = preload("res://creeps/sounds/escape.wav")
+var CritText = preload("res://creeps/CritText.tscn")
 onready var cant_be_stunned_timer = $CantBeStunnedTimer
 onready var audio = $AudioStreamPlayer
+onready var crit_recently_timer = $CritRecentlyTimer
 
 enum S { SPAWNED, MOVING, BLOCKED, IN_GOAL_AREA, AT_DESTINATION, DYING }
 
@@ -26,6 +28,7 @@ var is_boss = false
 var level = 1
 var MIN_SPEED = 12
 const STUN_REPEAT_DELAY = 0.25
+const CRIT_REPEAT_DELAY = 0.2
 
 onready var spriteButton = $SpriteButton
 
@@ -121,7 +124,7 @@ func maybe_apply_stun(stun_chance, status_multiplier):
 func _on_stuntimer_timeout():
 	set_stunned(false)
 
-func tick_poison(timer, damage, bonus_gold, ticks_remaining):
+func tick_poison(timer, damage, bonus_gold, ticks_remaining, tower):
 	if ticks_remaining == 0:
 		timer.call_deferred("queue_free")
 		return
@@ -129,12 +132,15 @@ func tick_poison(timer, damage, bonus_gold, ticks_remaining):
 	if timer.is_connected("timeout", self, "tick_poison"):
 		timer.disconnect("timeout", self, "tick_poison")
 
-	damage(damage, bonus_gold)
+	if damage(damage, false, bonus_gold):
+		if tower != null and is_instance_valid(tower) and tower.is_in_group("tower"):
+			tower.got_a_kill()
+
 	ticks_remaining -= 1
 	timer.connect("timeout", self, "tick_poison", [timer, damage, bonus_gold, ticks_remaining])
 	timer.start(0.5)
 
-func maybe_apply_poison(amount, status_multiplier, bonus_gold):
+func maybe_apply_poison(amount, status_multiplier, bonus_gold, tower):
 	if status_effect_hit(100):
 		set_poisoned(true)
 		$IsPoisonedTimer.start(1.5)
@@ -142,7 +148,7 @@ func maybe_apply_poison(amount, status_multiplier, bonus_gold):
 		timer.one_shot = true
 		add_child(timer)
 		var d = (amount / 3.0) * STATUS_REDUCTION * status_multiplier
-		tick_poison(timer, d, bonus_gold, 3)
+		tick_poison(timer, d, bonus_gold, 3, tower)
 
 func _on_ispoisonedtimer_timeout():
 	set_poisoned(false)
@@ -150,7 +156,20 @@ func _on_ispoisonedtimer_timeout():
 func is_alive():
 	return state != S.DYING and state != S.AT_DESTINATION and state != S.IN_GOAL_AREA
 
-func damage(amount, bonus_gold):
+func maybe_display_crit_text(amount):
+	if crit_recently_timer.is_stopped():
+		crit_recently_timer.start(CRIT_REPEAT_DELAY)
+		var crit_text = CritText.instance()
+		var pos = position
+		pos.y -= 5 # health bar
+		pos.y -= spriteButton.rect_size.y / 2
+		crit_text.init(amount, pos)
+		get_parent().add_child(crit_text)
+
+func damage(amount, is_crit, bonus_gold):
+	if is_crit:
+		maybe_display_crit_text(amount)
+
 	health -= amount
 	$HealthBarFull.rect_scale.x = max(float(health), 0.0) / float(max_health)
 	emit_signal("state_changed")

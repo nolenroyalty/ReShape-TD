@@ -15,6 +15,8 @@ onready var audio = $AudioStreamPlayer
 
 var my_shape = null
 var my_stats = null
+var my_tower = null
+
 var target = null
 var direction = null
 var state = S.NO_TARGET
@@ -26,10 +28,13 @@ var farshot_return_bonus = 0
 var explosion_scale_left = 4.0
 var already_hit = {}
 var starting_position = null
+var rng = RandomNumberGenerator.new()
 
-func init(shape, stats, target_, initial_direction):
+func init(shape, stats, target_, initial_direction, tower):
 	my_shape = shape
 	my_stats = stats
+	# We need to pass "my_tower" here so that if the bullet kills a creep with a poison tick we still increment our kill count
+	my_tower = tower
 	target = target_
 	direction = initial_direction
 	state = S.MOVING_TO_TARGET
@@ -70,7 +75,7 @@ func apply_status_effects(creep):
 		creep.maybe_apply_chilled(my_stats.STATUS_MULTIPLIER)
 	if Upgrades.has_poison(my_shape):
 		var bonus_gold = Upgrades.bonus_gold(my_shape)
-		creep.maybe_apply_poison(my_damage() / 2.0, my_stats.STATUS_MULTIPLIER, bonus_gold)
+		creep.maybe_apply_poison(my_damage() / 2.0, my_stats.STATUS_MULTIPLIER, bonus_gold, my_tower)
 	if Upgrades.has_stun(my_shape):
 		var stun_chance = 10
 		creep.maybe_apply_stun(stun_chance, my_stats.STATUS_MULTIPLIER)
@@ -117,7 +122,14 @@ func hit_something(area):
 		apply_status_effects(creep)
 		var bonus_gold = Upgrades.bonus_gold(my_shape)
 		
-		if creep.damage(my_damage(), bonus_gold):
+		var damage = my_damage()
+		var crit = false
+		if Upgrades.accurate(my_shape):
+			if C.CRIT_CHANCE >= rng.randf():
+				crit = true
+				damage *= C.CRIT_MULTI
+
+		if creep.damage(damage, crit, bonus_gold):
 			emit_signal("killed_creep")
 
 		already_hit[creep] = true
@@ -203,3 +215,4 @@ func _ready():
 	assert(my_shape != null, "Shape must be provided prior to adding to scene %s" % [self])
 	var _ignore = $Hitbox.connect("area_entered", self, "hit_something")
 	starting_position = position
+	rng.randomize()

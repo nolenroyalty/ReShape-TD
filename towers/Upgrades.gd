@@ -17,7 +17,7 @@ enum T {
 	POISONS,
 	FARSHOT,
 	GENEROUS,
-	POWERFUL
+	ACCURATE
 }
 
 class Stats extends Node:
@@ -36,7 +36,7 @@ class Stats extends Node:
 	var FARSHOT = false
 	var DAMAGE_MULT = 1.0
 	var GENEROUS = false
-	var POWERFUL = false
+	var ACCURATE = false
 
 	func build_cost():
 		return (len(upgrades) + 1) * C.BASE_TOWER_COST
@@ -67,9 +67,8 @@ func _apply(t, stats):
 		T.GENEROUS: 
 			stats.GENEROUS = true
 			stats.DAMAGE_MULT *= 0.5
-		T.POWERFUL:
-			stats.POWERFUL = true
-			stats.DAMAGE_MULT *= 1.35
+		T.ACCURATE:
+			stats.ACCURATE = true
 	
 	stats.upgrades.append(t)
 	return stats
@@ -91,7 +90,7 @@ func title(t):
 		T.POISONS: return "Poisoning"
 		T.FARSHOT: return "Farshot"
 		T.GENEROUS: return "Generous"
-		T.POWERFUL: return "Powerful"
+		T.ACCURATE: return "Accurate"
 
 class Requirements extends Node:
 	var all_of = {}
@@ -155,8 +154,8 @@ func requires(t):
 			r.length = 1
 		T.GENEROUS: 
 			r.length = 1
-			r.none_of = [T.POWERFUL]
-		T.POWERFUL:
+			r.none_of = [T.ACCURATE]
+		T.ACCURATE:
 			r.length = 2
 			r.none_of = [T.GENEROUS]
 	
@@ -178,7 +177,7 @@ func description(t):
 		T.POISONS: return "Projectiles deal an additional 50% of the tower's damage over time"
 		T.FARSHOT: return "Projectiles deal up to 100% more damage the farther they travel"
 		T.GENEROUS: return "Deals 50% less damage but gives a stacking 15% damage buff to other towers in range"
-		T.POWERFUL: return "Deals 35% more damage"
+		T.ACCURATE: return "35% chance to deal 2.5x damage"
 
 class IndividualTower extends Node:
 	var LEVEL = 1
@@ -321,6 +320,9 @@ func chains(t):
 
 func damage_mult(t):
 	return state[t].DAMAGE_MULT
+
+func accurate(t):
+	return state[t].ACCURATE
 
 func has_chill(t):
 	return state[t].CHILLS
