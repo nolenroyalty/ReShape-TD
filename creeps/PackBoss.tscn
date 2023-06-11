@@ -23,12 +23,12 @@ radius = 9.0
 script = ExtResource( 4 )
 
 [node name="HealthBarEmpty" parent="." index="0"]
-margin_top = -17.0
-margin_bottom = -15.0
+margin_top = -12.0
+margin_bottom = -10.0
 
 [node name="HealthBarFull" parent="." index="1"]
-margin_top = -17.0
-margin_bottom = -15.0
+margin_top = -12.0
+margin_bottom = -10.0
 
 [node name="SpriteButton" parent="." index="2"]
 material = SubResource( 1 )
