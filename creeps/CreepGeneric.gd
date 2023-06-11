@@ -49,7 +49,7 @@ func gold_value():
 	if is_boss:
 		return 10 + 3 * level
 	else:
-		return 1 + level / 3.0
+		return 1 + level / 2.5
 	
 	# var base = 1
 	# if is_boss: base = 10
