@@ -7,8 +7,9 @@ enum S { NO_TARGET, MOVING_TO_TARGET, MOVING_IN_LAST_DIRECTION, EXPLODING, HIT_S
 
 const EXPLOSION_SPEED = 0.35
 const EXPLOSION_SIZE = 5.0
-# 40 (max diagonal across the buildable grid) * 16 (cell size)
-const MAX_DISTANCE_TRAVELED = 640.0
+# 40 (max diagonal across the buildable grid) * 16 (cell size) = 640.0
+# We'll give full bonus if they go a third of the grid
+const MAX_DISTANCE_TRAVELED = 210.0
 const EXPLOSION_SOUND = preload("res://towers/sounds/explosion.wav")
 
 onready var audio = $AudioStreamPlayer
@@ -57,13 +58,20 @@ func init(shape, stats, target_, initial_direction, tower):
 			$Sprite.modulate = C.LIGHT_BLUE
 
 func farshot_mult():
-	if Upgrades.farshot(my_shape):
-		return 1.0 + farshot_return_bonus
+	if not Upgrades.farshot(my_shape):
+		return 1.0
 	else:
 		var distance_traveled = starting_position.distance_to(position)
 		distance_traveled += farshot_return_bonus
 		var mult = min(1.0, distance_traveled / MAX_DISTANCE_TRAVELED)
 		return 1.0 + mult
+	# if Upgrades.farshot(my_shape):
+	# 	return 1.0 + farshot_return_bonus
+	# else:
+	# 	var distance_traveled = starting_position.distance_to(position)
+	# 	distance_traveled += farshot_return_bonus
+	# 	var mult = min(1.0, distance_traveled / MAX_DISTANCE_TRAVELED)
+	# 	return 1.0 + mult
 
 func my_damage():
 	var mult = Upgrades.damage_mult(my_shape)

@@ -195,10 +195,10 @@ class IndividualTower extends Node:
 	func level_damage():
 		match LEVEL:
 			1: return 10
-			2: return 25
-			3: return 50
-			4: return 100
-			5: return 250
+			2: return 28
+			3: return 55
+			4: return 110
+			5: return 260
 	
 	func range_radius():
 		match LEVEL:
