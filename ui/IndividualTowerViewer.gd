@@ -2,6 +2,7 @@ extends Node2D
 
 signal tower_sold()
 signal reshape(shape)
+signal clear_tower_viewer()
 
 onready var title = $Title
 onready var rank_up = $Grid/RankUp
@@ -87,6 +88,10 @@ func handle_tower_leveled():
 	anim.stop()
 	set_text_for_tower()
 
+func handle_tower_sold():
+	tower = null
+	emit_signal("clear_tower_viewer")
+
 func _process(_delta):
 	if Input.is_action_just_pressed("sell_tower"):
 		on_sell_button_pressed()
@@ -99,6 +104,7 @@ func _ready():
 	sell.connect("pressed", self, "on_sell_button_pressed")
 	tower.connect("leveled_up", self, "handle_tower_leveled")
 	tower.connect("killed", self, "set_text_for_tower")
+	tower.connect("sold", self, "handle_tower_sold")
 	# reshape_button.connect("reshape", self, "reshape_button_pressed")
 	
 	var _ignore = State.connect("gold_updated", self, "on_gold_changed")

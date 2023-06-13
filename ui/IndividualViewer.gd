@@ -21,6 +21,7 @@ func show_tower(tower):
 	add_child(current)
 	current.connect("tower_sold", self, "handle_tower_sold", [current])
 	current.connect("reshape", self, "prop_reshape")
+	current.connect("clear_tower_viewer", self, "handle_tower_sold", [current])
 
 func show_creep(creep):
 	free_current()
